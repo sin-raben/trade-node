@@ -1,0 +1,78 @@
+[{
+    "prfOrg": "pol-ice",
+    "keyPrice": "000001",
+    "keyTov": "000001",
+    "d0": "Fri Mar 04 2016 16:53:41 GMT+0300 (MSK)",
+    "d1": "Thu Mar 24 2016 16:53:41 GMT+0300 (MSK)",
+    "opimCn": 12.10,
+    "minCn": 10.10,
+    "maxCn": 15.00,
+    "atime": "Mon Mar 14 2016 15:59:01 GMT+0300 (MSK)",
+    "mtime": "Mon Mar 14 2016 15:59:01 GMT+0300 (MSK)"
+}, {
+    "prfOrg": "pol-ice",
+    "keyPrice": "000001",
+    "keyTov": "000002",
+    "d0": "Fri Mar 04 2016 16:53:41 GMT+0300 (MSK)",
+    "d1": "Thu Mar 24 2016 16:53:41 GMT+0300 (MSK)",
+    "opimCn": 32.10,
+    "minCn": 10.10,
+    "maxCn": 50.00,
+    "atime": "Mon Mar 14 2016 15:59:01 GMT+0300 (MSK)",
+    "mtime": "Mon Mar 14 2016 15:59:01 GMT+0300 (MSK)"
+}, {
+    "prfOrg": "pol-ice",
+    "keyPrice": "000001",
+    "keyTov": "000003",
+    "d0": "Fri Mar 04 2016 16:53:41 GMT+0300 (MSK)",
+    "d1": "Thu Mar 24 2016 16:53:41 GMT+0300 (MSK)",
+    "opimCn": 20.50,
+    "minCn": 10.10,
+    "maxCn": 30.00,
+    "atime": "Mon Mar 14 2016 15:59:01 GMT+0300 (MSK)",
+    "mtime": "Mon Mar 14 2016 15:59:01 GMT+0300 (MSK)"
+}, {
+    "prfOrg": "pol-ice",
+    "keyPrice": "000001",
+    "keyTov": "000004",
+    "d0": "Fri Mar 04 2016 16:53:41 GMT+0300 (MSK)",
+    "d1": "Thu Mar 24 2016 16:53:41 GMT+0300 (MSK)",
+    "opimCn": 20.50,
+    "minCn": 10.10,
+    "maxCn": 30.00,
+    "atime": "Mon Mar 14 2016 15:59:01 GMT+0300 (MSK)",
+    "mtime": "Mon Mar 14 2016 15:59:01 GMT+0300 (MSK)"
+}, {
+    "prfOrg": "pol-ice",
+    "keyPrice": "000002",
+    "keyTov": "000001",
+    "d0": "Fri Mar 04 2016 16:53:41 GMT+0300 (MSK)",
+    "d1": "Thu Mar 24 2016 16:53:41 GMT+0300 (MSK)",
+    "opimCn": 12.00,
+    "minCn": 10.10,
+    "maxCn": 15.00,
+    "atime": "Mon Mar 14 2016 15:59:01 GMT+0300 (MSK)",
+    "mtime": "Mon Mar 14 2016 15:59:01 GMT+0300 (MSK)"
+},{
+    "prfOrg": "pol-ice",
+    "keyPrice": "000003",
+    "keyTov": "000001",
+    "d0": "Fri Mar 04 2016 16:53:41 GMT+0300 (MSK)",
+    "d1": "Thu Mar 24 2016 16:53:41 GMT+0300 (MSK)",
+    "opimCn": 11.10,
+    "minCn": 10.10,
+    "maxCn": 15.00,
+    "atime": "Mon Mar 14 2016 15:59:01 GMT+0300 (MSK)",
+    "mtime": "Mon Mar 14 2016 15:59:01 GMT+0300 (MSK)"
+}, ,{
+    "prfOrg": "pol-ice",
+    "keyPrice": "000004",
+    "keyTov": "000004",
+    "d0": "Fri Mar 04 2016 16:53:41 GMT+0300 (MSK)",
+    "d1": "Thu Mar 24 2016 16:53:41 GMT+0300 (MSK)",
+    "opimCn": 18.50,
+    "minCn": 10.10,
+    "maxCn": 30.00,
+    "atime": "Mon Mar 14 2016 15:59:01 GMT+0300 (MSK)",
+    "mtime": "Mon Mar 14 2016 15:59:01 GMT+0300 (MSK)"
+}, ]

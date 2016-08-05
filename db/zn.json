@@ -1,0 +1,31 @@
+[{
+    "prfOrg": "pol-ice",
+    "prfToc": "zsg-52",
+    "key": "000001",
+    "status": "1",
+    "DateDoc": "Mon Mar 15 2016 15:59:01 GMT+0300 (MSK)",
+    "Kon": "000001",
+    "sogl": "000001",
+    "gskl": "000001",
+    "gprice": "000001",
+    "sum": 100,
+    "user": "zsg",
+    "org": "ООО \"Полайс\"",
+    "atime": "Mon Mar 14 2016 15:59:01 GMT+0300 (MSK)",
+    "mtime": "Mon Mar 14 2016 15:59:01 GMT+0300 (MSK)"
+}, {
+    "prfOrg": "pol-ice",
+    "prfToc": "zsg-52",
+    "key": "000002",
+    "status": "1",
+    "DateDoc": "Mon Mar 15 2016 15:59:01 GMT+0300 (MSK)",
+    "Kon": "000002",
+    "sogl": "000002",
+    "gskl": "000001",
+    "gprice": "000002",
+    "sum": 200,
+    "user": "zsg",
+    "org": "ИП Рыбаков Н.В.",
+    "atime": "Mon Mar 14 2016 15:59:01 GMT+0300 (MSK)",
+    "mtime": "Mon Mar 14 2016 15:59:01 GMT+0300 (MSK)"
+}]

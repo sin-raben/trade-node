@@ -1,0 +1,17 @@
+[{
+    "prfOrg": "pol-ice",
+    "key": "000001",
+    "name": "Склад реализации",
+    "info": "",
+    "items": ["000001", "000002", ],
+    "atime": "Mon Mar 14 2016 15:59:01 GMT+0300 (MSK)",
+    "mtime": "Mon Mar 14 2016 15:59:01 GMT+0300 (MSK)"
+}, {
+    "prfOrg": "pol-ice",
+    "key": "000001",
+    "name": "Склад другой",
+    "info": "",
+    "items": ["000001", "000003", ],
+    "atime": "Mon Mar 14 2016 15:59:01 GMT+0300 (MSK)",
+    "mtime": "Mon Mar 14 2016 15:59:01 GMT+0300 (MSK)"
+}, ]

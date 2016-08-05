@@ -1,0 +1,56 @@
+[{
+    "prfOrg": "pol-ice",
+    "prfToc": "zsg-52",
+    "keyDoc": "000001",
+    "key": "000001",
+    "tov": "000001",
+    "kol": 10,
+    "cn": 12.10,
+    "sum": 121.00,
+    "atime": "Mon Mar 14 2016 15:59:01 GMT+0300 (MSK)",
+    "mtime": "Mon Mar 14 2016 15:59:01 GMT+0300 (MSK)"
+},{
+    "prfOrg": "pol-ice",
+    "prfToc": "zsg-52",
+    "keyDoc": "000001",
+    "key": "000002",
+    "tov": "000002",
+    "kol": 5,
+    "cn": 32.10,
+    "sum": 162.00,
+    "atime": "Mon Mar 14 2016 15:59:01 GMT+0300 (MSK)",
+    "mtime": "Mon Mar 14 2016 15:59:01 GMT+0300 (MSK)"
+},{
+    "prfOrg": "pol-ice",
+    "prfToc": "zsg-52",
+    "keyDoc": "000001",
+    "key": "000003",
+    "tov": "000004",
+    "kol": 1,
+    "cn": 20.50,
+    "sum": 20.50,
+    "atime": "Mon Mar 14 2016 15:59:01 GMT+0300 (MSK)",
+    "mtime": "Mon Mar 14 2016 15:59:01 GMT+0300 (MSK)"
+},{
+    "prfOrg": "pol-ice",
+    "prfToc": "zsg-52",
+    "keyDoc": "000002",
+    "key": "000001",
+    "tov": "000003",
+    "kol": 10,
+    "cn": 22.40,
+    "sum": 224.00,
+    "atime": "Mon Mar 14 2016 15:59:01 GMT+0300 (MSK)",
+    "mtime": "Mon Mar 14 2016 15:59:01 GMT+0300 (MSK)"
+},{
+    "prfOrg": "pol-ice",
+    "prfToc": "zsg-52",
+    "keyDoc": "000002",
+    "key": "000002",
+    "tov": "000004",
+    "kol": 5,
+    "cn": 20.50,
+    "sum": 101.00,
+    "atime": "Mon Mar 14 2016 15:59:01 GMT+0300 (MSK)",
+    "mtime": "Mon Mar 14 2016 15:59:01 GMT+0300 (MSK)"
+} ]

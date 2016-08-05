@@ -1,0 +1,58 @@
+[{
+    "prfOrg": "pol-ice",
+    "keySkl": "000001",
+    "keyTov": "000001",
+    "ost": 200,
+    "atime": "Mon Mar 14 2016 15:59:01 GMT+0300 (MSK)",
+    "mtime": "Mon Mar 14 2016 15:59:01 GMT+0300 (MSK)"
+},{
+    "prfOrg": "pol-ice",
+    "keySkl": "000001",
+    "keyTov": "000002",
+    "ost": 0,
+    "atime": "Mon Mar 14 2016 15:59:01 GMT+0300 (MSK)",
+    "mtime": "Mon Mar 14 2016 15:59:01 GMT+0300 (MSK)"
+},{
+    "prfOrg": "pol-ice",
+    "keySkl": "000001",
+    "keyTov": "000003",
+    "ost": 5,
+    "atime": "Mon Mar 14 2016 15:59:01 GMT+0300 (MSK)",
+    "mtime": "Mon Mar 14 2016 15:59:01 GMT+0300 (MSK)"
+},{
+    "prfOrg": "pol-ice",
+    "keySkl": "000001",
+    "keyTov": "000004",
+    "ost": 1,
+    "atime": "Mon Mar 14 2016 15:59:01 GMT+0300 (MSK)",
+    "mtime": "Mon Mar 14 2016 15:59:01 GMT+0300 (MSK)"
+},
+{
+    "prfOrg": "pol-ice",
+    "keySkl": "000002",
+    "keyTov": "000001",
+    "ost": 0,
+    "atime": "Mon Mar 14 2016 15:59:01 GMT+0300 (MSK)",
+    "mtime": "Mon Mar 14 2016 15:59:01 GMT+0300 (MSK)"
+},{
+    "prfOrg": "pol-ice",
+    "keySkl": "000002",
+    "keyTov": "000002",
+    "ost": 10,
+    "atime": "Mon Mar 14 2016 15:59:01 GMT+0300 (MSK)",
+    "mtime": "Mon Mar 14 2016 15:59:01 GMT+0300 (MSK)"
+},{
+    "prfOrg": "pol-ice",
+    "keySkl": "000003",
+    "keyTov": "000003",
+    "ost": 5,
+    "atime": "Mon Mar 14 2016 15:59:01 GMT+0300 (MSK)",
+    "mtime": "Mon Mar 14 2016 15:59:01 GMT+0300 (MSK)"
+},{
+    "prfOrg": "pol-ice",
+    "keySkl": "000003",
+    "keyTov": "000004",
+    "ost": 10,
+    "atime": "Mon Mar 14 2016 15:59:01 GMT+0300 (MSK)",
+    "mtime": "Mon Mar 14 2016 15:59:01 GMT+0300 (MSK)"
+},]

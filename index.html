@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Document</title>
+	<script type="text/javascript">
+		//jshint node:true, esversion: 6
+		function run() {
+			'use strict';
+			var кирпич = {
+				x: +document.getElementById('кирпич_длинна').value,
+				y: +document.getElementById('кирпич_ширина').value,
+				z: +document.getElementById('кирпич_высота').value
+			};
+			var шов = {
+				горизонтальный: +document.getElementById('шов_гор').value,
+				вертикальный: +document.getElementById('шов_вер').value
+			};
+			var забор = {
+				тумба: {
+					количество: +document.getElementById('тумба_кол').value,
+					высота: +document.getElementById('тумба_выс').value
+				},
+				пролёт: {
+					количество: +document.getElementById('пролет_кол').value,
+					высота: +document.getElementById('пролет_выс').value,
+					ширина: +document.getElementById('пролет_длн').value
+				}
+			};
+
+			var ширинаПролета2 = (12250 - (забор.тумба.количество * (кирпич.x + кирпич.y + шов.вертикальный))) / забор.пролёт.количество;
+
+			var ширинаПролётаБезТумб = (забор.пролёт.ширина - (кирпич.x + кирпич.y + шов.вертикальный));
+			var кирпичейВСлоеПролета = Math.ceil(2 * ширинаПролётаБезТумб / (шов.вертикальный + кирпич.x));
+
+			var числоКирпичейВТумбе = забор.тумба.количество * 4 * Math.ceil(забор.тумба.высота / (шов.горизонтальный + кирпич.z));
+			var числоКирпичейВПролете = забор.пролёт.количество * (кирпичейВСлоеПролета * Math.ceil(забор.пролёт.высота / (шов.горизонтальный + кирпич.z)));
+			console.log('ширинаПролётаБезТумб', кирпичейВСлоеПролета, ширинаПролётаБезТумб, ширинаПролета2);
+			console.log('ЧислоКирпичейВТумбе, ЧислоКирпичейВПролете', числоКирпичейВТумбе, числоКирпичейВПролете, числоКирпичейВТумбе + числоКирпичейВПролете);
+			var res = document.getElementById('res');
+			res.innerHTML = (числоКирпичейВТумбе + числоКирпичейВПролете)+" кирпичей";
+		}
+	</script>
+	<style media="screen">
+		.form {
+			/*font-size: 0;*/
+		}
+		.c {
+			font-size: 1rem;
+			width: 45%;
+			display: inline-flex;
+			border: 1px solid #8b8f90;
+			padding: 1em;
+
+			margin: 1em auto;
+		}
+
+		.d {
+			display: inline-block;
+			height: 6em;
+			width: 100%;
+			text-align: right;
+		}
+		.c span {
+			display: flex;
+			width: 100%;
+		}
+
+		.d div {
+
+			display: inline-block;
+			align-content: center;
+			text-align: right;
+			width: 45%;
+			/*padding-right: 1em;*/
+		}
+
+		.d input {
+			display: inline;
+			width: 40%;
+		}
+		#res {
+			width: 100%;
+			padding: 1em 0;
+			font-size: 2em;
+			text-align: center;
+		}
+	</style>
+</head>
+
+<body>
+	<form class="form" action="index.html" method="post">
+		<div class="c">
+
+			<div class="d">
+				<span>кирпич</span>
+				<div>длинна: </div>
+				<input id="кирпич_длинна" type="number" name="name" value="250">
+				<div>ширина: </div>
+				<input id="кирпич_ширина" type="number" name="name" value="120">
+				<div>высота: </div>
+				<input id="кирпич_высота" type="number" name="name" value="65">
+			</div>
+		</div>
+		<div class="c">
+
+			<div class="d">
+				<span>толщина шва</span>
+				<div>горизонтальная: </div>
+				<input id="шов_гор" type="number" name="name" value="10">
+				<div>вертикальная: </div>
+				<input id="шов_вер" type="number" name="name" value="10">
+			</div>
+		</div>
+		<div class="c">
+
+			<div class="d">
+				<span>тумба забора</span>
+				<div>количество: </div>
+				<input id="тумба_кол" type="number" name="name" value="6">
+				<div>высота: </div>
+				<input id="тумба_выс" type="number" name="name" value="1500">
+			</div>
+		</div>
+		<div class="c">
+
+			<div class="d">
+				<span>пролеты забора</span>
+				<div>количество: </div>
+				<input id="пролет_кол" type="number" name="name" value="5">
+				<div>высота: </div>
+				<input id="пролет_выс" type="number" name="name" value="500">
+				<div>длинна: </div>
+				<input id="пролет_длн" type="number" name="name" value="2360">
+			</div>
+		</div>
+
+	</form>
+	<button type="button" name="button" onclick="run()">Вычислить</button>
+	<div id="res">
+
+	</div>
+</body>
+
+</html>
