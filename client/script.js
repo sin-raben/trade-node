@@ -42,6 +42,7 @@ var wsfunc = {
                     color: 'red',
                     weight: 3
                 });
+                console.log('polyline', polyline);
                 mymap.addLayer(polyline);
         }
 
