@@ -116,23 +116,23 @@ var wsfunc = {
                 var pr = [];
                 var nm = [];
                 if (obj.items === "all") {
-                    pr.push(db.query("SELECT * from items", {}));
+                    pr.push(db.query("SELECT *, extract(epoch from i_mtime)*1000 as i_mtime_i from items", {}));
                     nm.push("items");
                 }
                 if (obj.itemsGroupType === "all") {
-                    pr.push(db.query("SELECT * from items_Group_Type", {}));
+                    pr.push(db.query("SELECT *, extract(epoch from igt_mtime)*1000 as igt_mtime_i from items_Group_Type", {}));
                     nm.push("itemsGroupType");
                 }
                 if (obj.itemsGroup === "all") {
-                    pr.push(db.query("SELECT * from items_Group", {}));
+                    pr.push(db.query("SELECT *, extract(epoch from ig_mtime)*1000 as ig_mtime_i from items_Group", {}));
                     nm.push("itemsGroup");
                 }
                 if (obj.itemsUnitType === "all") {
-                    pr.push(db.query("SELECT * from items_Unit_Type", {}));
+                    pr.push(db.query("SELECT *, extract(epoch from iut_mtime)*1000 as iut_mtime_i from items_Unit_Type", {}));
                     nm.push("itemsUnitType");
                 }
                 if (obj.itemsUnit === "all") {
-                    pr.push(db.query("SELECT * from items_Unit", {}));
+                    pr.push(db.query("SELECT *, extract(epoch from iu_mtime)*1000 as iu_mtime_i from items_Unit", {}));
                     nm.push("itemsUnit");
                 }
                 Promise.all(pr).then((value) => {
