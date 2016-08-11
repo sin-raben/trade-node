@@ -58,7 +58,7 @@ CREATE TABLE public.item_Groups (
 );
 
 
-CREATE TABLE public.linkItemGroup (
+CREATE TABLE public.link_Item_Group (
     i_id        INTEGER REFERENCES items                ,
     ig_id       INTEGER REFERENCES item_Groups          ,
     igt_id      INTEGER REFERENCES item_Group_Types     ,
