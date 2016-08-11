@@ -1,9 +1,12 @@
+
 DROP TABLE item_Units;
 DROP TABLE item_Unit_Types;
 DROP TABLE item_Metric_Types;
+DROP TABLE link_Item_Group
 DROP TABLE item_Groups;
 DROP TABLE item_Group_Types;
 DROP TABLE items;
+
 DROP TABLE item_NDS_Types;
 
 -- ==================СОЗДАНИЕ ТАБЛИЦ=====================
@@ -18,7 +21,7 @@ CREATE TABLE public.item_NDS_Types (
 COMMENT ON TABLE    public.item_NDS_Types           IS 'Ставки НДС';
 COMMENT ON COLUMN   public.item_NDS_Types.int_id    IS 'идентификатор ставки НДС';
 
-INSERT INTO items_NDS_Type  (int_id, int_name, int_value)
+INSERT INTO item_NDS_Types  (int_id, int_name, int_value)
                     VALUES  (1,     'НДС: 0%',  00),
                             (2,     'НДС: 10%', 10),
                             (3,     'НДС: 18%', 18),
@@ -34,7 +37,7 @@ CREATE TABLE public.items (
     i_img       TEXT                                    , -- изображение товара (тип: строка)
     i_service   BOOLEAN                                 , -- признак услуги (тип: булево)
     i_producer  INTEGER                                 , -- производитель (тип: число)
-    int_id      INTEGER REFERENCES items_NDS_Type       , -- ставка НДС (тип: число)
+    int_id      INTEGER REFERENCES item_NDS_Types       , -- ставка НДС (тип: число)
     i_mtime     TIMESTAMP DEFAULT now()                   -- время изменения товара _в посылаемом на мобильное приложение ответе - необязателен_ (тип: число)
 
 );
@@ -54,7 +57,7 @@ CREATE TABLE public.item_Groups (
     ig_id     SERIAL PRIMARY KEY                        , -- идентификатор значения группы товаров (тип: число)                 ,
     igt_id    INTEGER REFERENCES item_Group_Types       , -- тип спойства (тип: число)
     ig_value  VARCHAR(50)                               , -- значение (тип: строка)
-    ig_mtime  TIMESTAMP DEFAULT now()                   , -- время изменения  информации о товаре (тип: число)
+    ig_mtime  TIMESTAMP DEFAULT now()                    -- время изменения  информации о товаре (тип: число)
 );
 
 
@@ -64,7 +67,7 @@ CREATE TABLE public.link_Item_Group (
     igt_id      INTEGER REFERENCES item_Group_Types     ,
     lig_mtime   TIMESTAMP DEFAULT now()                 , -- время изменения связи (тип: число)
     PRIMARY KEY (i_id, igt_id)
-    );
+);
 
 
 -- `length` - мера длинны, `area` - мера площади, `volume` - мера объема, `quantity` - количествеенная характеристика, `bulk` - мера веса
