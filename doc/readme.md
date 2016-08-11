@@ -28,13 +28,13 @@ TABLE items
 
 Для первого устройства
 ```SQL
-SELECT * FROM items JOIN sync ON sync_time_begin > i_mtime WHERE token='gofman-1' and table= 'Item';
+SELECT * FROM items JOIN sync ON sync_time_begin < i_mtime WHERE token='gofman-1' and table= 'Item';
 ```
 Для второго устройства
 ```SQL
-SELECT * FROM items JOIN sync ON sync_time_begin > i_mtime WHERE token='gofman-2' and table= 'Item';
+SELECT * FROM items JOIN sync ON sync_time_begin < i_mtime WHERE token='gofman-2' and table= 'Item';
 ```
 Для меня
 ```SQL
-SELECT * FROM items JOIN sync ON sync_time_begin > i_mtime WHERE token='zsg-1' and table= 'Item';
+SELECT * FROM items JOIN sync ON sync_time_begin < i_mtime WHERE token='zsg-1' and table= 'Item';
 ```
