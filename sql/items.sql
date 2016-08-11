@@ -56,6 +56,7 @@ CREATE TABLE public.item_Group_Types (
 CREATE TABLE public.item_Groups (
     ig_id     SERIAL PRIMARY KEY                        , -- идентификатор значения группы товаров (тип: число)                 ,
     igt_id    INTEGER REFERENCES item_Group_Types       , -- тип спойства (тип: число)
+    ig_exid   TEXT UNIQUE                               , -- внешний код, используется для синхронизации
     ig_value  VARCHAR(50)                               , -- значение (тип: строка)
     ig_mtime  TIMESTAMP DEFAULT now()                    -- время изменения  информации о товаре (тип: число)
 );
