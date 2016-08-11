@@ -139,7 +139,7 @@ var wsfunc = {
                     for (let i = 0; i < nm.length; i++) {
                         tov[nm[i]] = value[i];
                     }
-                    console.log("tov", tov);
+                    //console.log("tov", tov);
                     resolve(tov);
                 });
                 //var tov = require('../db/tov');
