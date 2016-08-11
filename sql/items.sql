@@ -51,13 +51,21 @@ CREATE TABLE public.item_Group_Types (
 
 -- Структура массива групп товаров `itemsGroup`
 CREATE TABLE public.item_Groups (
-    i_id      INTEGER REFERENCES items                  , -- товар (тип: число)
---    ig_exid   TEXT                                      , -- внешний код, используется для синхронизации, _в посылаемом на мобильное приложение ответе - необязателен_ (тип: строка)
+    ig_id     SERIAL PRIMARY KEY                        , -- идентификатор значения группы товаров (тип: число)                 ,
     igt_id    INTEGER REFERENCES item_Group_Types       , -- тип спойства (тип: число)
     ig_value  VARCHAR(50)                               , -- значение (тип: строка)
     ig_mtime  TIMESTAMP DEFAULT now()                   , -- время изменения  информации о товаре (тип: число)
-    PRIMARY KEY (i_id, igt_id)                            -- ключ
 );
+
+
+CREATE TABLE public.linkItemGroup (
+    i_id        INTEGER REFERENCES items                ,
+    ig_id       INTEGER REFERENCES item_Groups          ,
+    igt_id      INTEGER REFERENCES item_Group_Types     ,
+    lig_mtime   TIMESTAMP DEFAULT now()                 , -- время изменения связи (тип: число)
+    PRIMARY KEY (i_id, igt_id)
+    );
+
 
 -- `length` - мера длинны, `area` - мера площади, `volume` - мера объема, `quantity` - количествеенная характеристика, `bulk` - мера веса
 CREATE TABLE public.item_Metric_Types (
