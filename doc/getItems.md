@@ -9,15 +9,16 @@
     "head":"getItems",
     "body": {
         "items": "all",
-        "itemsGroupType": "all",
-        "itemsGroup": "all",
-        "itemsUnitType": "all",
-        "itemsUnit": "all"
+        "itemGroupTypes": "all",
+        "itemGroups": "all",
+        "linkItemGroups": "all",
+        "itemUnitTypes": "all",
+        "itemUnits": "all"
     }
 }
 ```
 
-wsm("getItems",{"items": "all","itemsGroupType": "all","itemsGroup": "all","itemsUnitType": "all","itemsUnit": "all"});
+wsm("getItems",{"items": "all","itemGroupTypes": "all","itemGroups": "all","linkItemGroups": "all","itemUnitTypes": "all","itemUnits": "all"});
 
 Ответ сервера клиенту представляет собой JSON:
 
@@ -132,18 +133,19 @@ wsm("getItems",{"items": "all","itemsGroupType": "all","itemsGroup": "all","item
 
 ## Структура массива групп товаров `itemsGroup`
 
-- `i_id` - товар (тип: число)
+- `ig_id` - идентификатор записи (тип: число)
 - `igt_id` - тип спойства (тип: число)
-- `igv_id` - ссылка на значение (тип: строка)
+- `ig_value` - значение (тип: строка)
 - `ig_mtime` - время изменения информации о товаре (тип: число)
 - `ig_mtime_i` - время изменения информации о товаре (тип: число)
 
-## Структура массива групп товаров `itemsGroupValue`
-- `igv_id` - идентификатор значения
+## Структура массива групп товаров `linkItemsGroup`
+- `lig_id` - идентификатор записи (тип: число)
+- `i_id` - товар (тип: число)
+- `ig_id` - идентификатор значения
 - `igt_id` - тип спойства (тип: число) (для удобной группировки значений)
-- `igv_value` - значение (тип: строка)
-- `igv_mtime` - время изменения информации о товаре (тип: число)
-- `igv_mtime_i` - время изменения информации о товаре (тип: число)
+- `lig_mtime` - время изменения информации о товаре (тип: число)
+- `lig_mtime_i` - время изменения информации о товаре (тип: число)
 
 ## Структура массива типов единиц измерения `itemsUnitType`
 

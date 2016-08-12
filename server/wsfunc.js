@@ -119,28 +119,34 @@ var wsfunc = {
                     pr.push(db.query("SELECT *, extract(epoch from i_mtime)*1000 as i_mtime_i from items", {}));
                     nm.push("items");
                 }
-                if (obj.itemsGroupType === "all") {
-                    pr.push(db.query("SELECT *, extract(epoch from igt_mtime)*1000 as igt_mtime_i from items_Group_Type", {}));
-                    nm.push("itemsGroupType");
+                if (obj.itemGroupTypes === "all") {
+                    pr.push(db.query("SELECT *, extract(epoch from igt_mtime)*1000 as igt_mtime_i from item_Group_Types", {}));
+                    nm.push("itemGroupTypes");
                 }
-                if (obj.itemsGroup === "all") {
-                    pr.push(db.query("SELECT *, extract(epoch from ig_mtime)*1000 as ig_mtime_i from items_Group", {}));
-                    nm.push("itemsGroup");
+                if (obj.itemGroups === "all") {
+                    pr.push(db.query("SELECT *, extract(epoch from ig_mtime)*1000 as ig_mtime_i from item_Groups", {}));
+                    nm.push("itemGroups");
                 }
-                if (obj.itemsUnitType === "all") {
-                    pr.push(db.query("SELECT *, extract(epoch from iut_mtime)*1000 as iut_mtime_i from items_Unit_Type", {}));
-                    nm.push("itemsUnitType");
+                if (obj.linkItemGroups === "all") {
+                    pr.push(db.query("SELECT *, extract(epoch from lig_mtime)*1000 as lig_mtime_i from link_Item_Group", {}));
+                    nm.push("itemGroups");
                 }
-                if (obj.itemsUnit === "all") {
-                    pr.push(db.query("SELECT *, extract(epoch from iu_mtime)*1000 as iu_mtime_i from items_Unit", {}));
-                    nm.push("itemsUnit");
+                if (obj.itemUnitTypes === "all") {
+                    pr.push(db.query("SELECT *, extract(epoch from iut_mtime)*1000 as iut_mtime_i from item_Unit_Types", {}));
+                    nm.push("itemUnitTypes");
+                }
+                if (obj.itemUnits === "all") {
+                    pr.push(db.query("SELECT *, extract(epoch from iu_mtime)*1000 as iu_mtime_i from item_Units", {}));
+                    nm.push("itemUnits");
                 }
                 Promise.all(pr).then((value) => {
                     for (let i = 0; i < nm.length; i++) {
                         tov[nm[i]] = value[i];
                     }
-                    //console.log("tov", tov);
+                    console.log("tov");
                     resolve(tov);
+                },(err)=>{
+                    console.log('err all', err);
                 });
                 //var tov = require('../db/tov');
 
