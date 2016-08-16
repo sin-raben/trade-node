@@ -1,21 +1,51 @@
-DROP TABLE Users;
 
-CREATE TABLE public.Users (
-  u_id         SERIAL PRIMARY KEY,
-  u_login      VARCHAR(20) UNIQUE,
-  u_pass       TEXT,
-  pl_id        INTEGER,
-  u_permission INTEGER
-
+DROP TABLE post_peoples;
+CREATE TABLE public.post_peoples (
+    pp_id       SERIAL PRIMARY KEY,
+    pp_name     TEXT,
+    pp_mtime    TIMESTAMP DEFAULT now()
 );
 
 DROP TABLE people;
 CREATE TABLE public.people (
-  pl_id   SERIAL PRIMARY KEY,
-  pl_name VARCHAR(100),
-  pl_post INTEGER,
-  pl_F    TEXT,
-  pl_I    TEXT,
-  pl_O    TEXT
+    pl_id         SERIAL PRIMARY KEY,
+    pl_name       VARCHAR(100),
+    pp_id         INTEGER REFERENCES post_peoples,
+    pl_F          TEXT, --фамилия
+    pl_I          TEXT, --имя
+    pl_O          TEXT, --отчество
+    --пол
+    --дата рождения
+    --тонна прочих реквизитов
+    pl_mtime      TIMESTAMP DEFAULT now()
 );
 
+DROP TABLE Users;
+CREATE TABLE public.Users (
+    u_id          SERIAL PRIMARY KEY,
+    u_login       VARCHAR(30) UNIQUE,
+    u_pass        TEXT,
+    pl_id         INTEGER REFERENCES people,
+    u_permission  INTEGER,
+    u_mtime       TIMESTAMP DEFAULT now()
+);
+
+DROP TABLE token;
+CREATE TABLE public.token (
+    t_id          SERIAL PRIMARY KEY,
+    u_id          INTEGER REFERENCES Users,
+    t_name        VARCHAR(100),
+    t_key         TEXT,
+    t_mtime       TIMESTAMP DEFAULT now(),
+    UNIQUE (u_id, t_name)
+);
+
+CREATE TABLE public.sinc_token (
+    st_id       BIGSERIAL PRIMARY KEY,
+    t_id        INTEGER REFERENCES token,
+    st_tableoid INTEGER,
+    st_record   INTEGER,
+    st_mtime    TIMESTAMP DEFAULT now()
+);
+
+--SELECT oid FROM pg_class WHERE relname = 'items'
