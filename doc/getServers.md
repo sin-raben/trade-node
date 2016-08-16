@@ -25,6 +25,7 @@
   },
   "SyncConnection": [
     {
+      "Organization": "Полайс 1",
       "Protocol": "ws",
       "Host": "pol-ice.ru",
       "Port": 8890,
