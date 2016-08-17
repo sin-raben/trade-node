@@ -35,7 +35,7 @@ var wsfunc = {
                         }
                     })
                     .catch((error) => {
-                        console.log('error', error);
+                        console.log('error1', error);
                     }); /**/
             } catch (err) {
                 console.log('errA', err);
