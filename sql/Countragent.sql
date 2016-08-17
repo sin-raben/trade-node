@@ -25,6 +25,7 @@ CREATE TABLE public.address (
 --Cтрутура (Контрагенты)
 CREATE TABLE public.countragents (
     ca_id           SERIAL PRIMARY KEY              , -- идентификатор контрагента
+    ca_exid         TEXT                            , -- внешний код
     ca_type         INTEGER                         , -- Юр. лицо, ИП, Физ. лицо, Иностранное юр лицо, Обособленное подразделение
     ca_opf          TEXT                            , -- ОПФ
     ca_head         INTEGER REFERENCES countragents , -- Головной контрагент
@@ -39,7 +40,7 @@ CREATE TABLE public.countragents (
     ca_client       BOOLEAN DEFAULT TRUE            , -- Клиент (0, 1)
     ca_supplier     BOOLEAN DEFAULT FALSE           , -- Поставщик (0, 1)
     ca_carrier      BOOLEAN DEFAULT FALSE           , -- Перевозчик (0, 1)
-    dp_active       BOOLEAN DEFAULT TRUE,
+    ca_active       BOOLEAN DEFAULT TRUE,
     ca_mtime        TIMESTAMP DEFAULT now()           -- время изменения
 );
 
