@@ -28,7 +28,7 @@ wsm("getCountragents",{"countragents" : "all","deliveryPoints" : "all","address"
 - `ca_name` - наименование
 - `ca_prn` - наименование для печати
 - `ca_info` - описание
-- `ca_inn`- ИНН
+- `ca_inn` - ИНН
 - `ca_kpp` - КПП
 - `ca_okved` - ОКВЕД
 - `ca_ogrn` - ОГРН

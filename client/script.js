@@ -8,7 +8,7 @@
 var mymap;
 var markers;
 var socket;
-
+var s;
 var wsfunc = {
     zero: function(head, body) {
         console.log("error", "Метод " + head + " не найден, его значение", body);
@@ -163,6 +163,7 @@ window.onload = function() {
     socket.onmessage = function(event) {
         //alert("Получены данные " + event.data);
         var message = event.data;
+        s = message;
         console.log("event.data", message);
         var obj;
         try {
