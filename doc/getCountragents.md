@@ -7,11 +7,14 @@
 {
     "head":"getCountragents",
     "body": {
-
+        "countragents" : "all",
+        "deliveryPoints" : "all",
+        "address" : "all",
+        "linksCountragentDeliveryPoint" : "all"
     }
 }
 ```
-
+wsm("getCountragents",{"countragents" : "all","deliveryPoints" : "all","address" : "all","linksCountragentDeliveryPoint" : "all"});
 
 
 

@@ -129,7 +129,7 @@ var wsfunc = {
                 }
                 if (obj.linkItemGroups === "all") {
                     pr.push(db.query("SELECT *, extract(epoch from lig_mtime)*1000 as lig_mtime_i from link_Item_Group", {}));
-                    nm.push("itemGroups");
+                    nm.push("linkItemGroups");
                 }
                 if (obj.itemUnitTypes === "all") {
                     pr.push(db.query("SELECT *, extract(epoch from iut_mtime)*1000 as iut_mtime_i from item_Unit_Types", {}));
@@ -139,6 +139,55 @@ var wsfunc = {
                     pr.push(db.query("SELECT *, extract(epoch from iu_mtime)*1000 as iu_mtime_i from item_Units", {}));
                     nm.push("itemUnits");
                 }
+                Promise.all(pr).then((value) => {
+                    for (let i = 0; i < nm.length; i++) {
+                        tov[nm[i]] = value[i];
+                    }
+                    console.log("tov");
+                    resolve(tov);
+                },(err)=>{
+                    console.log('err all', err);
+                });
+                //var tov = require('../db/tov');
+
+
+            } catch (err) {
+                console.log("err", err);
+                reject(err);
+            }
+
+        });
+    },
+    getCountragents: function(client, obj) {
+        return new Promise(function(resolve, reject) {
+            console.log("title", obj);
+            var tov = {};
+            if (!(client.idToken)) {
+                resolve({
+                    "result": false
+                });
+                return;
+            }
+            try {
+                var pr = [];
+                var nm = [];
+                if (obj.countragents === "all") {
+                    pr.push(db.query("SELECT *, extract(epoch from ca_mtime)*1000 as ca_mtime_i from countragents", {}));
+                    nm.push("countragents");
+                }
+                if (obj.deliveryPoints === "all") {
+                    pr.push(db.query("SELECT *, extract(epoch from dp_mtime)*1000 as dp_mtime_i from delivery_points", {}));
+                    nm.push("deliveryPoints");
+                }
+                if (obj.address === "all") {
+                    pr.push(db.query("SELECT *, extract(epoch from adr_mtime)*1000 as adr_mtime_i from address", {}));
+                    nm.push("address");
+                }
+                if (obj.linksCountragentDeliveryPoint === "all") {
+                    pr.push(db.query("SELECT *, extract(epoch from lcp_mtime)*1000 as lcp_mtime_i from links_countragent_delivery_point", {}));
+                    nm.push("linksCountragentDeliveryPoint");
+                }
+
                 Promise.all(pr).then((value) => {
                     for (let i = 0; i < nm.length; i++) {
                         tov[nm[i]] = value[i];
