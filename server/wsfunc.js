@@ -9,7 +9,31 @@ var cn = 'postgres://postgres:postgres@localhost:5432/office';
 var db = pgp(cn);
 
 var wsfunc = {
-    autchUser: function(client, obj) {
+    getServers: function (client, obj) {
+        return new Promise(function(resolve, reject) {
+            try {
+                var d = {
+                    "SyncConnection": [
+                  {
+                    "ID": 1,
+                    "Organization": "Полайс 1",
+                    "Protocol": "ws",
+                    "Host": "pol-ice.ru",
+                    "Port": 8890,
+                    "Path": "/ws",
+                    "ConnectionTimeout": 5000,
+                    "Compression": false,
+                    "Description": "Настройка подключения к серверу синхронизации"
+                  }
+              ]};
+              resolve(d);
+            } catch (err) {
+                console.log('errA', err);
+            }
+
+        });
+    },
+    authUser: function(client, obj) {
         return new Promise(function(resolve, reject) {
             try {
                 db.query("SELECT t.idtoken,t.keytoken,u.login,u.pass from wp_tokens t LEFT JOIN wp_users u ON t.login = u.login where idToken=$1", obj.idToken)
@@ -18,7 +42,7 @@ var wsfunc = {
                             console.log('token[0]', token[0]);
                             client.idToken = token[0].idtoken;
                             client.user = token[0].login;
-                            if ((token[0].login === obj.criptoPass.login) && (token[0].pass === obj.criptoPass.pass)) {
+                            if ((token[0].login === obj.authData.login) && (token[0].pass === obj.authData.password)) {
                                 resolve({
                                     "result": true
                                 });

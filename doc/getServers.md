@@ -25,6 +25,7 @@
   },
   "SyncConnection": [
     {
+      "ID": 1,
       "Organization": "Полайс 1",
       "Protocol": "ws",
       "Host": "pol-ice.ru",

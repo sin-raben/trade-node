@@ -21,12 +21,12 @@ CREATE TABLE public.people (
 );
 
 DROP TABLE Users;
-CREATE TABLE public.Users (
+CREATE TABLE public.users (
     u_id          SERIAL PRIMARY KEY,
     u_login       VARCHAR(30) UNIQUE,
     u_pass        TEXT,
     pl_id         INTEGER REFERENCES people,
-    u_permission  INTEGER,
+    u_permission  INTEGER, -- ссылка на права доступа
     u_mtime       TIMESTAMP DEFAULT now()
 );
 
@@ -40,7 +40,7 @@ CREATE TABLE public.token (
     UNIQUE (u_id, t_name)
 );
 
-CREATE TABLE public.sinc_token (
+CREATE TABLE public.sync_token (
     st_id       BIGSERIAL PRIMARY KEY,
     t_id        INTEGER REFERENCES token,
     st_tableoid INTEGER,
