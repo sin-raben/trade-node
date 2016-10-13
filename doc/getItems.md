@@ -85,11 +85,11 @@ wsm("getItems",{"items": "all","itemGroupTypes": "all","itemGroups": "all","link
                 "iu_width": 0,
                 "iu_height": 0,
                 "iu_area": 0,
-                "iu_volume": "0",
+                "iu_volume": 0,
                 "iu_agent": true,
                 "iu_base": false,
                 "iu_main": true,
-                "iu_mtime": "2016-08-10T09:00:36.602Z",
+                "iu_mtime": "2016\"-08-10T09:00:36.602Z",
                 "iu_mtime_i": 1470830436602.16
             }
         ]

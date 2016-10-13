@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+	<meta charset="UTF-8">
+	<title>debug</title>
+	<link rel="stylesheet" href="style.css" media="screen" title="no title" charset="utf-8">
+	<script type="text/javascript" src="script.js" charset="utf-8"></script>
+</head>
+
+<body>
+	<div class="interfase">
+		<div id="request" class="">
+			<div class="">
+				<input id="request-head" type="text" name="head" value="">
+				<textarea id="request-body" name="comment" cols="40" rows="9"></textarea>
+				<input id="request-submit" type="button" name="name" value="отправить запрос" onclick="submitRequest()">
+			</div>
+
+			<!-- <input id="request-body" type="text" name="body" value=""> -->
+			<ul id="request-template" class="">
+				<li onclick="setRequest(this)">
+					<div class="request-name">
+						авторизация
+					</div>
+					<span class="request-head">
+						authUser
+					</span>
+					<span class="request-body">
+						{"idToken": "gofman-1","authData":{"login": "gofman","password": "1"}}
+					</span>
+				</li>
+				<li onclick="setRequest(this)">
+					<div class="request-name">
+						Получить всю номенклатуру и её свойства
+					</div>
+					<span class="request-head">
+						getItems
+					</span>
+					<span class="request-body">
+						{"items": "all","itemGroupTypes": "all","itemGroups": "all","linkItemGroups": "all","itemUnitTypes": "all","itemUnits": "all"}
+					</span>
+				</li>
+				<li onclick="setRequest(this)">
+					<div class="request-name">
+						Получить только товары
+					</div>
+					<span class="request-head">
+						getItems
+					</span>
+					<span class="request-body">
+						{"items": "all"}
+					</span>
+				</li>
+				<li onclick="setRequest(this)">
+					<div class="request-name">
+						Получить только типы групп
+					</div>
+					<span class="request-head">
+						getItems
+					</span>
+					<span class="request-body">
+						{"itemGroupTypes": "all"}
+					</span>
+				</li>
+				<li onclick="setRequest(this)">
+					<div class="request-name">
+						Получить только значения групп
+					</div>
+					<span class="request-head">
+						getItems
+					</span>
+					<span class="request-body">
+						{"itemGroups": "all"}
+					</span>
+				</li>
+				<li onclick="setRequest(this)">
+					<div class="request-name">
+						Получить только связи товаров и групп
+					</div>
+					<span class="request-head">
+						getItems
+					</span>
+					<span class="request-body">
+						{"linkItemGroups": "all"}
+					</span>
+				</li>
+				<li onclick="setRequest(this)">
+					<div class="request-name">
+						Получить только типы единиц измерения
+					</div>
+					<span class="request-head">
+						getItems
+					</span>
+					<span class="request-body">
+						{"itemUnitTypes": "all"}
+					</span>
+				</li>
+				<li onclick="setRequest(this)">
+					<div class="request-name">
+						Получить только значения единиц измерения
+					</div>
+					<span class="request-head">
+						getItems
+					</span>
+					<span class="request-body">
+						{"itemUnits": "all"}
+					</span>
+				</li>
+				<li onclick="setRequest(this)">
+					<div class="request-name">
+						Получить поисковую строку
+					</div>
+					<span class="request-head">
+						getItems
+					</span>
+					<span class="request-body">
+						{"itemsSearch": "all"}
+					</span>
+				</li>
+			</ul>
+
+		</div>
+		<div id="response">
+
+		</div>
+	</div>
+</body>
+
+</html>

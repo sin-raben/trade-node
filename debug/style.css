@@ -1,0 +1,105 @@
+body {
+    padding: 0;
+    margin: 0;
+}
+
+.interfase {
+    position: fixed;
+    display: flex;
+    width: 100%;
+    height: 96%;
+}
+
+#request {
+	/*position: fixed;*/
+    background-color: rgb(228, 246, 220);
+    width: 50%;
+    height: 100%;
+    border-right-style: solid;
+    border-right-color: rgb(102, 43, 177);
+    border-right-width: thin;
+    padding: 1em;
+}
+
+#request-head {
+    width: 100%;
+}
+
+#request-body {
+    width: 100%;
+}
+
+#request-submit {
+    width: 50%;
+    margin-left: 50%;
+}
+
+#request-template {
+    margin-left: 0;
+    padding-left: 0;
+}
+
+#request-template> li {
+    list-style-type: none;
+    border-style: double;
+    border-radius: 1em;
+    padding: 0.5em;
+    margin: 0.5em;
+    background-color: rgb(156, 217, 68);
+}
+
+#request-template> li:hover {
+    background-color: rgb(69, 139, 83);
+}
+
+.request-name {}
+
+.request-head {}
+
+.request-body {}
+
+#response {
+    background-color: rgb(241, 239, 199);
+    width: 50%;
+    height: 100%;
+    padding-top: 1em;
+	overflow: auto;
+}
+
+#response> div {
+    min-height: 2.5em;
+}
+
+.response-head {
+    border-radius: 0.5em;
+    padding: 0.3em;
+    margin: 0.3em;
+    background-color: rgb(241, 90, 75);
+    line-height: 1.5;
+}
+
+.response-body {
+    border-radius: 0.5em;
+    padding: 0.3em;
+    margin: 0.3em;
+    background-color: rgb(237, 198, 98);
+    line-height: 1.5;
+}
+
+.log-request {
+    border-top-right-radius: 1em;
+    border-bottom-right-radius: 1em;
+    margin: 0.5em 0;
+    margin-right: 5em;
+    padding: 0.5em;
+    background-color: rgb(91, 178, 249)
+}
+
+.log-response {
+    border-top-left-radius: 1em;
+    border-bottom-left-radius: 1em;
+    margin: 0.5em 0;
+    margin-left: 5em;
+    padding: 0.5em;
+    background-color: rgb(202, 185, 249)
+}
