@@ -150,7 +150,12 @@ var wsfunc = {
                     nm.push("itemUnits");
                 }
                 if (obj.itemsSearch === "all") {
-                    pr.push(db.query("SELECT i.i_id, concat_ws(' ', ig1.ig_value, ig2.ig_value, ig3.ig_value, i_name) as search FROM items i JOIN link_item_group lig1 ON (i.i_id = lig1.i_id) AND (lig1.igt_id=1) JOIN item_groups ig1 ON lig1.ig_id = ig1.ig_id  JOIN link_item_group lig2 ON (i.i_id = lig2.i_id) AND (lig2.igt_id=2) JOIN item_groups ig2 ON lig2.ig_id = ig2.ig_id JOIN link_item_group lig3 ON (i.i_id = lig3.i_id) AND (lig3.igt_id=3) JOIN item_groups ig3 ON lig3.ig_id = ig3.ig_id;", {}));
+                    pr.push(db.query("SELECT i.i_id, concat_ws(' ', ig1.ig_value, ig2.ig_value, ig3.ig_value, i_name) as search FROM items i "+
+                    "LEFT JOIN link_item_group lig1 ON (i.i_id = lig1.i_id) AND (lig1.igt_id=1) "+
+                    "LEFT JOIN item_groups ig1 ON lig1.ig_id = ig1.ig_id "+
+                    "LEFT JOIN link_item_group lig2 ON (i.i_id = lig2.i_id) AND (lig2.igt_id=2) "+
+                    "LEFT JOIN item_groups ig2 ON lig2.ig_id = ig2.ig_id JOIN link_item_group lig3 ON (i.i_id = lig3.i_id) AND (lig3.igt_id=3) "+
+                    "LEFT JOIN item_groups ig3 ON lig3.ig_id = ig3.ig_id;", {}));
                     nm.push("itemsSearch");
                 }
                 Promise.all(pr).then((value) => {
@@ -173,7 +178,106 @@ var wsfunc = {
     },
     setItems: function(client, obj) {
         return new Promise(function(resolve, reject) {
-            console.log("title", obj);
+            if (!(client.idToken)) {
+                resolve({"result": false});
+                return;
+            }
+            if (obj.items) {
+                obj.items.forEach(elem => {
+                    db.query("INSERT INTO items (i_exid, i_name, i_prn, i_info, i_img, i_service, int_id)" +
+                        " VALUES (${i_exid}, ${i_name}, ${i_prn}, ${i_info}, ${i_img}, ${i_service}, ${int_id});",elem)
+                        .then((value) => {
+                        //console.log('value', value);
+                    }, (err) => {
+                        console.log('err',elem,'\n\n\n', err);
+                    });
+                });
+            }
+            if (obj.itemsGroupType) {
+                obj.itemsGroupType.forEach(elem => {
+                    db.query("INSERT INTO item_Group_Types (igt_exid, igt_agent, igt_name)" +
+                        " VALUES (${igt_exid}, ${igt_agent}, ${igt_name});",elem)
+                        .then((value) => {
+                        //добавлено
+                    }, (err) => {
+                        console.log('err',elem,'\n\n\n', err);
+                    });
+                });
+            }
+            if (obj.itemsGroup) {
+                obj.itemsGroup.forEach(elem => {
+                    db.query("INSERT INTO item_groups (igt_id, ig_exid, ig_value) SELECT igt.igt_id, t.ig_exid, t.ig_value FROM item_group_types AS igt "+
+                        "CROSS JOIN (VALUES (${ig_exid}, ${ig_value})) AS t (ig_exid, ig_value) WHERE igt.igt_exid = ${igt_exid};",elem)
+                        .then((value) => {
+                        //добавлено
+                    }, (err) => {
+                        console.log('err',elem,'\n\n\n', err);
+                    });
+                });
+            }
+            if (obj.linkItemGroup) {
+                obj.linkItemGroup.forEach(elem => {
+                    db.query("INSERT INTO link_Item_Group (i_id, igt_id, ig_id) SELECT i_id, igt_id, ig_id FROM items as i "+
+                    "CROSS JOIN (SELECT ig.igt_id, ig_id FROM item_groups AS ig JOIN item_group_types AS igt ON igt.igt_id=ig.igt_id "+
+                    "WHERE igt.igt_exid = ${igt_exid} AND ig.ig_exid = ${ig_exid}) as ig WHERE i.i_exid = ${i_exid};", elem)
+                    .then((value) => {
+                        //добавлено
+                    }, (err) => {
+                        console.log('err',elem,'\n\n\n', err);
+                    });
+                });
+            }
+            if (obj.itemsUnitType) {
+                obj.itemsUnitType.forEach(elem => {
+                    db.query("INSERT INTO item_Unit_Types (iut_exid, iut_name, imt_id, iut_okei) "+
+                             "VALUES (${iut_exid}, ${iut_name}, ${imt_id}, ${iut_okei});", elem)
+                    .then((value) => {
+                        //добавлено
+                    }, (err) => {
+                        console.log('err',elem,'\n\n\n', err);
+                    });
+                });
+            }
+            if (obj.itemsUnit) {
+
+                obj.itemsUnit.forEach(elem => {
+                    db.query("INSERT INTO item_units "+
+                    "(i_id, iut_id, iu_ean, iu_krat, iu_num, iu_denum, iu_gros, iu_net, "+
+                    "iu_length, iu_width, iu_height, iu_area, iu_volume, iu_agent, iu_base, iu_main) "+
+                    "SELECT i.i_id, iut.iut_id, iu_ean, iu_krat, iu_num, iu_denum, iu_gros, iu_net, "+
+                    "       iu_length, iu_width, iu_height, iu_area, iu_volume, iu_agent, iu_base, iu_main FROM items as i "+
+                    "CROSS JOIN item_unit_types as iut CROSS JOIN (VALUES(${iu_ean}, ${iu_krat}, ${iu_num}, ${iu_denum}, ${iu_gros}, ${iu_net}, "+
+                    "${iu_length}, ${iu_width}, ${iu_height}, ${iu_area}, ${iu_volume}, ${iu_agent}, ${iu_base}, ${iu_main})) AS t "+
+                    "(iu_ean, iu_krat, iu_num, iu_denum, iu_gros, iu_net, iu_length, iu_width, iu_height, iu_area, iu_volume, iu_agent, iu_base, iu_main) "+
+                    "WHERE i.i_exid = ${i_exid} AND iut.iut_exid = ${iut_exid};", elem)
+                    .then((value) => {
+                        //добавлено
+                    }, (err) => {
+                        console.log('err',elem,'\n\n\n', err);
+                    });
+                });
+            }
+            resolve({"result": true});
+        });
+    },
+    setCountragents: function(client, obj) {
+        return new Promise(function(resolve, reject) {
+            if (!(client.idToken)) {
+                resolve({"result": false});
+                return;
+            }
+            if (obj.items) {
+                obj.items.forEach(elem => {
+                    db.query("INSERT INTO items (i_exid, i_name, i_prn, i_info, i_img, i_service, int_id)" +
+                        " VALUES (${i_exid}, ${i_name}, ${i_prn}, ${i_info}, ${i_img}, ${i_service}, ${int_id});",elem)
+                        .then((value) => {
+                        //console.log('value', value);
+                    }, (err) => {
+                        console.log('err',elem, err);
+                    });
+                });
+            }
+
             resolve({"result": true});
         });
     },

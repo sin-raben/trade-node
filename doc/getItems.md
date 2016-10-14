@@ -24,79 +24,81 @@ wsm("getItems",{"items": "all","itemGroupTypes": "all","itemGroups": "all","link
 
 ```json
 {
-    "head":"getItems",
+    "head": "getItems",
     "body": {
-        "items": [
-            {
-                "i_id": 1,
-                "i_exid": "#L1",
-                "i_name": "А.АНАНАСЫ КРУЖ ГП.565Г",
-                "i_prn": "А.АНАНАСЫ КРУЖ ГП.565Г",
-                "i_info": "",
-                "i_img": "",
-                "i_service": false,
-                "i_producer": null,
-                "int_id": 1,
-                "i_mtime": "2016-08-10T08:56:07.985Z",
-                "i_mtime_i": 1470830167985.34
-            },
-        ],
-        "itemsGroupType": [
-            {
-                "igt_id": 1,
-                "igt_exid": "A->CAT",
-                "igt_agent": true,
-                "igt_name": "Категория",
-                "igt_mtime": "2016-08-10T08:56:52.924Z",
-                "igt_mtime_i": 1470830212924.76
-            }
-        ],
-        "itemsGroup": [
-            {
-                "i_id": 85,
-                "igt_id": 2,
-                "ig_value": "АЙСБЕРГ",
-                "ig_mtime": "2016-08-10T08:57:24.736Z",
-                "ig_mtime_i": 1470830244736.71
-            }
-        ],
-        "itemsUnitType": [
-            {
-                "iut_id": 2,
-                "iut_exid": "кор",
-                "iut_name": "кор",
-                "imt_id": 5,
-                "iut_okei": 102,
-                "iut_mtime": "2016-08-10T08:58:39.796Z",
-                "iut_mtime_i": 1470830319796.75
-            },
-        ],
-        "itemsUnit": [
-            {
-                "i_id": 1,
-                "iut_id": 2,
-                "iu_ean": "",
-                "iu_krat": 0,
-                "iu_num": 0,
-                "iu_denum": 1,
-                "iu_gros": 0,
-                "iu_net": 0,
-                "iu_length": 0,
-                "iu_width": 0,
-                "iu_height": 0,
-                "iu_area": 0,
-                "iu_volume": 0,
-                "iu_agent": true,
-                "iu_base": false,
-                "iu_main": true,
-                "iu_mtime": "2016\"-08-10T09:00:36.602Z",
-                "iu_mtime_i": 1470830436602.16
-            }
-        ]
+        "items": [{
+            "i_id": 1,
+            "i_exid": "#L1",
+            "i_name": "А.АНАНАСЫ КРУЖ ГП.565Г",
+            "i_prn": "А.АНАНАСЫ КРУЖ ГП.565Г",
+            "i_info": "",
+            "i_img": "",
+            "i_service": false,
+            "i_producer": null,
+            "int_id": 1,
+            "i_mtime": "2016-08-10T08:56:07.985Z",
+            "i_mtime_i": 1470830167985.34
+        }],
+        "itemsGroupType": [{
+            "igt_id": 1,
+            "igt_exid": "A->CAT",
+            "igt_priority": 10,
+            "igt_agent": true,
+            "igt_name": "Категория",
+            "igt_active": true,
+            "igt_mtime": "2016-08-10T08:56:07.985Z",
+            "igt_mtime_i": 1470830167985.34
+        }],
+        "itemsGroup": [{
+            "ig_id": 3,
+            "igt_id": 2,
+            "ig_exid": "АЙСБЕРГ",
+            "ig_value": "АЙСБЕРГ",
+            "igt_active": true,
+            "ig_mtime": "2016-08-10T08:57:24.736Z",
+            "ig_mtime_i": 1470830244736.71
+        }],
+        "linkItemGroup": [{
+            "lig_id": 3,
+            "i_id": 3,
+            "ig_id": 3,
+            "igt_id": 2,
+            "igt_active": true,
+            "lig_mtime": "2016-08-10T08:57:24.736Z",
+            "lig_mtime_i": 1470830244736.71
+        }],
+        "itemsUnitType": [{
+            "iut_id": 2,
+            "iut_exid": "кор",
+            "iut_name": "кор",
+            "imt_id": 5,
+            "iut_okei": 102,
+            "iut_mtime": "2016-08-10T08:58:39.796Z",
+            "iut_mtime_i": 1470830319796.75
+        }],
+        "itemsUnit": [{
+            "i_id": 1,
+            "iut_id": 2,
+            "iu_ean": "",
+            "iu_krat": 0,
+            "iu_num": 0,
+            "iu_denum": 1,
+            "iu_gros": 0,
+            "iu_net": 0,
+            "iu_length": 0,
+            "iu_width": 0,
+            "iu_height": 0,
+            "iu_area": 0,
+            "iu_volume": 0,
+            "iu_agent": true,
+            "iu_base": false,
+            "iu_main": true,
+            "iu_mtime": "2016-08-10T09:00:36.602Z",
+            "iu_mtime_i": 1470830436602.16
+        }]
     }
 }
 ```
-
 
 где поля имеют следующие значения:
 
@@ -117,6 +119,7 @@ wsm("getItems",{"items": "all","itemGroupTypes": "all","itemGroups": "all","link
 - `i_mtime_i` - время изменения товара _в посылаемом на мобильное приложение ответе - необязателен_ (тип: число)
 
 где коды ставок НДС соответствуют следующим ставкам:
+
 1. НДС: 0%
 2. НДС: 10%
 3. НДС: 18%
@@ -146,7 +149,8 @@ wsm("getItems",{"items": "all","itemGroupTypes": "all","itemGroups": "all","link
 - `ig_mtime` - время изменения информации о товаре (тип: число)
 - `ig_mtime_i` - время изменения информации о товаре (тип: число)
 
-## Структура массива групп товаров `linkItemsGroup`
+## Структура массива групп товаров `linkItemGroup`
+
 - `lig_id` - идентификатор записи (тип: число)
 - `i_id` - товар (тип: число)
 - `ig_id` - идентификатор значения
@@ -175,7 +179,6 @@ wsm("getItems",{"items": "all","itemGroupTypes": "all","itemGroups": "all","link
 3. мера объёма
 4. мера веса
 5. мера количества
-
 
 ## Структура массива значений единиц измерения `itemsUnit`
 

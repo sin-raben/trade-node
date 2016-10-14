@@ -36,49 +36,50 @@ CREATE TABLE public.items (
   i_service  BOOLEAN, -- признак услуги (тип: булево)
   i_producer INTEGER, -- производитель (тип: число)
   int_id     INTEGER REFERENCES item_NDS_Types, -- ставка НДС (тип: число)
-  i_active   BOOLEAN DEFAULT TRUE,
+  i_active   BOOLEAN   DEFAULT TRUE,
   i_mtime    TIMESTAMP DEFAULT now()                   -- время изменения товара _в посылаемом на мобильное приложение ответе - необязателен_ (тип: число)
 
 );
 
 --Структура массива типов групп товаров `itemsGroupType` перечисленны все группы, категории, подкатегории
 CREATE TABLE public.item_Group_Types (
-    igt_id          SERIAL PRIMARY KEY,     -- идентификатор типа группы товаров (тип: число)
-    igt_exid        TEXT UNIQUE,            -- внешний код, используется для синхронизации, _в посылаемом на мобильное приложение ответе - необязателен_ (тип: строка)
-    igt_priority    INTEGER,
-    igt_agent       BOOLEAN,                -- признак отображения в меню торгового представителя (тип: булево)
-    igt_name        VARCHAR(50) UNIQUE,     -- наименование типа группы товаров (тип: строка)
-    igt_active      BOOLEAN DEFAULT TRUE,
-    igt_mtime       TIMESTAMP DEFAULT now() -- время изменения типа информации о товаре _в посылаемом на мобильное приложение ответе - необязателен_ (тип: число  )
+  igt_id       SERIAL PRIMARY KEY, -- идентификатор типа группы товаров (тип: число)
+  igt_exid     TEXT UNIQUE, -- внешний код, используется для синхронизации, _в посылаемом на мобильное приложение ответе - необязателен_ (тип: строка)
+  igt_priority INTEGER,
+  igt_agent    BOOLEAN, -- признак отображения в меню торгового представителя (тип: булево)
+  igt_name     VARCHAR(50) UNIQUE, -- наименование типа группы товаров (тип: строка)
+  igt_active   BOOLEAN   DEFAULT TRUE,
+  igt_mtime    TIMESTAMP DEFAULT now() -- время изменения типа информации о товаре _в посылаемом на мобильное приложение ответе - необязателен_ (тип: число  )
 );
 
 -- Структура массива групп товаров `itemsGroup`
 CREATE TABLE public.item_Groups (
-  ig_id    SERIAL PRIMARY KEY, -- идентификатор значения группы товаров (тип: число)                 ,
-  igt_id   INTEGER REFERENCES item_Group_Types, -- тип спойства (тип: число)
-  ig_value VARCHAR(50), -- значение (тип: строка)
-  ig_active  BOOLEAN DEFAULT TRUE,
-  ig_mtime TIMESTAMP DEFAULT now(),                    -- время изменения  информации о товаре (тип: число)
-  UNIQUE (igt_id, ig_value)
+  ig_id     SERIAL PRIMARY KEY, -- идентификатор значения группы товаров (тип: число)                 ,
+  igt_id    INTEGER REFERENCES item_Group_Types, -- тип спойства (тип: число)
+  ig_exid   TEXT, -- внешний код
+  ig_value  VARCHAR(50), -- значение (тип: строка)
+  ig_active BOOLEAN   DEFAULT TRUE,
+  ig_mtime  TIMESTAMP DEFAULT now(), -- время изменения  информации о товаре (тип: число)
+  UNIQUE (igt_id, ig_exid)
 );
 
 
 CREATE TABLE public.link_Item_Group (
-  lig_id    SERIAL PRIMARY KEY, -- идентификатор типа (тип: число)
-  i_id      INTEGER REFERENCES items,
-  ig_id     INTEGER REFERENCES item_Groups,
-  igt_id    INTEGER REFERENCES item_Group_Types,
-  lig_active  BOOLEAN DEFAULT TRUE,
-  lig_mtime TIMESTAMP DEFAULT now(), -- время изменения связи (тип: число)
+  lig_id     SERIAL PRIMARY KEY, -- идентификатор типа (тип: число)
+  i_id       INTEGER REFERENCES items,
+  ig_id      INTEGER REFERENCES item_Groups,
+  igt_id     INTEGER REFERENCES item_Group_Types,
+  lig_active BOOLEAN   DEFAULT TRUE,
+  lig_mtime  TIMESTAMP DEFAULT now(), -- время изменения связи (тип: число)
   UNIQUE (i_id, igt_id)
 );
 
 -- `length` - мера длинны, `area` - мера площади, `volume` - мера объема, `quantity` - количествеенная характеристика, `bulk` - мера веса
 CREATE TABLE public.item_Metric_Types (
-  imt_id    SERIAL PRIMARY KEY, -- идентификатор метрики
-  imt_value VARCHAR(20) UNIQUE, -- наименование метрики
-  imt_active  BOOLEAN DEFAULT TRUE,
-  imt_mtime TIMESTAMP DEFAULT now()                     -- время изменения  информации о товаре (тип: число)
+  imt_id     SERIAL PRIMARY KEY, -- идентификатор метрики
+  imt_value  VARCHAR(20) UNIQUE, -- наименование метрики
+  imt_active BOOLEAN   DEFAULT TRUE,
+  imt_mtime  TIMESTAMP DEFAULT now()                     -- время изменения  информации о товаре (тип: число)
 );
 
 INSERT INTO item_Metric_Types (imt_id, imt_value) VALUES
@@ -90,13 +91,13 @@ INSERT INTO item_Metric_Types (imt_id, imt_value) VALUES
 
 -- Структура массива типов единиц измерения `itemsUnitType`
 CREATE TABLE public.item_Unit_Types (
-  iut_id    SERIAL PRIMARY KEY, -- идентификатор типа (тип: число)
-  iut_exid  TEXT UNIQUE, -- внешний код, используется для синхронизации, _в посылаемом на мобильное приложение ответе - необязателен_ (тип: строка)
-  iut_name  VARCHAR(10) UNIQUE, -- наименование единицы измерения (тип: строка)
-  imt_id    INTEGER REFERENCES item_Metric_Types, -- способ отпуска товара (тип: строка)
-  iut_okei  INTEGER, -- код ОКЕИ (тип: число)
-  iut_active  BOOLEAN DEFAULT TRUE,
-  iut_mtime TIMESTAMP DEFAULT now()                -- время изменения  информации _в посылаемом на мобильное приложение ответе - необязателен_(тип: число)
+  iut_id     SERIAL PRIMARY KEY, -- идентификатор типа (тип: число)
+  iut_exid   TEXT UNIQUE, -- внешний код, используется для синхронизации, _в посылаемом на мобильное приложение ответе - необязателен_ (тип: строка)
+  iut_name   VARCHAR(10) UNIQUE, -- наименование единицы измерения (тип: строка)
+  imt_id     INTEGER REFERENCES item_Metric_Types, -- способ отпуска товара (тип: строка)
+  iut_okei   INTEGER, -- код ОКЕИ (тип: число)
+  iut_active BOOLEAN   DEFAULT TRUE,
+  iut_mtime  TIMESTAMP DEFAULT now()                -- время изменения  информации _в посылаемом на мобильное приложение ответе - необязателен_(тип: число)
 );
 
 -- Структура массива значений единиц измерения `itemsUnit`
@@ -118,7 +119,7 @@ CREATE TABLE public.item_Units (
   iu_agent  BOOLEAN, -- признак отображения в меню торгового представителя (тип: булево)
   iu_base   BOOLEAN, -- признак базовой единицы измерения (тип: булево)
   iu_main   BOOLEAN, -- признак основной единицы измерения (тип: булево)
-  iu_active  BOOLEAN DEFAULT TRUE,
+  iu_active BOOLEAN   DEFAULT TRUE,
   iu_mtime  TIMESTAMP DEFAULT now(), -- время изменения  информации _в посылаемом на мобильное приложение ответе - необязателен_ (тип: число)
   UNIQUE (i_id, iut_id)                               --ограничение уникальности
 );
