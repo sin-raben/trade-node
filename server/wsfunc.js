@@ -150,11 +150,12 @@ var wsfunc = {
                     nm.push("itemUnits");
                 }
                 if (obj.itemsSearch === "all") {
-                    pr.push(db.query("SELECT i.i_id, concat_ws(' ', ig1.ig_value, ig2.ig_value, ig3.ig_value, i_name) as search FROM items i "+
+                    pr.push(db.query("SELECT i.i_id, concat_ws(' ', ig1.ig_value, ig2.ig_value, ig3.ig_value, i_name) as value FROM items i "+
                     "LEFT JOIN link_item_group lig1 ON (i.i_id = lig1.i_id) AND (lig1.igt_id=1) "+
                     "LEFT JOIN item_groups ig1 ON lig1.ig_id = ig1.ig_id "+
                     "LEFT JOIN link_item_group lig2 ON (i.i_id = lig2.i_id) AND (lig2.igt_id=2) "+
-                    "LEFT JOIN item_groups ig2 ON lig2.ig_id = ig2.ig_id JOIN link_item_group lig3 ON (i.i_id = lig3.i_id) AND (lig3.igt_id=3) "+
+                    "LEFT JOIN item_groups ig2 ON lig2.ig_id = ig2.ig_id "+
+                    "LEFT JOIN link_item_group lig3 ON (i.i_id = lig3.i_id) AND (lig3.igt_id=3) "+
                     "LEFT JOIN item_groups ig3 ON lig3.ig_id = ig3.ig_id;", {}));
                     nm.push("itemsSearch");
                 }

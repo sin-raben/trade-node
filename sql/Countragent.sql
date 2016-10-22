@@ -8,17 +8,16 @@ DROP TABLE public.countragent_types;
 
 --Струтура адресов
 CREATE TABLE public.address (
-    adr_id          SERIAL PRIMARY KEY      ,-- идентификатор записи
-    adr_postindex   VARCHAR(12)             ,-- почтовый индекс
-    adr_str         TEXT                    ,-- строковое представление адреса
-    adr_fias        VARCHAR(50)             ,-- код ФИАС
-    adr_kladr       VARCHAR(25)             ,-- код КЛАДР
-    adr_dom         VARCHAR(50)             ,-- дом
-    adr_geo         point                   ,-- координаты
-    adr_qc_geo      BOOLEAN                 ,-- подтвержденность координат
-    adr_info        TEXT                    ,-- примечание
-    adr_active      BOOLEAN DEFAULT TRUE,
-    adr_mtime       TIMESTAMP DEFAULT now()  -- время изменения
+    adr_id          SERIAL PRIMARY KEY      , -- идентификатор записи
+    adr_postindex   VARCHAR(12)             , -- почтовый индекс
+    adr_str         TEXT                    , -- строковое представление адреса без индекса
+    adr_fias        VARCHAR(50)             , -- код ФИАС
+    adr_kladr       VARCHAR(25)             , -- код КЛАДР
+    adr_geo         point                   , -- подтвержденные координаты (точкой)
+    adr_json        JSONB                   , -- json по структуре https://dadata.ru/suggestions/usage/#question-party-update-frequency
+    adr_info        TEXT                    , -- примечание
+    adr_active      BOOLEAN DEFAULT TRUE    ,
+    adr_mtime       TIMESTAMP DEFAULT now()   -- время изменения
 );
 
 CREATE TABLE public.countragent_types (
@@ -52,7 +51,7 @@ CREATE TABLE public.countragents (
     ca_client       BOOLEAN DEFAULT TRUE                    , -- Клиент (0, 1)
     ca_supplier     BOOLEAN DEFAULT FALSE                   , -- Поставщик (0, 1)
     ca_carrier      BOOLEAN DEFAULT FALSE                   , -- Перевозчик (0, 1)
-    ca_active       BOOLEAN DEFAULT TRUE,
+    ca_active       BOOLEAN DEFAULT TRUE                    ,
     ca_mtime        TIMESTAMP DEFAULT now()                   -- время изменения
 );
 
@@ -68,16 +67,15 @@ CREATE TABLE public.delivery_points (
     dp_client       BOOLEAN DEFAULT TRUE                 , -- Клиент (0, 1)**********
     dp_supplier     BOOLEAN DEFAULT FALSE                , -- Поставщик (0, 1)*********
     dp_carrier      BOOLEAN DEFAULT FALSE                , -- Перевозчик (0, 1)***********
-    dp_active       BOOLEAN DEFAULT TRUE,
+    dp_active       BOOLEAN DEFAULT TRUE                 ,
     dp_mtime        TIMESTAMP DEFAULT now()                -- время изменения товара _в посылаемом на мобильное приложение ответе - необязателен_ (тип: число)
 );
 
 -- Струтура cвязи Контрагентов и Точек доставки
 CREATE TABLE public.links_countragent_delivery_point (
-    lcp_id          SERIAL PRIMARY KEY                      ,-- идентификатор записи
-    lcp_org         INTEGER                                 ,-- идентификатор организации
-    ca_id           INTEGER REFERENCES countragents         ,-- идентификатор контрагента
-    dp_id           INTEGER REFERENCES delivery_points      ,-- идентификатор точки доставки
-    lcp_active      BOOLEAN DEFAULT TRUE                    ,-- состояние
-    lcp_mtime       TIMESTAMP DEFAULT now()                  -- время изменения
+    lcp_id          SERIAL PRIMARY KEY                      , -- идентификатор записи
+    ca_id           INTEGER REFERENCES countragents         , -- идентификатор контрагента
+    dp_id           INTEGER REFERENCES delivery_points      , -- идентификатор точки доставки
+    lcp_active      BOOLEAN DEFAULT TRUE                    , -- состояние
+    lcp_mtime       TIMESTAMP DEFAULT now()                   -- время изменения
 );

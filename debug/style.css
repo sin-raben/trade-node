@@ -19,6 +19,7 @@ body {
     border-right-color: rgb(102, 43, 177);
     border-right-width: thin;
     padding: 1em;
+    overflow: auto;
 }
 
 #request-head {
@@ -27,6 +28,7 @@ body {
 
 #request-body {
     width: 100%;
+
 }
 
 #request-submit {
@@ -37,6 +39,7 @@ body {
 #request-template {
     margin-left: 0;
     padding-left: 0;
+
 }
 
 #request-template> li {
@@ -86,6 +89,7 @@ body {
     line-height: 1.5;
 }
 
+
 .log-request {
     border-top-right-radius: 1em;
     border-bottom-right-radius: 1em;
@@ -102,4 +106,13 @@ body {
     margin-left: 5em;
     padding: 0.5em;
     background-color: rgb(202, 185, 249)
+}
+.log-response > a {
+    right: 5em;
+    border-radius: 1em;
+    padding: 0.1em 0.4em;
+    margin: 0.5em;
+    background-color: rgb(146, 1, 198);
+    line-height: 1.5;
+    min-height: 2.5em;
 }

@@ -21,7 +21,7 @@
 			<ul id="request-template" class="">
 				<li onclick="setRequest(this)">
 					<div class="request-name">
-						авторизация
+						авторизация<a href="https://github.com/sin-raben/trade-node/blob/master/doc/authUser.md" target="_blank">*</a>
 					</div>
 					<span class="request-head">
 						authUser
@@ -32,7 +32,7 @@
 				</li>
 				<li onclick="setRequest(this)">
 					<div class="request-name">
-						Получить всю номенклатуру и её свойства
+						Получить всю номенклатуру и её свойства<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getItems.md" target="_blank">*</a>
 					</div>
 					<span class="request-head">
 						getItems
@@ -43,7 +43,7 @@
 				</li>
 				<li onclick="setRequest(this)">
 					<div class="request-name">
-						Получить только товары
+						Получить только товары<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getItems.md" target="_blank">*</a>
 					</div>
 					<span class="request-head">
 						getItems
@@ -54,7 +54,7 @@
 				</li>
 				<li onclick="setRequest(this)">
 					<div class="request-name">
-						Получить только типы групп
+						Получить только типы групп<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getItems.md" target="_blank">*</a>
 					</div>
 					<span class="request-head">
 						getItems
@@ -65,7 +65,7 @@
 				</li>
 				<li onclick="setRequest(this)">
 					<div class="request-name">
-						Получить только значения групп
+						Получить только значения групп<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getItems.md" target="_blank">*</a>
 					</div>
 					<span class="request-head">
 						getItems
@@ -76,7 +76,7 @@
 				</li>
 				<li onclick="setRequest(this)">
 					<div class="request-name">
-						Получить только связи товаров и групп
+						Получить только связи товаров и групп<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getItems.md" target="_blank">*</a>
 					</div>
 					<span class="request-head">
 						getItems
@@ -87,7 +87,7 @@
 				</li>
 				<li onclick="setRequest(this)">
 					<div class="request-name">
-						Получить только типы единиц измерения
+						Получить только типы единиц измерения<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getItems.md" target="_blank">*</a>
 					</div>
 					<span class="request-head">
 						getItems
@@ -98,7 +98,7 @@
 				</li>
 				<li onclick="setRequest(this)">
 					<div class="request-name">
-						Получить только значения единиц измерения
+						Получить только значения единиц измерения<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getItems.md" target="_blank">*</a>
 					</div>
 					<span class="request-head">
 						getItems
@@ -109,13 +109,46 @@
 				</li>
 				<li onclick="setRequest(this)">
 					<div class="request-name">
-						Получить поисковую строку
+						Получить поисковую строку<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getItems.md" target="_blank">*</a>
 					</div>
 					<span class="request-head">
 						getItems
 					</span>
 					<span class="request-body">
 						{"itemsSearch": "all"}
+					</span>
+				</li>
+				<li onclick="setRequest(this)">
+					<div class="request-name">
+						Получить Контрагентов<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getItems.md" target="_blank">*</a>
+					</div>
+					<span class="request-head">
+						getCountragents
+					</span>
+					<span class="request-body">
+						{"countragents": "all"}
+					</span>
+				</li>
+				<li onclick="setRequest(this)">
+					<div class="request-name">
+						Получить точки доставки<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getItems.md" target="_blank">*</a>
+					</div>
+					<span class="request-head">
+						getCountragents
+					</span>
+					<span class="request-body">
+						{"deliveryPoints": "all"}
+					</span>
+				</li>
+				<li onclick="setRequest(this)">
+					<div class="request-name">
+						Получить связи точек доставки и контрагентов<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getItems.md" target="_blank">*</a>
+					</div>
+					<span class="request-head">
+						getCountragents
+					</span>
+					<span class="request-body">
+						{"linksCountragentDeliveryPoint": "all"}
 					</span>
 				</li>
 			</ul>
