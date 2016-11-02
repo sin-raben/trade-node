@@ -22,7 +22,7 @@ CREATE TABLE public.address (
 
 CREATE TABLE public.countragent_types (
     cat_id          SERIAL PRIMARY KEY      ,
-    cat_name        TEXT                    ,
+    cat_name        TEXT      DEFAULT ''               ,
     cat_mtime       TIMESTAMP DEFAULT now()                   -- время изменения
 );
 
@@ -36,17 +36,17 @@ INSERT INTO public.countragent_types (cat_id, cat_name) VALUES
 --Cтрутура (Контрагенты)
 CREATE TABLE public.countragents (
     ca_id           SERIAL PRIMARY KEY                      , -- идентификатор контрагента
-    ca_exid         TEXT                                    , -- внешний код
+    ca_exid         TEXT   DEFAULT ''                                  , -- внешний код
     ca_type         INTEGER REFERENCES countragent_types    , -- Юр. лицо, ИП, Физ. лицо, Иностранное юр лицо, Обособленное подразделение
-    ca_opf          TEXT                                    , -- ОПФ
+    ca_opf          TEXT   DEFAULT ''                                  , -- ОПФ
     ca_head         INTEGER REFERENCES countragents         , -- Головной контрагент
-    ca_name         TEXT                                    , -- наименование
-    ca_prn          TEXT                                    , -- наименование для печати
-    ca_info         TEXT                                    , -- описание
-    ca_inn          VARCHAR(25)                             , -- ИНН
-    ca_kpp          VARCHAR(25)                             , -- КПП
-    ca_okved        VARCHAR(25)                             , -- ОКВЕД
-    ca_ogrn         VARCHAR(25)                             , -- ОГРН
+    ca_name         TEXT        DEFAULT ''                           , -- наименование
+    ca_prn          TEXT        DEFAULT ''                             , -- наименование для печати
+    ca_info         TEXT        DEFAULT ''                            , -- описание
+    ca_inn          VARCHAR(25) DEFAULT ''                     , -- ИНН
+    ca_kpp          VARCHAR(25) DEFAULT ''                             , -- КПП
+    ca_okved        VARCHAR(25) DEFAULT ''                             , -- ОКВЕД
+    ca_ogrn         VARCHAR(25) DEFAULT ''                             , -- ОГРН
     adr_id          INTEGER REFERENCES address              , -- ссылка на юридический адрес
     ca_client       BOOLEAN DEFAULT TRUE                    , -- Клиент (0, 1)
     ca_supplier     BOOLEAN DEFAULT FALSE                   , -- Поставщик (0, 1)
@@ -59,10 +59,10 @@ CREATE TABLE public.countragents (
 -- Структура точек доставки
 CREATE TABLE public.delivery_points (
     dp_id           SERIAL PRIMARY KEY                   , -- идентификатор точки доставки (торговой точки) (тип: число)
-    dp_exid         TEXT                                 , -- внешний код, используется для синхронизации, _в посылаемом на мобильное приложение ответе - необязателен_ (тип: строка)
-    dp_name         VARCHAR(100)                         , -- наименование товара (тип: строка)
-    dp_prn          VARCHAR(100)                         , -- наименование для печати (тип: строка)
-    dp_info         TEXT                                 , -- описание (тип: строка)
+    dp_exid         TEXT          DEFAULT ''                        , -- внешний код, используется для синхронизации, _в посылаемом на мобильное приложение ответе - необязателен_ (тип: строка)
+    dp_name         VARCHAR(100)  DEFAULT ''                        , -- наименование товара (тип: строка)
+    dp_prn          VARCHAR(100)  DEFAULT ''                        , -- наименование для печати (тип: строка)
+    dp_info         TEXT          DEFAULT ''                        , -- описание (тип: строка)
     adr_id          INTEGER REFERENCES address           , -- ссылка на фактический адрес
     dp_client       BOOLEAN DEFAULT TRUE                 , -- Клиент (0, 1)**********
     dp_supplier     BOOLEAN DEFAULT FALSE                , -- Поставщик (0, 1)*********

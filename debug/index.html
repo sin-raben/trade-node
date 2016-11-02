@@ -11,12 +11,14 @@
 <body>
 	<div class="interfase">
 		<div id="request" class="">
-			<div class="">
+			<div class="menu-submit">
 				<input id="request-head" type="text" name="head" value="">
 				<textarea id="request-body" name="comment" cols="40" rows="9"></textarea>
 				<input id="request-submit" type="button" name="name" value="отправить запрос" onclick="submitRequest()">
 			</div>
+			<div class="z-menu-submit">
 
+			</div>
 			<!-- <input id="request-body" type="text" name="body" value=""> -->
 			<ul id="request-template" class="">
 				<li onclick="setRequest(this)">
@@ -54,61 +56,6 @@
 				</li>
 				<li onclick="setRequest(this)">
 					<div class="request-name">
-						Получить только типы групп<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getItems.md" target="_blank">*</a>
-					</div>
-					<span class="request-head">
-						getItems
-					</span>
-					<span class="request-body">
-						{"itemGroupTypes": "all"}
-					</span>
-				</li>
-				<li onclick="setRequest(this)">
-					<div class="request-name">
-						Получить только значения групп<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getItems.md" target="_blank">*</a>
-					</div>
-					<span class="request-head">
-						getItems
-					</span>
-					<span class="request-body">
-						{"itemGroups": "all"}
-					</span>
-				</li>
-				<li onclick="setRequest(this)">
-					<div class="request-name">
-						Получить только связи товаров и групп<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getItems.md" target="_blank">*</a>
-					</div>
-					<span class="request-head">
-						getItems
-					</span>
-					<span class="request-body">
-						{"linkItemGroups": "all"}
-					</span>
-				</li>
-				<li onclick="setRequest(this)">
-					<div class="request-name">
-						Получить только типы единиц измерения<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getItems.md" target="_blank">*</a>
-					</div>
-					<span class="request-head">
-						getItems
-					</span>
-					<span class="request-body">
-						{"itemUnitTypes": "all"}
-					</span>
-				</li>
-				<li onclick="setRequest(this)">
-					<div class="request-name">
-						Получить только значения единиц измерения<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getItems.md" target="_blank">*</a>
-					</div>
-					<span class="request-head">
-						getItems
-					</span>
-					<span class="request-body">
-						{"itemUnits": "all"}
-					</span>
-				</li>
-				<li onclick="setRequest(this)">
-					<div class="request-name">
 						Получить поисковую строку<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getItems.md" target="_blank">*</a>
 					</div>
 					<span class="request-head">
@@ -120,35 +67,13 @@
 				</li>
 				<li onclick="setRequest(this)">
 					<div class="request-name">
-						Получить Контрагентов<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getItems.md" target="_blank">*</a>
+						Получить Контрагентов<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getCountragents.md" target="_blank">*</a>
 					</div>
 					<span class="request-head">
 						getCountragents
 					</span>
 					<span class="request-body">
-						{"countragents": "all"}
-					</span>
-				</li>
-				<li onclick="setRequest(this)">
-					<div class="request-name">
-						Получить точки доставки<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getItems.md" target="_blank">*</a>
-					</div>
-					<span class="request-head">
-						getCountragents
-					</span>
-					<span class="request-body">
-						{"deliveryPoints": "all"}
-					</span>
-				</li>
-				<li onclick="setRequest(this)">
-					<div class="request-name">
-						Получить связи точек доставки и контрагентов<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getItems.md" target="_blank">*</a>
-					</div>
-					<span class="request-head">
-						getCountragents
-					</span>
-					<span class="request-body">
-						{"linksCountragentDeliveryPoint": "all"}
+						{"countragents": "all", "deliveryPoints": "all", "linksCountragentDeliveryPoint": "all"}
 					</span>
 				</li>
 				<li onclick="setRequest(this)">
@@ -160,6 +85,17 @@
 					</span>
 					<span class="request-body">
 						{"price": "all", "pricelist": "all", "pricelistLink": "all"}
+					</span>
+				</li>
+				<li onclick="setRequest(this)">
+					<div class="request-name">
+						Получить связи точек доставки и контрагентов<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getStocks.md" target="_blank">*</a>
+					</div>
+					<span class="request-head">
+						getStocks
+					</span>
+					<span class="request-body">
+						{"stores": "all", "storeGroups": "all", "linkStoreGroups": "all", "stocks": "all"}
 					</span>
 				</li>
 			</ul>

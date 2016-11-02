@@ -7,6 +7,7 @@ var socket;
 var ff;
 var request = []; //массив запросов
 var response = []; //массив ответов
+var resLenght = 300;
 //отправить объект на сервер
 var wsm = function(head, body) {
 
@@ -25,8 +26,8 @@ var wsm = function(head, body) {
     var div = document.createElement('div');
     div.classList.add("log-request");
     var bod = JSON.stringify(ob.body);
-    if (bod.length > 200) {
-        bod = body.slice(0, 200) + "...";
+    if (bod.length > resLenght) {
+        bod = body.slice(0, resLenght) + "...";
     }
     bod = bod.replace(/,"/g, ', "');
 
