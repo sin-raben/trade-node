@@ -3,7 +3,7 @@
 var pgp = require('pg-promise')({
     // Initialization Options
 });
-
+var co = require('co');
 var cn = 'postgres://postgres:postgres@localhost:5432/office';
 //var cn = 'postgres://postgres:postgres@192.168.0.1:5432/office';
 var db = pgp(cn);
@@ -38,7 +38,8 @@ var wsfunc = {
         return new Promise(function(resolve, reject) {
             try {
                 console.log('obj', obj);
-                db.query("SELECT t.idtoken,t.keytoken,u.login,u.pass from wp_tokens t LEFT JOIN wp_users u ON t.login = u.login where idToken=$1", obj.idToken).then((token) => {
+                db.query("SELECT t.idtoken,t.keytoken,u.login,u.pass from wp_tokens t "+
+                "LEFT JOIN wp_users u ON t.login = u.login where idToken=$1", obj.idToken).then((token) => {
                     if (token[0]) {
                         console.log('token[0]', token[0]);
                         client.idToken = token[0].idtoken;
@@ -200,8 +201,9 @@ var wsfunc = {
                     nm.push("itemUnitTypes");
                 }
                 if (obj.itemUnits === "all") {
-                    pr.push(db.query("SELECT iu_id,i_id, iut_id, iu_ean,iu_krat, iu_num, iu_denum,iu_gros, iu_net, iu_length, iu_width, iu_height, iu_area, iu_volume, " +
-                        "iu_agent, iu_base, iu_main, iu_active, extract(epoch from iu_mtime)::integer as iu_mtime from item_Units", {}));
+                    pr.push(db.query("SELECT iu_id,i_id, iut_id, iu_ean,iu_krat, iu_num, iu_denum, "+
+                        " iu_gros, iu_net, iu_length, iu_width, iu_height, iu_area, iu_volume, " +
+                        " iu_agent, iu_base, iu_main, iu_active, extract(epoch from iu_mtime)::integer as iu_mtime from item_Units", {}));
                     nm.push("itemUnits");
                 }
                 if (obj.itemsSearch === "all") {
@@ -248,8 +250,10 @@ var wsfunc = {
             if (obj.countragents) {
                 console.log(' set countragents');
                 obj.countragents.forEach(elem => {
-                    db.query("INSERT INTO countragents (ca_exid, ca_type, ca_opf, ca_name, ca_prn, ca_info, ca_inn, ca_kpp, ca_client, ca_supplier, ca_carrier)" +
-                        " VALUES (${ca_exid}, ${ca_type}, ${ca_opf}, ${ca_name}, ${ca_prn}, ${ca_info}, ${ca_inn}, ${ca_kpp}, ${ca_client}, ${ca_supplier}, ${ca_carrier})",
+                    db.query("INSERT INTO countragents (ca_exid, ca_type, ca_opf, ca_name, " +
+                        " ca_prn, ca_info, ca_inn, ca_kpp, ca_client, ca_supplier, ca_carrier)" +
+                        " VALUES (${ca_exid}, ${ca_type}, ${ca_opf}, ${ca_name}, " +
+                        " ${ca_prn}, ${ca_info}, ${ca_inn}, ${ca_kpp}, ${ca_client}, ${ca_supplier}, ${ca_carrier})",
                     elem).then((value) => {
                         //console.log('value', value);
                     }, (err) => {
@@ -296,8 +300,8 @@ var wsfunc = {
                 var pr = [];
                 var nm = [];
                 if (obj.countragents === "all") {
-                    pr.push(db.query("SELECT ca_id, ca_type, ca_opf, ca_head, ca_name, ca_prn, ca_inn, ca_kpp, adr_id, ca_client, ca_supplier, ca_carrier, ca_active, " +
-                        "extract(epoch from ca_mtime)::integer as ca_mtime from countragents", {}));
+                    pr.push(db.query("SELECT ca_id, ca_type, ca_opf, ca_head, ca_name, ca_prn, ca_inn, ca_kpp, adr_id, ca_client, ca_supplier, " +
+                        " ca_carrier, ca_active, extract(epoch from ca_mtime)::integer as ca_mtime from countragents", {}));
                     nm.push("countragents");
                 }
                 if (obj.deliveryPoints === "all") {
@@ -407,8 +411,9 @@ var wsfunc = {
                 }
                 if (obj.price === "all") {
                     console.log(2);
-                    pr.push(db.query("SELECT p_id,pl_id,i_id,extract(epoch from p_date_b)::bigint::REAL as p_date_b, extract(epoch from p_date_e)::bigint::REAL as p_date_e, " +
-                        "p_cn,p_active, extract(epoch from p_mtime)::integer as p_mtime FROM price", {}));
+                    pr.push(db.query("SELECT p_id,pl_id,i_id,extract(epoch from p_date_b)::bigint::REAL as p_date_b, "+
+                    "extract(epoch from p_date_e)::bigint::REAL as p_date_e, " +
+                    "p_cn,p_active, extract(epoch from p_mtime)::integer as p_mtime FROM price", {}));
                     nm.push("price");
                 }
                 if (obj.pricelistLink === "all") {
@@ -446,58 +451,137 @@ var wsfunc = {
                 resolve({"result": false});
                 return;
             }
-            if (obj.stores === "all") {
-                console.log("set stores");
-                obj.stores.forEach(elem => {
-                    db.query("INSERT INTO stores (sr_exid, sr_name, sr_active)" +
-                        " VALUES (${sr_exid}, ${sr_name}, ${sr_active} );",
-                    elem).then((value) => {
-                        //console.log('value', value);
-                    }, (err) => {
-                        console.log('err', elem, err);
-                    });
-                });/**/
-            }
-            if (obj.storeGroups === "all") {
-                console.log("set storeGroups");
-                obj.storeGroups.forEach(elem => {
-                    db.query("INSERT INTO store_groups (srg_exid, srg_name, srg_active)" +
-                        " VALUES (${srg_exid}, ${srg_name}, ${srg_active} );",
-                    elem).then((value) => {
-                        //console.log('value', value);
-                    }, (err) => {
-                        console.log('err', elem, err);
-                    });
-                });/**/
-            }
-            if (obj.linkStoreGroups === "all") {
-                console.log("set linkStoreGroups");
-                obj.linkStoreGroups.forEach(elem => {
-                    db.query("INSERT INTO link_store_groups (sr_id, srg_id, lsg_sort, lsg_active)" +
-                        " SELECT sr_id, srg_id, ${lsg_sort} AS lsg_sort, ${lsg_active} AS lsg_active FROM stores AS st, store_groups AS sg " +
-                        " WHERE st.sr_exid = ${sr_exid} and sg.srg_exid = ${srg_exid};",
-                    elem).then((value) => {
-                        //console.log('value', value);
-                    }, (err) => {
-                        console.log('err', elem, err);
-                    });
-                });/**/
-            }
-            if (obj.stocks === "all") {
-                console.log("set stocks");
-                obj.stocks.forEach(elem => {
-                    db.query("INSERT INTO stocks (i_id, sr_id, sk_value, sk_active) " +
-                        " SELECT i_id, sr_id, ${sk_value} as sk_value, ${sk_active} as sk_active FROM items as i, stores as sr " +
-                        " WHERE i.i_exid=${i_exid} AND sr.sr_exid=${sr_exid}",
-                    elem).then((value) => {
-                        //console.log('value', value);
-                    }, (err) => {
-                        console.log('err', elem, err);
-                    });
-                });/**/
-            }
+            var storesF = function(arr) {
+                let sr = [];
+                let q = "CREATE TEMP TABLE tsr (sr_id INTEGER, sr_exid TEXT, sr_name VARCHAR(50), " +
+                " sr_type smallint, sr_active BOOLEAN, sr_mtime TIMESTAMP, updt BOOLEAN, ins BOOLEAN);" +
+                " INSERT INTO tsr( SELECT s.sr_id, t.*, NOW() AS sr_mtime, " +
+                "((s.sr_name <> t.sr_name) OR (s.sr_type <> t.sr_type) OR (s.sr_active <> t.sr_active)) as updt, " +
+                " sr_id ISNULL  as ins FROM stores s RIGHT JOIN ( VALUES ";
+                arr.forEach((elem, i) => {
+                    if (i !== 0)
+                        q = q + ", ";
+                    q = q + "($" + (i * 4 + 1) + ",$" + (i * 4 + 2) + ",$" + (i * 4 + 3) + ",$" + (i * 4 + 4) + ")";
+                    sr.push(elem.sr_exid);
+                    sr.push(elem.sr_name);
+                    sr.push(elem.sr_type);
+                    sr.push(elem.sr_active);
+                });
+                q = q + ") AS t(sr_exid, sr_name, sr_type, sr_active) ON t.sr_exid = s.sr_exid);";
+                q = q + " INSERT INTO stores (sr_exid, sr_name, sr_type, sr_active, sr_mtime)" +
+                " SELECT sr_exid,sr_name,sr_type,sr_active,sr_mtime FROM tsr WHERE (ins= TRUE);";
+                q = q + " UPDATE stores AS sr SET sr_exid=t.sr_exid, sr_name=t.sr_name, " +
+                " sr_type=t.sr_type, sr_active=t.sr_active, sr_mtime=t.sr_mtime  FROM (" +
+                " SELECT sr_id, sr_exid,sr_name,sr_type,sr_active,sr_mtime FROM tsr " +
+                " WHERE (updt = TRUE)) AS t WHERE sr.sr_id = t.sr_id;";
+                q = q + " DROP TABLE tsr;";
+                return [q, sr];
+            };
+            var storeLinkF = function(arr) {
 
-            resolve({"result": true});
+                let srl = [];
+                let q = "CREATE TEMP TABLE tsrl ( srl_id INTEGER, srl_parent INTEGER, srl_child INTEGER, " +
+                " srl_sort INTEGER, srl_active BOOLEAN, srl_mtime TIMESTAMP, updt BOOLEAN, ins BOOLEAN); ";
+                q = q + " INSERT INTO tsrl(" +
+                " SELECT srl.srl_id, s2.sr_id AS srl_parent, s1.sr_id AS srl_child, t.srl_sort, t.srl_active," +
+                " NOW() AS srl_mtime, ((srl.srl_sort <> t.srl_sort) OR (srl.srl_active <> t.srl_active)) as updt, " +
+                " ((srl_id ISNULL) AND (s1.sr_id NOTNULL) AND (s2.sr_id NOTNULL)) AS ins FROM stores s1 " +
+                " RIGHT JOIN ( VALUES ";
+                //console.log('obj.storeLink', obj.storeLink);
+                arr.forEach((elem, i) => {
+                    if (i !== 0)
+                        q = q + ", ";
+                    q = q + " ($" + (i * 4 + 1) + ",$" + (i * 4 + 2) + ",$" + (i * 4 + 3) + ",$" + (i * 4 + 4) + ") ";
+                    srl.push(elem.srl_exparent);
+                    srl.push(elem.srl_exchild);
+                    srl.push(elem.srl_sort);
+                    srl.push(elem.srl_active);
+                });
+                q = q + " ) AS t(srl_exparent, srl_exchild, srl_sort, srl_active) ON t.srl_exchild=s1.sr_exid " +
+                " LEFT JOIN stores AS s2 ON t.srl_exparent=s2.sr_exid " +
+                " LEFT JOIN store_link AS srl ON srl.srl_parent=s2.sr_id AND srl.srl_child=s1.sr_id); ";
+                q = q + " INSERT INTO store_link (srl_parent, srl_child, srl_sort, srl_active, srl_mtime)" +
+                " SELECT srl_parent, srl_child, srl_sort, srl_active, srl_mtime FROM tsrl WHERE (ins= TRUE);";
+                q = q + " UPDATE store_link AS srl SET srl_parent=t.srl_parent, srl_child=t.srl_child, " +
+                " srl_sort=t.srl_sort, srl_active=t.srl_active, srl_mtime=t.srl_mtime FROM (" +
+                " SELECT srl_id, srl_parent, srl_child, srl_sort, srl_active, srl_mtime FROM tsrl " +
+                " WHERE (updt = TRUE)) AS t WHERE srl.srl_id = t.srl_id;";
+                q = q + " DROP TABLE tsrl;";
+                return [q, srl];
+            };
+            var stocksF = function(arr) {
+                let sc = [];
+                let q = "CREATE TEMP TABLE tsc ( sc_id INTEGER, sr_id INTEGER, i_id INTEGER, "+
+                " sc_amount INTEGER, sc_active BOOLEAN, sc_mtime TIMESTAMP, updt BOOLEAN, ins BOOLEAN); ";
+                q = q + " INSERT INTO tsc (SELECT sc.sc_id, sr.sr_id, i.i_id, t.sc_amount, "+
+                "t.sc_active, NOW() AS sc_mtime, "+
+                " ((sc.sc_amount <> t.sc_amount) OR (sc.sc_active <> t.sc_active)) AS updt, "+
+                "((sc_id ISNULL) AND (sr.sr_id NOTNULL) AND (i.i_id NOTNULL)) AS ins "+
+                " FROM stores sr RIGHT JOIN (VALUES ";
+                //console.log('obj.storeLink', obj.storeLink);
+                arr.forEach((elem, i) => {
+                        if (i !== 0)
+                            q = q + ", ";
+                        q = q + " ($" + (i * 4 + 1) + ",$" + (i * 4 + 2) + ",$" + (i * 4 + 3) + ",$" + (i * 4 + 4) + ") ";
+                        sc.push(elem.i_exid);
+                        sc.push(elem.sr_exid);
+                        sc.push(elem.sc_amount);
+                        sc.push(elem.sc_active);
+
+                });
+                q = q + ") AS t(i_exid, sr_exid, sc_amount, sc_active) ON sr.sr_exid = t.sr_exid "+
+                " LEFT JOIN items i ON i.i_exid = t.i_exid "+
+                " LEFT JOIN stocks sc ON sc.sr_id = sr.sr_id AND sc.i_id = i.i_id);";
+                q = q + " INSERT INTO stocks (i_id, sr_id, sc_amount, sc_active, sc_mtime) "+
+                " SELECT i_id, sr_id, sc_amount, sc_active, sc_mtime FROM tsc WHERE (ins= TRUE);";
+                q = q + " UPDATE stocks AS sc SET i_id=t.i_id, sr_id=t.sr_id, "+
+                " sc_amount=t.sc_amount, sc_active=t.sc_active, sc_mtime=t.sc_mtime FROM ("+
+                " SELECT sc_id, i_id, sr_id, sc_amount, sc_active, sc_mtime FROM tsc"+
+                " WHERE (updt = TRUE)) AS t WHERE sc.sc_id = t.sc_id; ";
+                q = q + " DROP TABLE tsc;";
+                return [q, sc];
+            };
+
+            db.task(function *(t) {
+
+                if (obj.stores) {
+                    console.log('start sr', new Date(), obj.stores.length);
+                    for (let i = 0; i < obj.stores.length; i=i+100) {
+                        let a = obj.stores.slice(i, i+100);
+                        let [q,arr] = storesF(a);
+                        yield t.none(q, arr);
+                    }
+                    console.log('end sr', new Date());
+                }
+                if (obj.storeLink) {
+                    console.log('start srl', new Date(), obj.storeLink.length);
+                    for (let i = 0; i < obj.storeLink.length; i=i+100) {
+                        let a = obj.storeLink.slice(i, i+100);
+                        let [q,arr] = storeLinkF(a);
+                        yield t.none(q,arr);
+                    }
+                    console.log('end srl', new Date());
+                }
+                if (obj.stocks) {
+                    console.log('start sc', new Date(), obj.stocks.length);
+
+                    for (let i = 0; i < obj.stocks.length; i=i+100) {
+                        let a = obj.stocks.slice(i, i+100);
+                        let [q, arr] = stocksF(a);
+                        yield t.none(q,arr);
+                    }
+
+                    console.log('end sc', new Date());
+                }
+                return Promise.resolve(true);
+            }).then(function(r) {
+                console.log('r', r);
+                resolve({"result": true});
+            }).catch(function(err) {
+                console.log("Gen err", err);
+                resolve({"result": false});
+            });/**/
+
         });
     },
     getStocks: function(client, obj) {
@@ -512,23 +596,18 @@ var wsfunc = {
                 var pr = [];
                 var nm = [];
                 if (obj.stores === "all") {
-                    pr.push(db.query("SELECT sr_id, sr_name, sr_active, " +
-                        " extract(epoch from sr_mtime)::integer as sr_mtime FROM stores;", {}));
+                    pr.push(db.query("SELECT sr_id, sr_name, sr_active, sr_type, " +
+                        " extract(epoch from sr_mtime)::integer as sr_mtime FROM stores", {}));
                     nm.push("stores");
                 }
-                if (obj.storeGroups === "all") {
-                    pr.push(db.query("SELECT srg_id, srg_name, srg_active, " +
-                        " extract(epoch from srg_mtime)::integer as srg_mtime FROM store_groups;", {}));
-                    nm.push("storeGroups");
-                }
-                if (obj.linkStoreGroups === "all") {
-                    pr.push(db.query("SELECT lsg_id, srg_id, sr_id, lsg_sort, lsg_active, " +
-                        " extract(epoch from lsg_mtime)::integer as lsg_mtime FROM link_store_groups;", {}));
-                    nm.push("linkStoreGroups");
+                if (obj.storeLink === "all") {
+                    pr.push(db.query("SELECT srl_id, srl_parent, srl_child, srl_sort, srl_active, " +
+                        " extract(epoch from srl_mtime)::integer as srl_mtime FROM store_link", {}));
+                    nm.push("storeLink");
                 }
                 if (obj.stocks === "all") {
-                    pr.push(db.query("SELECT sk_id, sr_id, i_id, sk_active, " +
-                        " extract(epoch from sk_mtime)::integer as sk_mtime FROM stocks;", {}));
+                    pr.push(db.query("SELECT sc_id, sr_id, i_id, sc_amount, sc_active, " +
+                        " extract(epoch from sc_mtime)::integer as sc_mtime FROM stocks", {}));
                     nm.push("stocks");
                 }
 

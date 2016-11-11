@@ -9,8 +9,7 @@
     "head":"getStocks",
     "body": {
         "stores": "all",
-        "storeGroups": "all",
-        "linkStoreGroups": "all",
+        "storeLink": "all",
         "stocks": "all"
     }
 }
@@ -24,34 +23,35 @@
     "body": {
         "stores": [{
                 "sr_id": 1,
-				"sr_name": "Склад 1 общий",
-				"sr_active": true,
-				"sr_mtime": 1471529365
+                "sr_name": "Склад 1 общий",
+                "sr_type": 1, //простой
+                "sr_active": true,
+                "sr_mtime": 1471529365
+            }, {
+                "sr_id": 1,
+                "sr_name": "Склад город по договору",
+                "sr_type": 0, //составной
+                "sr_active": true,
+                "sr_mtime": 1471529365
             }],
-        "storeGroups": [{
-				"srg_id": 1,
-				"srg_name": "Склад город",
-				"srg_active": true,
-				"srg_mtime": 1471529365
-			}],
-        "linkStoreGroups": [{
-				"sr_id": 1,
-				"srg_id": 1,
-				"lsg_sort": 10,
-				"lsg_active": true,
-				"lsg_mtime": 1471529365
-			}],
+        "storeLink": [{
+                "srl_id": 1,
+                "srl_parent": 1,
+                "srl_child": 1,
+                "srl_sort": 10,
+                "srl_active": true,
+                "srl_mtime": 1471529365
+            }],
         "stocks": [{
-	            "i_id": 1,
-	            "sr_id": 1,
-	            "sk_value": 10,
-				"sk_active": true,
-				"sk_mtime": 1471529365
+                "i_id": 1,
+                "sr_id": 1,
+                "sk_value": 10,
+                "sk_active": true,
+                "sk_mtime": 1471529365
             }]
     }
 }
 ```
-
 
 Данный запрос передаётся клиентом серверу и имеет следующую структуру.
 
@@ -61,25 +61,21 @@
     "body": {
         "stores": [{
                 "sr_exid": "1",
-				"sr_name": "Склад 1 общий",
-				"sr_active": true
+                "sr_name": "Склад 1 общий",
+                "sr_type": 1,
+                "sr_active": true
             }],
-        "storeGroups": [{
-				"srg_exid": "1",
-				"srg_name": "Склад город",
-				"srg_active": true
-			}],
-        "linkStoreGroups": [{
-				"sr_exid": "1",
-				"srg_exid": "1",
-				"lsg_sort": 10,
-				"lsg_active": true
-			}],
+        "storeLink": [{
+                "srl_exparent": "1",
+                "srl_exchild": "1",
+                "srl_sort": 10,
+                "srl_active": true
+            }],
         "stocks": [{
-	            "i_exid": "1",
-	            "sr_exid": "1",
-	            "sk_value": 10,
-				"sk_active": true
+                "i_exid": "1",
+                "sr_exid": "1",
+                "sc_value": 10,
+                "sc_active": true
             }]
     }
 }
