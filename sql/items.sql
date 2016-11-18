@@ -34,7 +34,6 @@ CREATE TABLE public.items (
   i_info     TEXT, -- описание (тип: строка)
   i_img      TEXT, -- изображение товара (тип: строка)
   i_service  BOOLEAN, -- признак услуги (тип: булево)
-  i_producer INTEGER, -- производитель (тип: число)
   int_id     INTEGER REFERENCES item_NDS_Types, -- ставка НДС (тип: число)
   i_active   BOOLEAN   DEFAULT TRUE,
   i_mtime    TIMESTAMP DEFAULT now()                   -- время изменения товара _в посылаемом на мобильное приложение ответе - необязателен_ (тип: число)

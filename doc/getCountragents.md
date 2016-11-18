@@ -16,7 +16,73 @@
 ```
 wsm("getCountragents",{"countragents" : "all","deliveryPoints" : "all","address" : "all","linksCountragentDeliveryPoint" : "all"});
 
-
+setCountragents
+```json
+{
+    "head":"setCountragents",
+    "body": {
+        "countragents" : [{
+            "ca_exid": "093432A60",
+            "cat_id": 1,
+            "ca_exhead": "",
+            "ca_name": "ФАКТОРИНГОВАЯ КОМПАНИЯ 'ЛАЙФ'",
+            "ca_prn": "ООО 'ФАКТОРИНГОВАЯ КОМПАНИЯ 'ЛАЙФ'",
+            "ca_info": "",
+            "ca_inn": "7743658843",
+            "ca_kpp": "774301001",
+            "ca_client": false,
+            "ca_supplier": true,
+            "ca_carrier": false,
+            "ca_active": true
+        }, {
+            "ca_exid": "0949BFC50",
+            "cat_id": 2,
+            "ca_exhead": "",
+            "ca_name": "ХАНТИМИРОВ А.Р.",
+            "ca_prn": "ИП 'ХАНТИМИРОВ А.Р.'",
+            "ca_info": "",
+            "ca_inn": "616200402751",
+            "ca_kpp": "",
+            "ca_client": false,
+            "ca_supplier": false,
+            "ca_carrier": false,
+            "ca_active": true
+        }],
+        "deliveryPoints" : [{
+            "dp_exid": "2K",
+            "dp_name": "СЛАВИЯ ООО-ТАГАНРОГ",
+            "dp_prn": "СЛАВИЯ ООО-ТАГАНРОГ",
+            "dp_client": true,
+            "dp_supplier": false,
+            "dp_carrier": false,
+            "dp_active": true
+        }, {
+            "dp_exid": "2L",
+            "dp_name": "ЗОЛОТОЙ БЕРЕГ ООО-ТАГАНРОГ",
+            "dp_prn": "ЗОЛОТОЙ БЕРЕГ ООО-ТАГАНРОГ",
+            "dp_client": true,
+            "dp_supplier": false,
+            "dp_carrier": false,
+            "dp_active": true
+        }],
+        "adress": [{
+            "any_exid": "093432A60",
+            "adrt_id": 1,
+            "adr_str": "344015 РОСТОВСКАЯ ОБЛ.Г.РОСТОВ-НА-ДОНУ УЛ.ЗОРГЕ 37/1 КВ.7",
+            "adr_active": true
+            }],
+        "linksCountragentDeliveryPoint": [{
+            "ca_exid": "D970F6FC0",
+            "dp_exid": "$",
+            "lcp_active": true
+        }, {
+            "ca_exid": "FBF8648E0",
+            "dp_exid": "1",
+            "lcp_active": true
+        }]
+    }
+}
+```
 
 # Структура клиентов
 Структура клиентов должна быть представлена составными клиентами (ЮрЛицоми, включающим в себя все точки доставки) и непосредственно точками доставки. Но это потом.
