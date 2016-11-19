@@ -13,29 +13,34 @@
         "i_info": "",
         "i_img": "",
         "i_service": false,
-        "int_id": 1
+        "int_id": 1,
+        "i_active": true
     }],
     "itemsGroupType": [{
         "igt_exid": "A->CAT",
         "igt_name": "Категория",
-        "igt_agent": true
+        "igt_agent": true,
+        "igt_active": true
     }],
     "itemsGroup": [{
         "i_exid": "#JV",
         "igt_exid": "A->ATR",
         "ig_exid": "АССОРТИ ИЗ МОРЕПРОД.",
-        "ig_value": "АССОРТИ ИЗ МОРЕПРОД."
+        "ig_value": "АССОРТИ ИЗ МОРЕПРОД.",
+        "ig_active": true
     }],
     "linkItemGroup": [{
         "i_exid": "wm",
         "igt_exid": "A->CAT",
-        "ig_exid": "МОРОЖЕНОЕ"
+        "ig_exid": "МОРОЖЕНОЕ",
+        "lig_active": true
     }],
     "itemsUnitType": [{
         "iut_exid": "кг",
         "iut_name": "кг",
         "imt_id": 4,
-        "iut_okei": 102
+        "iut_okei": 102,
+        "iut_active": true
     }],
     "itemsUnit": [{
         "i_exid": "#L1",
@@ -53,11 +58,12 @@
         "iu_volume": 0,
         "iu_agent": true,
         "iu_base": true,
-        "iu_main": false
+        "iu_main": false,
+        "iu_active": true
     }]
 }
 ```
 результат  пока
-```JSON 
+```JSON
 {"result": true}
 ```

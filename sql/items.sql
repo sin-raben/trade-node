@@ -4,7 +4,7 @@ DROP TABLE item_Metric_Types;
 DROP TABLE link_Item_Group;
 DROP TABLE item_Groups;
 DROP TABLE item_Group_Types;
-DROP TABLE items;
+DROP TABLE items CASCADE;
 DROP TABLE item_NDS_Types;
 
 -- ==================СОЗДАНИЕ ТАБЛИЦ=====================
@@ -29,7 +29,7 @@ INSERT INTO item_NDS_Types (int_id, int_name, int_value) VALUES
 CREATE TABLE public.items (
   i_id       SERIAL PRIMARY KEY, -- идентификатор товара (тип: число)
   i_exid     TEXT UNIQUE, -- внешний код, используется для синхронизации, _в посылаемом на мобильное приложение ответе - необязателен_ (тип: строка)
-  i_name     VARCHAR(100) UNIQUE, -- наименование товара (тип: строка)
+  i_name     VARCHAR(100), -- наименование товара (тип: строка)
   i_prn      VARCHAR(100), -- наименование для печати (тип: строка)
   i_info     TEXT, -- описание (тип: строка)
   i_img      TEXT, -- изображение товара (тип: строка)
@@ -44,9 +44,9 @@ CREATE TABLE public.items (
 CREATE TABLE public.item_Group_Types (
   igt_id       SERIAL PRIMARY KEY, -- идентификатор типа группы товаров (тип: число)
   igt_exid     TEXT UNIQUE, -- внешний код, используется для синхронизации, _в посылаемом на мобильное приложение ответе - необязателен_ (тип: строка)
+  igt_name     VARCHAR(50) UNIQUE, -- наименование типа группы товаров (тип: строка)
   igt_priority INTEGER,
   igt_agent    BOOLEAN, -- признак отображения в меню торгового представителя (тип: булево)
-  igt_name     VARCHAR(50) UNIQUE, -- наименование типа группы товаров (тип: строка)
   igt_active   BOOLEAN   DEFAULT TRUE,
   igt_mtime    TIMESTAMP DEFAULT now() -- время изменения типа информации о товаре _в посылаемом на мобильное приложение ответе - необязателен_ (тип: число  )
 );
@@ -58,8 +58,7 @@ CREATE TABLE public.item_Groups (
   ig_exid   TEXT, -- внешний код
   ig_value  VARCHAR(50), -- значение (тип: строка)
   ig_active BOOLEAN   DEFAULT TRUE,
-  ig_mtime  TIMESTAMP DEFAULT now(), -- время изменения  информации о товаре (тип: число)
-  UNIQUE (igt_id, ig_exid)
+  ig_mtime  TIMESTAMP DEFAULT now() -- время изменения  информации о товаре (тип: число)
 );
 
 
@@ -69,8 +68,7 @@ CREATE TABLE public.link_Item_Group (
   ig_id      INTEGER REFERENCES item_Groups,
   igt_id     INTEGER REFERENCES item_Group_Types,
   lig_active BOOLEAN   DEFAULT TRUE,
-  lig_mtime  TIMESTAMP DEFAULT now(), -- время изменения связи (тип: число)
-  UNIQUE (i_id, igt_id)
+  lig_mtime  TIMESTAMP DEFAULT now() -- время изменения связи (тип: число)
 );
 
 -- `length` - мера длинны, `area` - мера площади, `volume` - мера объема, `quantity` - количествеенная характеристика, `bulk` - мера веса
@@ -122,6 +120,7 @@ CREATE TABLE public.item_Units (
   iu_mtime  TIMESTAMP DEFAULT now(), -- время изменения  информации _в посылаемом на мобильное приложение ответе - необязателен_ (тип: число)
   UNIQUE (i_id, iut_id)                               --ограничение уникальности
 );
+
 
 
 /*INSERT INTO link_Item_Group (i_id, igt_id, ig_id)
