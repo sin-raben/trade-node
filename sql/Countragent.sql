@@ -1,24 +1,24 @@
 
 
-DROP TABLE public.links_countragent_delivery_point;
-DROP TABLE public.delivery_points;
-DROP TABLE public.countragents;
-DROP TABLE public.address;
-DROP TABLE public.countragent_types;
-DROP TABLE public.address_types;
+DROP TABLE IF EXISTS trade.links_countragent_delivery_point;
+DROP TABLE IF EXISTS trade.delivery_points;
+DROP TABLE IF EXISTS trade.countragents;
+DROP TABLE IF EXISTS trade.address;
+DROP TABLE IF EXISTS trade.countragent_types;
+DROP TABLE IF EXISTS trade.address_types;
 
-CREATE TABLE public.address_types (
+CREATE TABLE trade.address_types (
     adrt_id          SERIAL PRIMARY KEY          ,
     adrt_name        TEXT      DEFAULT ''        ,
     adrt_obj         TEXT      DEFAULT ''        ,
     adrt_mtime       TIMESTAMP DEFAULT now()       -- время изменения
 );
-INSERT INTO public.address_types (adrt_id, adrt_name, adrt_obj) VALUES
+INSERT INTO trade.address_types (adrt_id, adrt_name, adrt_obj) VALUES
     (1, 'Юридический адрес','Контрагент'),
     (2, 'Физический адрес','Контрагент'),
     (3, 'Адрес доставки','Точка доставки');
 --Струтура адресов
-CREATE TABLE public.address (
+CREATE TABLE trade.address (
     adr_id          SERIAL PRIMARY KEY          , -- идентификатор записи
     any_id          INTEGER                     , -- внешний ключ связанного объекта (таблицы разные)
     adrt_id         INTEGER                     , -- тип адреса,
@@ -30,13 +30,13 @@ CREATE TABLE public.address (
     adr_mtime       TIMESTAMP DEFAULT now()       -- время изменения
 );
 
-CREATE TABLE public.countragent_types (
+CREATE TABLE trade.countragent_types (
     cat_id          SERIAL PRIMARY KEY          ,
     cat_name        TEXT      DEFAULT ''        ,
     cat_mtime       TIMESTAMP DEFAULT now()       -- время изменения
 );
 
-INSERT INTO public.countragent_types (cat_id, cat_name) VALUES
+INSERT INTO trade.countragent_types (cat_id, cat_name) VALUES
     (1, 'Юр. лицо'),
     (2, 'ИП'),
     (3, 'Физ. лицо'),
@@ -44,11 +44,11 @@ INSERT INTO public.countragent_types (cat_id, cat_name) VALUES
     (5, 'Обособленное подразделение');
 
 --Cтрутура (Контрагенты)
-CREATE TABLE public.countragents (
+CREATE TABLE trade.countragents (
     ca_id           SERIAL PRIMARY KEY                      , -- идентификатор контрагента
     ca_exid         TEXT   DEFAULT ''                       , -- внешний код
-    cat_id          INTEGER REFERENCES countragent_types    , -- Юр. лицо, ИП, Физ. лицо, Иностранное юр лицо, Обособленное подразделение
-    ca_head         INTEGER REFERENCES countragents         , -- Головной контрагент
+    cat_id          INTEGER REFERENCES trade.countragent_types    , -- Юр. лицо, ИП, Физ. лицо, Иностранное юр лицо, Обособленное подразделение
+    ca_head         INTEGER REFERENCES trade.countragents         , -- Головной контрагент
     ca_name         TEXT        DEFAULT ''                  , -- наименование
     ca_prn          TEXT        DEFAULT ''                  , -- наименование для печати
     ca_info         TEXT        DEFAULT ''                  , -- описание
@@ -63,7 +63,7 @@ CREATE TABLE public.countragents (
 
 
 -- Структура точек доставки
-CREATE TABLE public.delivery_points (
+CREATE TABLE trade.delivery_points (
     dp_id           SERIAL PRIMARY KEY                      , -- идентификатор точки доставки (торговой точки) (тип: число)
     dp_exid         TEXT          DEFAULT ''                , -- внешний код, используется для синхронизации, _в посылаемом на мобильное приложение ответе - необязателен_ (тип: строка)
     dp_name         VARCHAR(100)  DEFAULT ''                , -- наименование товара (тип: строка)
@@ -77,10 +77,10 @@ CREATE TABLE public.delivery_points (
 );
 
 -- Струтура cвязи Контрагентов и Точек доставки
-CREATE TABLE public.links_countragent_delivery_point (
+CREATE TABLE trade.links_countragent_delivery_point (
     lcp_id          SERIAL PRIMARY KEY                      , -- идентификатор записи
-    ca_id           INTEGER REFERENCES countragents         , -- идентификатор контрагента
-    dp_id           INTEGER REFERENCES delivery_points      , -- идентификатор точки доставки
+    ca_id           INTEGER REFERENCES trade.countragents         , -- идентификатор контрагента
+    dp_id           INTEGER REFERENCES trade.delivery_points      , -- идентификатор точки доставки
     lcp_active      BOOLEAN DEFAULT TRUE                    , -- состояние
     lcp_mtime       TIMESTAMP DEFAULT now()                   -- время изменения
 );
