@@ -56,7 +56,7 @@ CREATE TABLE public.people (
     p_F          TEXT, --фамилия
     p_I          TEXT, --имя
     p_O          TEXT, --отчество
-    --пол
+    p_sex        BOOLEAN,--пол
     --дата рождения
     --тонна прочих реквизитов
     p_mtime      TIMESTAMP DEFAULT now()

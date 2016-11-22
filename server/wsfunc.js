@@ -181,24 +181,22 @@ var wsfunc = {
                             i_service BOOLEAN,
                             int_id INTEGER,
                             i_active BOOLEAN,
-                            i_mtime TIMESTAMP,
                             updt BOOLEAN,
                             ins BOOLEAN
-                        );`;
-                q = q + `INSERT INTO ti(SELECT
-                          i.i_id,
-                          t.*,
-                          CASE WHEN i.i_active NOTNULL THEN now() ELSE i.i_mtime END AS i_mtime,
-                          ((t.i_name<>i.i_name) OR (t.i_prn<>i.i_prn) OR (t.i_info<>i.i_info)
-                          OR (t.i_img<>i.i_img) OR (t.i_service<>i.i_service)
-                          OR (t.int_id<>i.int_id) OR (t.i_active<>i.i_active)) AS updt,
-                          (i.i_id ISNULL ) AS ins
+                        );
+                        INSERT INTO ti(SELECT
+                            i.i_id,
+                            t.*,
+                            ((t.i_name<>i.i_name) OR (t.i_prn<>i.i_prn) OR (t.i_info<>i.i_info)
+                            OR (t.i_img<>i.i_img) OR (t.i_service<>i.i_service)
+                            OR (t.int_id<>i.int_id) OR (t.i_active<>i.i_active)) AS updt,
+                            (i.i_id ISNULL ) AS ins
                         FROM (VALUES`;
                 arr.forEach((elem, i) => {
                     if (i !== 0)
                         q = q + ", ";
                     q = q + "($" + (i * 8 + 1) + ",$" + (i * 8 + 2) + ",$" + (i * 8 + 3) + ",$" + (i * 8 + 4);
-                    q = q + ",$" + (i * 8 + 5) + ",$" + (i * 8 + 6) + ",$" + (i * 8 + 7) + ",$" + (i * 8 + 8)+ ")";
+                    q = q + ",$" + (i * 8 + 5) + ",$" + (i * 8 + 6) + ",$" + (i * 8 + 7) + ",$" + (i * 8 + 8) + ")";
                     it.push(elem.i_exid);
                     it.push(elem.i_name);
                     it.push(elem.i_prn);
@@ -209,38 +207,40 @@ var wsfunc = {
                     it.push(elem.i_active);
                 });
                 q = q + ` ) AS t(i_exid, i_name, i_prn, i_info, i_img, i_service, int_id, i_active)
-                    LEFT JOIN items i ON (i.i_exid=t.i_exid));`;
-                q = q + `INSERT INTO items(i_exid, i_name, i_prn, i_info, i_img, i_service, int_id,i_active)
-                SELECT i_exid, i_name, i_prn, i_info, i_img, i_service, int_id,i_active FROM ti WHERE ti.ins=TRUE;`;
-                q = q + `UPDATE items AS i
-                    SET i_name=t.i_name, i_prn=t.i_prn, i_info=t.i_info, i_img=t.i_img,
-                    i_service=t.i_service, int_id=t.int_id, i_active=t.i_active, i_mtime=t.i_mtime
-                    FROM (SELECT * FROM ti WHERE updt=TRUE) AS t
-                    WHERE (t.i_id=i.i_id);`;
-                q = q + " DROP TABLE ti;";
+                    LEFT JOIN items i ON (i.i_exid=t.i_exid));
+                INSERT INTO items(i_exid, i_name, i_prn, i_info, i_img, i_service, int_id,i_active)
+                    SELECT i_exid, i_name, i_prn, i_info, i_img, i_service, int_id,i_active FROM ti WHERE ti.ins=TRUE;
+                UPDATE items AS i SET
+                    i_name=t.i_name, i_prn=t.i_prn,
+                    i_info=t.i_info, i_img=t.i_img,
+                    i_service=t.i_service, int_id=t.int_id,
+                    i_active=t.i_active, i_mtime=now()
+                FROM (
+                    SELECT * FROM ti WHERE updt=TRUE
+                ) AS t WHERE (t.i_id=i.i_id);
+                DROP TABLE ti;`;
                 return [q, it];
             };
             var itemsGroupTypeF = function(arr) {
                 let igt = [];
                 let q = `CREATE TEMP TABLE tigt (
-                         igt_id INTEGER,
-                         igt_exid TEXT,
-                         igt_name VARCHAR(50),
-                         igt_priority INTEGER,
-                         igt_agent BOOLEAN,
-                         igt_active BOOLEAN,
-                         igt_mtime TIMESTAMP,
-                         updt BOOLEAN,
-                         ins BOOLEAN
-                        );`;
-                q = q + `INSERT INTO tigt (SELECT
-                          igt.igt_id,
-                          t.*,
-                          CASE WHEN igt.igt_active NOTNULL THEN now() ELSE igt.igt_mtime END AS igt_mtime,
-                          ((t.igt_name<>igt.igt_name) OR (t.igt_priority<>igt.igt_priority) OR
-                          (t.igt_agent<>igt.igt_agent) OR (t.igt_active<>igt.igt_active)) AS updt,
-                          (igt.igt_id ISNULL ) AS ins
-                      FROM (VALUES `;
+                    igt_id INTEGER,
+                    igt_exid TEXT,
+                    igt_name VARCHAR(50),
+                    igt_priority INTEGER,
+                    igt_agent BOOLEAN,
+                    igt_active BOOLEAN,
+                    updt BOOLEAN,
+                    ins BOOLEAN
+                );
+                INSERT INTO tigt (
+                SELECT
+                    igt.igt_id,
+                    t.*,
+                    ((t.igt_name<>igt.igt_name) OR (t.igt_priority<>igt.igt_priority) OR
+                    (t.igt_agent<>igt.igt_agent) OR (t.igt_active<>igt.igt_active)) AS updt,
+                    (igt.igt_id ISNULL ) AS ins
+                FROM (VALUES `;
                 arr.forEach((elem, i) => {
                     if (i !== 0)
                         q = q + ", ";
@@ -252,14 +252,16 @@ var wsfunc = {
                     igt.push(elem.igt_agent);
                     igt.push(elem.igt_active);
                 });
-                q = q + ` ) AS t(igt_exid, igt_name, igt_priority, igt_agent,  igt_active)
-                    LEFT JOIN item_group_types igt ON igt.igt_exid=t.igt_exid);`;
-                q = q + `INSERT INTO item_group_types (igt_exid, igt_name, igt_priority, igt_agent,  igt_active)
-                SELECT igt_exid, igt_name, igt_priority, igt_agent,  igt_active FROM tigt WHERE (ins=TRUE);
-                UPDATE item_group_types igt
-                SET igt_exid=t.igt_exid, igt_name=t.igt_name, igt_priority=t.igt_priority,
-                igt_agent=t.igt_agent, igt_active=t.igt_active, igt_mtime=t.igt_mtime FROM (
-                    SELECT * FROM tigt WHERE (updt=TRUE)OR((ins=FALSE)AND(updt ISNULL))
+                q = q + ` ) AS t(igt_exid, igt_name, igt_priority, igt_agent, igt_active)
+                LEFT JOIN item_group_types igt ON igt.igt_exid=t.igt_exid);
+                INSERT INTO item_group_types (igt_exid, igt_name, igt_priority, igt_agent,  igt_active)
+                    SELECT igt_exid, igt_name, igt_priority, igt_agent, igt_active FROM tigt WHERE (ins=TRUE);
+                UPDATE item_group_types igt SET
+                    igt_exid=t.igt_exid, igt_name=t.igt_name,
+                    igt_priority=t.igt_priority, igt_agent=t.igt_agent,
+                    igt_active=t.igt_active, igt_mtime=now()
+                FROM (
+                    SELECT * FROM tigt WHERE (updt=TRUE)
                 ) AS t WHERE (t.igt_id=igt.igt_id);
                 DROP TABLE tigt;`;
                 return [q, igt];
@@ -267,23 +269,20 @@ var wsfunc = {
             var itemsGroupF = function(arr) {
                 let ig = [];
                 let q = `CREATE TEMP TABLE tig (
-                          ig_id     INTEGER,
-                          igt_id    INTEGER,
-                          ig_exid   TEXT,
-                          ig_value  VARCHAR(50),
-                          ig_active BOOLEAN,
-                          ig_mtime  TIMESTAMP,
-                          updt BOOLEAN,
-                          ins BOOLEAN
-                        );
-                        INSERT INTO tig (
-                          SELECT ig.ig_id, igt.igt_id, t.ig_exid, t.ig_value, t.ig_active,
-                            CASE WHEN ig.ig_active NOTNULL
-                              THEN now()
-                            ELSE ig.ig_mtime END                                           AS ig_mtime,
-                            ((t.ig_value <> ig.ig_value) OR (t.ig_active <> ig.ig_active)) AS updt,
-                            ((ig.ig_id ISNULL) AND (igt.igt_id NOTNULL))                   AS ins
-                          FROM (VALUES`;
+                    ig_id     INTEGER,
+                    igt_id    INTEGER,
+                    ig_exid   TEXT,
+                    ig_value  VARCHAR(50),
+                    ig_active BOOLEAN,
+                    updt BOOLEAN,
+                    ins BOOLEAN
+                );
+                INSERT INTO tig (
+                    SELECT
+                        ig.ig_id, igt.igt_id, t.ig_exid, t.ig_value, t.ig_active,
+                        ((t.ig_value <> ig.ig_value) OR (t.ig_active <> ig.ig_active)) AS updt,
+                        ((ig.ig_id ISNULL) AND (igt.igt_id NOTNULL))                   AS ins
+                    FROM (VALUES`;
                 arr.forEach((elem, i) => {
                     if (i !== 0)
                         q = q + ", ";
@@ -295,13 +294,16 @@ var wsfunc = {
                 });
                 q = q + `) AS t(igt_exid, ig_exid, ig_value, ig_active)
                         LEFT JOIN item_group_types igt ON (igt.igt_exid = t.igt_exid)
-                        LEFT JOIN item_groups ig ON (ig.ig_exid = t.ig_exid) );`;
-                q = q + ` INSERT INTO item_groups(igt_id, ig_exid, ig_value, ig_active)
-                    SELECT igt_id, ig_exid, ig_value, ig_active FROM tig WHERE (ins=TRUE);
-                    UPDATE item_groups ig
-                    SET igt_id=t.igt_id, ig_exid=t.ig_exid, ig_value=t.ig_value,
-                    ig_active=t.ig_active, ig_mtime=t.ig_mtime FROM (
-                       SELECT * FROM tig WHERE (updt=TRUE)OR((ins=FALSE)AND(updt ISNULL))
+                        LEFT JOIN item_groups ig ON (ig.ig_exid = t.ig_exid)
+                    );
+                    INSERT INTO item_groups(igt_id, ig_exid, ig_value, ig_active)
+                        SELECT igt_id, ig_exid, ig_value, ig_active FROM tig WHERE (ins=TRUE);
+                    UPDATE item_groups ig SET
+                        igt_id=t.igt_id, ig_exid=t.ig_exid,
+                        ig_value=t.ig_value, ig_active=t.ig_active,
+                        ig_mtime=now()
+                    FROM (
+                       SELECT * FROM tig WHERE (updt=TRUE)
                     ) AS t WHERE (t.ig_id=ig.ig_id);
                     DROP TABLE tig;`;
                 return [q, ig];
@@ -314,21 +316,17 @@ var wsfunc = {
                     ig_id INTEGER,
                     igt_id INTEGER,
                     lig_active BOOLEAN,
-                    lig_mtime TIMESTAMP,
                     updt BOOLEAN,
                     ins BOOLEAN
                 );
-
-                INSERT INTO tlig (SELECT
-                    lig.lig_id,
-                    i.i_id,
-                    ig.ig_id,
-                    igt.igt_id,
-                    t.lig_active,
-                    CASE WHEN lig.lig_active NOTNULL THEN now() ELSE lig.lig_mtime END AS lig_mtime,
-                    ((ig.ig_id<>lig.ig_id)OR(t.lig_active<>lig.lig_active)) AS updt,
-                    (lig.lig_id ISNULL AND (i.i_id NOTNULL )AND (igt.igt_id NOTNULL )) AS ins
-                FROM (VALUES `;
+                INSERT INTO tlig (
+                    SELECT
+                        lig.lig_id, i.i_id,
+                        ig.ig_id, igt.igt_id,
+                        t.lig_active,
+                        ((ig.ig_id<>lig.ig_id)OR(t.lig_active<>lig.lig_active)) AS updt,
+                        (lig.lig_id ISNULL AND (i.i_id NOTNULL )AND (igt.igt_id NOTNULL )) AS ins
+                    FROM (VALUES `;
                 arr.forEach((elem, i) => {
                     if (i !== 0)
                         q = q + ", ";
@@ -339,34 +337,165 @@ var wsfunc = {
                     lig.push(elem.lig_active);
                 });
                 q = q + `) AS t(i_exid, igt_exid, ig_exid, lig_active)
-                        LEFT JOIN items AS i ON t.i_exid=i.i_exid
-                        LEFT JOIN item_group_types igt ON t.igt_exid=igt.igt_exid
-                        LEFT JOIN item_groups ig ON t.ig_exid=ig.ig_exid
-                        LEFT JOIN link_item_group lig ON (i.i_id=lig.i_id) AND (igt.igt_id=lig.igt_id));`;
-                q = q + ` INSERT INTO link_item_group(i_id,ig_id,igt_id,lig_active)
-                SELECT i_id,ig_id,igt_id,lig_active FROM tlig WHERE (ins);
+                LEFT JOIN items AS i ON t.i_exid=i.i_exid
+                LEFT JOIN item_group_types igt ON t.igt_exid=igt.igt_exid
+                LEFT JOIN item_groups ig ON t.ig_exid=ig.ig_exid
+                LEFT JOIN link_item_group lig ON (i.i_id=lig.i_id) AND (igt.igt_id=lig.igt_id));
+                INSERT INTO link_item_group(i_id,ig_id,igt_id,lig_active)
+                    SELECT i_id,ig_id,igt_id,lig_active FROM tlig WHERE (ins);
 
-                UPDATE link_item_group AS lig
-                SET ig_id=t.ig_id, lig_active=t.lig_active, lig_mtime=t.lig_mtime FROM (
-                    SELECT * FROM tlig WHERE (updt=TRUE) OR ((ins=FALSE) AND (updt ISNULL))
+                UPDATE link_item_group AS lig SET
+                    ig_id=t.ig_id, lig_active=t.lig_active,
+                    lig_mtime=now()
+                FROM (
+                    SELECT * FROM tlig WHERE (updt=TRUE)
                 ) AS t WHERE (t.lig_id=lig.lig_id);
 
                 DROP TABLE tlig;`;
                 return [q, lig];
             };
             var itemsUnitTypeF = function(arr) {
-                return ["",[]];
+                let iut = [];
+                let q = `CREATE TEMP TABLE tiut (
+                  iut_id     INTEGER,
+                  iut_exid   TEXT,
+                  iut_name   VARCHAR(10),
+                  imt_id     INTEGER,
+                  iut_okei   INTEGER,
+                  iut_active BOOLEAN,
+                  updt BOOLEAN,
+                  ins BOOLEAN
+                );
+
+                INSERT INTO tiut(SELECT
+                  iut.iut_id,
+                  t.*,
+                  ((iut.iut_name<>t.iut_name)OR(imt.imt_id<>t.imt_id)OR
+                   (iut.iut_okei<>t.iut_okei)OR(iut.iut_active<>t.iut_active)) as updt,
+                  (iut_id ISNULL AND (imt.imt_id NOTNULL )) as ins
+                FROM (VALUES `;
+                arr.forEach((elem, i) => {
+                    if (i !== 0)
+                        q = q + ", ";
+                    let j = i * 5;
+                    q = q + "($" + (j + 1) + ",$" + (j + 2) + ",$" + (j + 3) + ",$" + (j + 4) + ",$" + (j + 5) + ")";
+                    iut.push(elem.iut_exid);
+                    iut.push(elem.iut_name);
+                    iut.push(elem.imt_id);
+                    iut.push(elem.iut_okei);
+                    iut.push(elem.iut_active);
+                });
+                q = q + `) AS t(iut_exid,iut_name,imt_id,iut_okei,iut_active)
+                  LEFT JOIN item_unit_types iut ON iut.iut_exid=t.iut_exid
+                  LEFT JOIN item_metric_types imt ON t.imt_id=imt.imt_id);
+                INSERT INTO item_unit_types(iut_exid,iut_name,imt_id,iut_okei,iut_active)
+                  SELECT iut_exid,iut_name,imt_id,iut_okei,iut_active FROM tiut WHERE (ins);
+                UPDATE item_unit_types AS iut SET
+                  iut_name=t.iut_name,imt_id=t.imt_id,
+                  iut_okei=t.iut_okei,iut_active=t.iut_active
+                FROM (
+                    SELECT * FROM tiut WHERE (updt)
+                ) AS t WHERE iut.iut_id=t.iut_id;
+                DROP TABLE tiut;`;
+                return [q, iut];
             };
             var itemsUnitF = function(arr) {
-                return ["",[]];
+                let iu = [];
+                let q = ` CREATE TEMP TABLE tiu (
+                  iu_id     INTEGER,
+                  i_id      INTEGER,
+                  iut_id    INTEGER,
+                  iu_ean    VARCHAR(15),
+                  iu_krat   INTEGER,
+                  iu_num    INTEGER,
+                  iu_denum  INTEGER,
+                  iu_gros   INTEGER,
+                  iu_net    INTEGER,
+                  iu_length INTEGER,
+                  iu_width  INTEGER,
+                  iu_height INTEGER,
+                  iu_area   INTEGER,
+                  iu_volume BIGINT,
+                  iu_agent  BOOLEAN,
+                  iu_base   BOOLEAN,
+                  iu_main   BOOLEAN,
+                  iu_active BOOLEAN,
+                  updt      BOOLEAN,
+                  ins       BOOLEAN
+                );
+                INSERT INTO tiu(SELECT
+                  iu.iu_id,
+                  i.i_id,
+                  iut.iut_id,
+                  t.iu_ean, t.iu_krat, t.iu_num, t.iu_denum, t.iu_gros, t.iu_net,
+                  t.iu_length, t.iu_width, t.iu_height, t.iu_area, t.iu_volume,
+                  t.iu_agent, t.iu_base, t.iu_main, t.iu_active,
+                  (iu.iu_ean <> t.iu_ean) OR (iu.iu_krat <> t.iu_krat) OR
+                  (iu.iu_num <> t.iu_num) OR (iu.iu_denum <> t.iu_denum) OR
+                  (iu.iu_gros <> t.iu_gros) OR (iu.iu_net <> t.iu_net) OR
+                  (iu.iu_length <> t.iu_length) OR (iu.iu_width <> t.iu_width) OR
+                  (iu.iu_height <> t.iu_height) OR (iu.iu_area <> t.iu_area) OR
+                  (iu.iu_volume <> t.iu_volume) OR (iu.iu_agent <> t.iu_agent) OR
+                  (iu.iu_base <> t.iu_base) OR (iu.iu_main <> t.iu_main) OR
+                  (iu.iu_active <> t.iu_active) AS updt,
+                  (iu.iu_id ISNULL AND i.i_id NOTNULL AND iut.iut_id NOTNULL)   AS ins
+                FROM (VALUES`;
+                arr.forEach((elem, i) => {
+                    if (i !== 0)
+                        q = q + ", ";
+                    iu.push(elem.i_exid);
+                    iu.push(elem.iut_exid);
+                    iu.push(elem.iu_ean);
+                    iu.push(elem.iu_krat);
+                    iu.push(elem.iu_num);
+                    iu.push(elem.iu_denum);
+                    iu.push(elem.iu_gros);
+                    iu.push(elem.iu_net);
+                    iu.push(elem.iu_length);
+                    iu.push(elem.iu_width);
+                    iu.push(elem.iu_height);
+                    iu.push(elem.iu_area);
+                    iu.push(elem.iu_volume);
+                    iu.push(elem.iu_agent);
+                    iu.push(elem.iu_base);
+                    iu.push(elem.iu_main);
+                    iu.push(elem.iu_active);
+                    let j = i * 17;
+                    for (let ii = 1; ii <= 17; ii++) {
+                        if (ii === 1) {
+                            q = q + "($" + (j + ii);
+                        } else {
+                            q = q + ",$" + (j + ii);
+                        }
+                    }
+                    q = q + ")";
+
+                });
+                q = q + ` ) AS t(i_exid, iut_exid, iu_ean, iu_krat, iu_num, iu_denum,
+                     iu_gros, iu_net, iu_length, iu_width, iu_height, iu_area,
+                     iu_volume, iu_agent, iu_base, iu_main, iu_active)
+                  LEFT JOIN items i ON i.i_exid = t.i_exid
+                  LEFT JOIN item_unit_types iut ON iut.iut_exid = t.iut_exid
+                  LEFT JOIN item_units iu ON (iu.iut_id = iut.iut_id) AND (iu.i_id = i.i_id));
+
+                INSERT INTO item_units (i_id, iut_id, iu_ean, iu_krat, iu_num, iu_denum, iu_gros, iu_net, iu_length, iu_width, iu_height, iu_area, iu_volume, iu_agent, iu_base, iu_main, iu_active)
+                    SELECT i_id, iut_id, iu_ean, iu_krat, iu_num, iu_denum, iu_gros, iu_net, iu_length, iu_width, iu_height, iu_area, iu_volume, iu_agent, iu_base, iu_main, iu_active
+                    FROM tiu WHERE ins;
+
+                UPDATE item_units AS iu SET
+                  iu_ean=t.iu_ean,iu_krat=t.iu_krat,iu_num=t.iu_num,iu_denum=t.iu_denum,iu_gros=t.iu_gros,iu_net=t.iu_net,iu_length=t.iu_length,iu_width=t.iu_width,iu_height=t.iu_height,iu_area=t.iu_area,iu_volume=t.iu_volume,iu_agent=t.iu_agent,iu_base=t.iu_base,iu_main=t.iu_main,iu_active=t.iu_active
+                FROM (
+                    SELECT * FROM tiu WHERE updt=TRUE
+                ) AS t WHERE iu.iu_id=t.iu_id;
+                DROP TABLE tiu;`;
+                return [q, iu];
             };
             db.task(function * (t) {
                 if (obj.items) {
                     console.log('start i', new Date(), obj.items.length);
                     for (let i = 0; i < obj.items.length; i = i + 100) {
                         let a = obj.items.slice(i, i + 100);
-                        let [q,
-                            arr] = itemsF(a);
+                        let [q, arr] = itemsF(a);
                         yield t.none(q, arr);
                     }
                     console.log('end i', new Date());
@@ -375,8 +504,7 @@ var wsfunc = {
                     console.log('start ig', new Date(), obj.itemsGroup.length);
                     for (let i = 0; i < obj.itemsGroup.length; i = i + 100) {
                         let a = obj.itemsGroup.slice(i, i + 100);
-                        let [q,
-                            arr] = itemsGroupF(a);
+                        let [q, arr] = itemsGroupF(a);
                         yield t.none(q, arr);
                     }
                     console.log('end ig', new Date());
@@ -385,8 +513,7 @@ var wsfunc = {
                     console.log('start igt', new Date(), obj.itemsGroupType.length);
                     for (let i = 0; i < obj.itemsGroupType.length; i = i + 100) {
                         let a = obj.itemsGroupType.slice(i, i + 100);
-                        let [q,
-                            arr] = itemsGroupTypeF(a);
+                        let [q, arr] = itemsGroupTypeF(a);
                         yield t.none(q, arr);
                     }
                     console.log('end igt', new Date());
@@ -395,8 +522,7 @@ var wsfunc = {
                     console.log('start lig', new Date(), obj.linkItemGroup.length);
                     for (let i = 0; i < obj.linkItemGroup.length; i = i + 100) {
                         let a = obj.linkItemGroup.slice(i, i + 100);
-                        let [q,
-                            arr] = linkItemGroupF(a);
+                        let [q, arr] = linkItemGroupF(a);
                         yield t.none(q, arr);
                     }
                     console.log('end lig', new Date());
@@ -405,8 +531,7 @@ var wsfunc = {
                     console.log('start iut', new Date(), obj.itemsUnitType.length);
                     for (let i = 0; i < obj.itemsUnitType.length; i = i + 100) {
                         let a = obj.itemsUnitType.slice(i, i + 100);
-                        let [q,
-                            arr] = itemsUnitTypeF(a);
+                        let [q, arr] = itemsUnitTypeF(a);
                         yield t.none(q, arr);
                     }
                     console.log('end iut', new Date());
@@ -415,8 +540,7 @@ var wsfunc = {
                     console.log('start iu', new Date(), obj.itemsUnit.length);
                     for (let i = 0; i < obj.itemsUnit.length; i = i + 100) {
                         let a = obj.itemsUnit.slice(i, i + 100);
-                        let [q,
-                            arr] = itemsUnitF(a);
+                        let [q, arr] = itemsUnitF(a);
                         yield t.none(q, arr);
                     }
                     console.log('end iu', new Date());
@@ -552,18 +676,28 @@ var wsfunc = {
             }*/
             var countragentsF = function(arr) {
                 let ca = [];
-                let q = " CREATE TEMP TABLE tca ( ca_id INTEGER, ca_exid TEXT, cat_id INTEGER, " +
-                " ca_head INTEGER, ca_name TEXT, ca_prn TEXT, ca_info TEXT, ca_inn VARCHAR(25), " +
-                " ca_kpp VARCHAR(25), ca_client BOOLEAN, ca_supplier BOOLEAN, ca_carrier BOOLEAN, " +
-                " ca_active BOOLEAN, ca_mtime TIMESTAMP, updt BOOLEAN, ins BOOLEAN );";
-                q = q + "INSERT INTO tca (" + " SELECT ca.ca_id, t.ca_exid, t.cat_id, ch.ca_id, t.ca_name, t.ca_prn, t.ca_info," +
-                 " t.ca_inn, t.ca_kpp, t.ca_client, t.ca_supplier, t.ca_carrier, t.ca_active," +
-                 " CASE WHEN ca.ca_active NOTNULL THEN now() ELSE ca.ca_mtime END AS ca_mtime, " +
-                 " ((ca.cat_id <> t.cat_id) OR (ca.ca_head <> ch.ca_id) OR (ca.ca_name <> t.ca_name) " +
-                 " OR (ca.ca_prn <> t.ca_prn) OR (ca.ca_info <> t.ca_info) OR " +
-                 " (ca.ca_client <> t.ca_client) OR (ca.ca_supplier <> t.ca_supplier) OR " +
-                 " (ca.ca_carrier <> t.ca_carrier) OR (ca.ca_active <> t.ca_active)) AS updt, " +
-                 " (ca.ca_id ISNULL) AS ins FROM (VALUES";
+                let q = `CREATE TEMP TABLE tca (
+                    ca_id INTEGER, ca_exid TEXT,
+                    cat_id INTEGER, ca_head INTEGER,
+                    ca_name TEXT, ca_prn TEXT,
+                    ca_info TEXT, ca_inn VARCHAR(25),
+                    ca_kpp VARCHAR(25), ca_client BOOLEAN,
+                    ca_supplier BOOLEAN, ca_carrier BOOLEAN,
+                    ca_active BOOLEAN, updt BOOLEAN, ins BOOLEAN );
+                INSERT INTO tca (
+                    SELECT
+                        ca.ca_id, t.ca_exid,
+                        t.cat_id, ch.ca_id,
+                        t.ca_name, t.ca_prn,
+                        t.ca_info, t.ca_inn,
+                        t.ca_kpp, t.ca_client,
+                        t.ca_supplier, t.ca_carrier, t.ca_active,
+                        ((ca.cat_id <> t.cat_id) OR (ca.ca_head <> ch.ca_id) OR (ca.ca_name <> t.ca_name)
+                        OR (ca.ca_prn <> t.ca_prn) OR (ca.ca_info <> t.ca_info) OR
+                        (ca.ca_client <> t.ca_client) OR (ca.ca_supplier <> t.ca_supplier) OR
+                        (ca.ca_carrier <> t.ca_carrier) OR (ca.ca_active <> t.ca_active)) AS updt,
+                        (ca.ca_id ISNULL) AS ins
+                    FROM (VALUES`;
                 arr.forEach((elem, i) => {
                     if (i !== 0)
                         q = q + ", ";
@@ -583,26 +717,54 @@ var wsfunc = {
                     ca.push(elem.ca_carrier);
                     ca.push(elem.ca_active);
                 });
-                q = q + ") AS t(ca_exid, cat_id, ca_exhead, ca_name, ca_prn, ca_info, " +
-                " ca_inn, ca_kpp, ca_client, ca_supplier, ca_carrier, ca_active) " +
-                " LEFT JOIN countragents ca ON (ca.ca_exid = t.ca_exid)" +
-                " LEFT JOIN countragents ch ON (ch.ca_exid = t.ca_exhead));";
-                q = q + " INSERT INTO countragents (ca_exid, cat_id, ca_head, ca_name, " +
-                " ca_prn, ca_info, ca_inn, ca_kpp, ca_client, ca_supplier, ca_carrier, " + " ca_active) SELECT ca_exid, cat_id, ca_head, ca_name, ca_prn, ca_info, " + " ca_inn, ca_kpp, ca_client, ca_supplier, ca_carrier, ca_active " + " FROM tca WHERE (ins = TRUE);";
-                q = q + " UPDATE countragents AS ca SET cat_id = t.cat_id, ca_head = t.ca_head, " + " ca_name = t.ca_name, ca_prn = t.ca_prn, ca_info = t.ca_info, ca_inn = t.ca_inn," + " ca_kpp = t.ca_kpp, ca_client = t.ca_client, ca_supplier = t.ca_supplier, " + " ca_carrier = t.ca_carrier, ca_active = t.ca_active, ca_mtime = t.ca_mtime " + " FROM (SELECT * FROM tca WHERE (updt = TRUE)) AS t WHERE ca.ca_id = t.ca_id;";
-                q = q + " DROP TABLE tca;";
+                q = q + `) AS t(ca_exid, cat_id, ca_exhead, ca_name, ca_prn, ca_info,
+                    ca_inn, ca_kpp, ca_client, ca_supplier, ca_carrier, ca_active)
+                LEFT JOIN countragents ca ON (ca.ca_exid = t.ca_exid)
+                LEFT JOIN countragents ch ON (ch.ca_exid = t.ca_exhead));
+
+                INSERT INTO countragents
+                        (ca_exid, cat_id, ca_head, ca_name, ca_prn,
+                        ca_info, ca_inn, ca_kpp, ca_client,
+                        ca_supplier, ca_carrier, ca_active)
+                    SELECT
+                        ca_exid, cat_id, ca_head, ca_name, ca_prn, ca_info, ca_inn,
+                        ca_kpp, ca_client, ca_supplier, ca_carrier, ca_active
+                    FROM tca WHERE (ins = TRUE);
+
+                UPDATE countragents AS ca SET
+                    cat_id = t.cat_id, ca_head = t.ca_head, ca_name = t.ca_name,
+                    ca_prn = t.ca_prn, ca_info = t.ca_info, ca_inn = t.ca_inn,
+                    ca_kpp = t.ca_kpp, ca_client = t.ca_client, ca_supplier = t.ca_supplier,
+                    ca_carrier = t.ca_carrier, ca_active = t.ca_active, ca_mtime = now()
+                FROM (
+                    SELECT * FROM tca WHERE (updt = TRUE)
+                ) AS t WHERE ca.ca_id = t.ca_id;
+                DROP TABLE tca;`;
+
                 return [q, ca];
             };
             var deliveryPointsF = function(arr) {
                 let dp = [];
-                let q = " CREATE TEMP TABLE tdp( dp_id INTEGER, dp_exid TEXT, dp_name VARCHAR(100)," +
-                " dp_prn VARCHAR(100), dp_info TEXT, dp_client BOOLEAN, dp_supplier BOOLEAN, " +
-                " dp_carrier BOOLEAN, dp_active BOOLEAN, dp_mtime TIMESTAMP, updt BOOLEAN, ins BOOLEAN);";
-                q = q + "INSERT INTO tdp(SELECT dp.dp_id,t.*, CASE WHEN dp.dp_active NOTNULL " + " THEN now() ELSE dp.dp_mtime END AS dp_mtime, ((dp.dp_name<>t.dp_name) OR" + " (dp.dp_prn<>t.dp_prn)OR (dp.dp_info<>t.dp_info)OR (dp.dp_client<>t.dp_client) OR " + " (dp.dp_supplier<>t.dp_supplier)OR (dp.dp_carrier<>t.dp_carrier) OR " + " (dp.dp_active <> t.dp_active)) AS updt, dp_id ISNULL AS ins FROM (VALUES";
+                let q = `CREATE TEMP TABLE tdp(
+                    dp_id INTEGER, dp_exid TEXT, dp_name VARCHAR(100),
+                    dp_prn VARCHAR(100), dp_info TEXT,
+                    dp_client BOOLEAN, dp_supplier BOOLEAN,
+                    dp_carrier BOOLEAN, dp_active BOOLEAN,
+                    updt BOOLEAN, ins BOOLEAN
+                );
+                INSERT INTO tdp(
+                    SELECT dp.dp_id,t.*,
+                    ((dp.dp_name<>t.dp_name) OR (dp.dp_prn<>t.dp_prn) OR
+                    (dp.dp_info<>t.dp_info)OR (dp.dp_client<>t.dp_client) OR
+                    (dp.dp_supplier<>t.dp_supplier)OR (dp.dp_carrier<>t.dp_carrier) OR
+                    (dp.dp_active <> t.dp_active)) AS updt,
+                    dp_id ISNULL AS ins
+                 FROM (VALUES`;
                 arr.forEach((elem, i) => {
                     if (i !== 0)
                         q = q + ", ";
-                    q = q + "($" + (i * 8 + 1) + ",$" + (i * 8 + 2) + ",$" + (i * 8 + 3) + ",$" + (i * 8 + 4) + ",$" + (i * 8 + 5) + ",$" + (i * 8 + 6) + ",$" + (i * 8 + 7) + ",$" + (i * 8 + 8) + ")";
+                    q = q + "($" + (i * 8 + 1) + ",$" + (i * 8 + 2) + ",$" + (i * 8 + 3) + ",$" + (i * 8 + 4);
+                    q = q + ",$" + (i * 8 + 5) + ",$" + (i * 8 + 6) + ",$" + (i * 8 + 7) + ",$" + (i * 8 + 8) + ")";
                     dp.push(elem.dp_exid);
                     dp.push(elem.dp_name);
                     dp.push(elem.dp_prn);
@@ -612,18 +774,47 @@ var wsfunc = {
                     dp.push(elem.dp_carrier);
                     dp.push(elem.dp_active);
                 });
-                q = q + ") AS t(dp_exid, dp_name, dp_prn, dp_info, dp_client, dp_supplier, " + " dp_carrier, dp_active) LEFT JOIN delivery_points dp ON (dp.dp_exid=t.dp_exid));";
-                q = q + " INSERT INTO delivery_points (dp_exid, dp_name, dp_prn, " + " dp_info, dp_client, dp_supplier, dp_carrier, dp_active) " + " SELECT dp_exid, dp_name, dp_prn, dp_info, dp_client, dp_supplier, " + " dp_carrier, dp_active FROM tdp WHERE tdp.ins=TRUE ;";
-                q = q + " UPDATE delivery_points AS dp SET dp_name=t.dp_name, dp_prn=t.dp_prn," + " dp_info=t.dp_info, dp_client= t.dp_client, dp_supplier=t.dp_supplier, " + " dp_carrier=t.dp_carrier, dp_active=t.dp_active, dp_mtime=t.dp_mtime FROM (" + " SELECT * FROM tdp WHERE updt=TRUE ) AS t WHERE t.dp_id=dp.dp_id;";
-                q = q + " DROP TABLE tdp;";
+                q = q + `) AS t(dp_exid, dp_name, dp_prn, dp_info, dp_client,
+                    dp_supplier, dp_carrier, dp_active)
+                    LEFT JOIN delivery_points dp ON (dp.dp_exid=t.dp_exid));
+                INSERT INTO delivery_points (
+                    dp_exid, dp_name, dp_prn, dp_info, dp_client, dp_supplier, dp_carrier, dp_active)
+                    SELECT dp_exid, dp_name, dp_prn, dp_info, dp_client, dp_supplier, dp_carrier, dp_active
+                FROM tdp WHERE tdp.ins=TRUE ;
+                UPDATE delivery_points AS dp SET
+                    dp_name=t.dp_name, dp_prn=t.dp_prn,
+                    dp_info=t.dp_info, dp_client= t.dp_client,
+                    dp_supplier=t.dp_supplier, dp_carrier=t.dp_carrier,
+                    dp_active=t.dp_active, dp_mtime=now()
+                FROM (
+                    SELECT * FROM tdp WHERE updt=TRUE
+                ) AS t WHERE t.dp_id=dp.dp_id;
+                DROP TABLE tdp;`;
                 return [q, dp];
             };
             var addressF = function(arr) {
                 let adr = [];
-                let q = " CREATE TEMP TABLE tadr ( adr_id INTEGER, any_id INTEGER, " +
-                " adrt_id INTEGER, adr_str TEXT, adr_fias VARCHAR(50), adr_geo point, " +
-                " adr_json JSONB, adr_active BOOLEAN, adr_mtime TIMESTAMP, updt BOOLEAN, ins BOOLEAN);";
-                q = q + "INSERT INTO tadr (adr_id,any_id,adrt_id,adr_str,adr_active," + " adr_mtime,updt,ins) SELECT adr.adr_id, t.*, CASE WHEN adr.adr_active " + " NOTNULL THEN now() ELSE adr.adr_mtime END AS adr_mtime, " + " ((t.adr_str<>adr.adr_str)OR(t.adr_active<>adr.adr_active)) AS updt," + " (adr.adr_id ISNULL ) AS ins FROM( SELECT CASE WHEN cau.ca_id NOTNULL " + " THEN cau.ca_id WHEN caf.ca_id NOTNULL THEN caf.ca_id WHEN dp.dp_id " + " NOTNULL THEN dp.dp_id ELSE NULL END  as any_id, t.adrt_id, " + " t.adr_str, t.adr_active FROM (VALUES";
+                let q = `CREATE TEMP TABLE tadr (
+                    adr_id INTEGER, any_id INTEGER,
+                    adrt_id INTEGER, adr_str TEXT,
+                    adr_fias VARCHAR(50), adr_geo point,
+                    adr_json JSONB, adr_active BOOLEAN,
+                    updt BOOLEAN, ins BOOLEAN);
+                INSERT INTO tadr (adr_id,any_id,adrt_id,adr_str,adr_active,updt,ins)
+                SELECT
+                    adr.adr_id, t.*,
+                    ((t.adr_str<>adr.adr_str)OR(t.adr_active<>adr.adr_active)) AS updt,
+                    (adr.adr_id ISNULL)AND(t.any_id NOTNULL) AS ins
+                FROM(
+                    SELECT
+                        CASE WHEN cau.ca_id NOTNULL THEN cau.ca_id
+                             WHEN caf.ca_id NOTNULL THEN caf.ca_id
+                             WHEN dp.dp_id  NOTNULL THEN dp.dp_id ELSE NULL END  as any_id,
+                        t.adrt_id,
+                        t.adr_str,
+                        t.adr_active
+                    FROM (VALUES
+                    `;
                 arr.forEach((elem, i) => {
                     if (i !== 0)
                         q = q + ", ";
@@ -633,17 +824,33 @@ var wsfunc = {
                     adr.push(elem.adr_str);
                     adr.push(elem.adr_active);
                 });
-                q = q + ") AS t(any_exid, adrt_id, adr_str, adr_active)" + " LEFT JOIN countragents cau ON ((t.any_exid=cau.ca_exid) AND (t.adrt_id=1))" + " LEFT JOIN countragents caf ON ((t.any_exid=caf.ca_exid)AND(t.adrt_id=2))" + " LEFT JOIN delivery_points dp ON ((t.any_exid=dp.dp_exid)AND(t.adrt_id=3))) AS t" + " LEFT JOIN address adr ON ((t.any_id=adr.any_id)AND(t.adrt_id=adr.adrt_id));";
-                q = q + " INSERT INTO address (any_id,adrt_id,adr_str,adr_active) " + " SELECT any_id,adrt_id,adr_str,adr_active FROM tadr WHERE (ins=TRUE);";
-                q = q + " UPDATE address AS adr SET adr_str=t.adr_str, adr_active=t.adr_active, " + " adr_mtime=t.adr_mtime FROM (SELECT * FROM tadr WHERE updt=TRUE) AS t " + " WHERE (t.adr_id=adr.adr_id);";
-                q = q + " DROP TABLE tadr;";
+                q = q + `) AS t(any_exid, adrt_id, adr_str, adr_active)
+                        LEFT JOIN countragents cau ON ((t.any_exid=cau.ca_exid) AND (t.adrt_id=1))
+                        LEFT JOIN countragents caf ON ((t.any_exid=caf.ca_exid)AND(t.adrt_id=2))
+                        LEFT JOIN delivery_points dp ON ((t.any_exid=dp.dp_exid)AND(t.adrt_id=3))
+                    ) AS t
+                    LEFT JOIN address adr ON ((t.any_id=adr.any_id)AND(t.adrt_id=adr.adrt_id));
+                    INSERT INTO address (any_id,adrt_id,adr_str,adr_active)
+                        SELECT any_id,adrt_id,adr_str,adr_active FROM tadr WHERE (ins=TRUE);
+                    UPDATE address AS adr SET
+                        adr_str=t.adr_str, adr_active=t.adr_active, adr_mtime=now()
+                        FROM (
+                            SELECT * FROM tadr WHERE updt=TRUE
+                        ) AS t WHERE (t.adr_id=adr.adr_id);
+                    DROP TABLE tadr;`;
                 return [q, adr];
             };
             var linksCountragentDeliveryPointsF = function(arr) {
                 let lcp = [];
-                let q = " CREATE TEMP TABLE tlcp (lcp_id INTEGER, ca_id INTEGER, dp_id INTEGER," +
-                " lcp_active BOOLEAN, lcp_mtime TIMESTAMP, updt BOOLEAN, ins BOOLEAN);";
-                q = q + "INSERT INTO tlcp(SELECT lcp.lcp_id ,ca.ca_id,dp.dp_id,t.lcp_active," + " CASE WHEN lcp.lcp_active NOTNULL THEN now() ELSE lcp.lcp_mtime END AS lcp_mtime," + " (t.lcp_active<>lcp.lcp_active) AS updt, (lcp.lcp_id ISNULL ) AS ins FROM (VALUES";
+                let q = ` CREATE TEMP TABLE tlcp (
+                    lcp_id INTEGER, ca_id INTEGER,
+                    dp_id INTEGER, lcp_active BOOLEAN,
+                    updt BOOLEAN, ins BOOLEAN);
+                INSERT INTO tlcp(
+                    SELECT lcp.lcp_id ,ca.ca_id,dp.dp_id,t.lcp_active,
+                    (t.lcp_active<>lcp.lcp_active) AS updt,
+                    (lcp.lcp_id ISNULL ) AS ins
+                FROM (VALUES`;
                 arr.forEach((elem, i) => {
                     if (i !== 0)
                         q = q + ", ";
@@ -652,10 +859,18 @@ var wsfunc = {
                     lcp.push(elem.dp_exid);
                     lcp.push(elem.lcp_active);
                 });
-                q = q + ") AS t(ca_exid,dp_exid,lcp_active) LEFT JOIN countragents ca " + " ON (t.ca_exid=ca.ca_exid) LEFT JOIN delivery_points dp " + " ON (t.dp_exid=dp.dp_exid) LEFT JOIN links_countragent_delivery_point lcp" + " ON ((ca.ca_id=lcp.ca_id)AND(dp.dp_id=lcp_id)));";
-                q = q + " INSERT INTO links_countragent_delivery_point(ca_id,dp_id,lcp_active)" + " SELECT ca_id,dp_id,lcp_active FROM tlcp WHERE ins=TRUE;";
-                q = q + " UPDATE links_countragent_delivery_point AS lcp " + " SET lcp_active=t.lcp_active,lcp_mtime=t.lcp_mtime FROM (" + " SELECT * FROM tlcp WHERE updt=TRUE) AS t WHERE (t.lcp_id=lcp.lcp_id); ";
-                q = q + " DROP TABLE tlcp;";
+                q = q + `) AS t(ca_exid,dp_exid,lcp_active)
+                LEFT JOIN countragents ca ON (t.ca_exid=ca.ca_exid)
+                LEFT JOIN delivery_points dp ON (t.dp_exid=dp.dp_exid)
+                LEFT JOIN links_countragent_delivery_point lcp ON ((ca.ca_id=lcp.ca_id)AND(dp.dp_id=lcp_id)));
+                INSERT INTO links_countragent_delivery_point(ca_id,dp_id,lcp_active)
+                    SELECT ca_id,dp_id,lcp_active FROM tlcp WHERE ins=TRUE;
+                UPDATE links_countragent_delivery_point AS lcp SET
+                    lcp_active=t.lcp_active,lcp_mtime=now()
+                FROM (
+                    SELECT * FROM tlcp WHERE updt=TRUE
+                ) AS t WHERE (t.lcp_id=lcp.lcp_id);
+                DROP TABLE tlcp;`;
                 return [q, lcp];
             };
             db.task(function * (t) {
@@ -772,10 +987,14 @@ var wsfunc = {
             }
             var pricelistF = function(arr) {
                 let pl = [];
-                let q = " CREATE TEMP TABLE tpl ( pl_id INTEGER, pl_exid TEXT, " +
-                " pl_name VARCHAR(50), pl_type INTEGER, pl_active BOOLEAN, " +
-                " pl_mtime TIMESTAMP, updt BOOLEAN, ins BOOLEAN);";
-                q = q + " INSERT INTO tpl( SELECT pl.pl_id, t.*, " + " CASE WHEN pl.pl_active NOTNULL THEN now() ELSE pl.pl_mtime END AS pl_mtime, " + " ((pl.pl_name <> t.pl_name) OR (pl.pl_type <> t.pl_type) OR " + " (pl.pl_active <> t.pl_active)) AS updt, pl_id ISNULL AS ins " + " FROM pricelist pl RIGHT JOIN ( VALUES";
+                let q = ` CREATE TEMP TABLE tpl (
+                    pl_id INTEGER, pl_exid TEXT, pl_name VARCHAR(50), pl_type INTEGER,
+                    pl_active BOOLEAN, updt BOOLEAN, ins BOOLEAN);
+                    INSERT INTO tpl(
+                        SELECT pl.pl_id, t.*,
+                        ((pl.pl_name <> t.pl_name) OR (pl.pl_type <> t.pl_type) OR (pl.pl_active <> t.pl_active)) AS updt,
+                        pl_id ISNULL AS ins
+                    FROM pricelist pl RIGHT JOIN ( VALUES`;
                 arr.forEach((elem, i) => {
                     if (i !== 0)
                         q = q + ", ";
@@ -785,18 +1004,41 @@ var wsfunc = {
                     pl.push(elem.pl_type);
                     pl.push(elem.pl_active);
                 });
-                q = q + ") AS t(pl_exid, pl_name, pl_type, pl_active) ON t.pl_exid = pl.pl_exid); ";
-                q = q + " INSERT INTO pricelist (pl_exid, pl_name, pl_type, pl_active)" + " SELECT pl_exid, pl_name, pl_type, pl_active, pl_mtime FROM tpl WHERE (ins= TRUE);";
-                q = q + " UPDATE pricelist AS pl SET pl_exid=t.pl_exid, pl_name=t.pl_name," + " pl_type=t.pl_type, pl_active=t.pl_active, pl_mtime=t.pl_mtime  FROM (" + " SELECT pl_id, pl_exid,pl_name,pl_type,pl_active FROM tpl" + " WHERE (updt = TRUE)) AS t WHERE pl.pl_id = t.pl_id;";
-                q = q + " DROP TABLE tpl;";
+                q = q + `) AS t(pl_exid, pl_name, pl_type, pl_active) ON t.pl_exid = pl.pl_exid);
+                INSERT INTO pricelist (pl_exid, pl_name, pl_type, pl_active)
+                    SELECT pl_exid, pl_name, pl_type, pl_active FROM tpl WHERE (ins= TRUE);
+                UPDATE pricelist AS pl SET
+                    pl_exid=t.pl_exid, pl_name=t.pl_name,pl_type=t.pl_type,
+                    pl_active=t.pl_active, pl_mtime=now()
+                FROM (
+                    SELECT pl_id, pl_exid,pl_name,pl_type,pl_active FROM tpl WHERE (updt = TRUE)
+                ) AS t WHERE pl.pl_id = t.pl_id;
+                DROP TABLE tpl;`;
                 return [q, pl];
             };
             var priceF = function(arr) {
                 let p = [];
-                let q = " CREATE TABLE tp (p_id INTEGER, pl_id INTEGER, i_id INTEGER," +
-                " p_date_b TIMESTAMP, p_date_e TIMESTAMP, p_cn INTEGER, p_active BOOLEAN," +
-                " p_mtime TIMESTAMP, updt BOOLEAN, ins BOOLEAN);";
-                q = q + " INSERT INTO tp(SELECT p.p_id, pl.pl_id, i.i_id, " + " t.p_date_b, t.p_date_e, t.p_cn, t.p_active, " + " CASE WHEN p.p_active NOTNULL THEN now() ELSE p.p_mtime END AS p_mtime," + " ((p.p_date_b <> t.p_date_b) OR (p.p_date_e <> t.p_date_e) " + " OR (p.p_cn <> t.p_cn) OR (p.p_active <> t.p_active)) AS updt," + " ((p.p_id ISNULL) AND (pl.pl_id NOTNULL) AND (i.i_id NOTNULL)) AS ins FROM pricelist pl RIGHT JOIN (" + " SELECT pl_exid, i_exid, p_date_b :: TIMESTAMP, p_date_e :: TIMESTAMP, p_cn, p_active FROM (VALUES ";
+                let q = ` CREATE TABLE tp (
+                    p_id INTEGER, pl_id INTEGER, i_id INTEGER,
+                    p_date_b TIMESTAMP, p_date_e TIMESTAMP,
+                    p_cn INTEGER, p_active BOOLEAN,
+                    updt BOOLEAN, ins BOOLEAN);
+                    INSERT INTO tp(
+                        SELECT
+                            p.p_id, pl.pl_id, i.i_id,
+                            t.p_date_b, t.p_date_e,
+                            t.p_cn, t.p_active,
+                            ((p.p_date_b <> t.p_date_b) OR (p.p_date_e <> t.p_date_e) OR
+                            (p.p_cn <> t.p_cn) OR (p.p_active <> t.p_active)) AS updt,
+                            ((p.p_id ISNULL) AND (pl.pl_id NOTNULL) AND (i.i_id NOTNULL)) AS ins
+                        FROM pricelist pl
+                        RIGHT JOIN (
+                            SELECT
+                                pl_exid, i_exid,
+                                p_date_b :: TIMESTAMP,
+                                p_date_e :: TIMESTAMP,
+                                p_cn, p_active
+                            FROM (VALUES `;
                 arr.forEach((elem, i) => {
                     if (i !== 0)
                         q = q + ", ";
@@ -810,18 +1052,33 @@ var wsfunc = {
                     p.push(elem.p_active);
                     //console.log('p', elem, p.slice(-6));
                 });
-                q = q + " ) AS t(pl_exid, i_exid, p_date_b, p_date_e, p_cn, p_active)) AS t" + " ON pl.pl_exid = t.pl_exid LEFT JOIN items i ON t.i_exid = i.i_exid" + " LEFT JOIN price p ON p.pl_id = pl.pl_id AND p.i_id = i.i_id);";
-                q = q + " INSERT INTO price (pl_id, i_id, p_date_b, p_date_e, p_cn, p_active)" + " SELECT pl_id, i_id, p_date_b, p_date_e, p_cn, p_active FROM tp WHERE (ins= TRUE);";
-                q = q + " UPDATE price AS p SET p_date_b=t.p_date_b, p_date_e=t.p_date_e, " + " p_cn=t.p_cn, p_active=t.p_active, p_mtime=t.p_mtime  FROM (" + " SELECT p_id, p_date_b, p_date_e, p_cn, p_active, p_mtime FROM tp" + " WHERE (updt = TRUE)) AS t WHERE p.p_id = t.p_id;";
-                q = q + " DROP TABLE tp;";
+                q = q + ` ) AS t(pl_exid, i_exid, p_date_b, p_date_e, p_cn, p_active)) AS t
+                    ON pl.pl_exid = t.pl_exid LEFT JOIN items i ON t.i_exid = i.i_exid
+                    LEFT JOIN price p ON p.pl_id = pl.pl_id AND p.i_id = i.i_id);
+                    INSERT INTO price (pl_id, i_id, p_date_b, p_date_e, p_cn, p_active)
+                        SELECT pl_id, i_id, p_date_b, p_date_e, p_cn, p_active FROM tp WHERE (ins= TRUE);
+                    UPDATE price AS p SET
+                        p_date_b=t.p_date_b, p_date_e=t.p_date_e,
+                        p_cn=t.p_cn, p_active=t.p_active, p_mtime=now()
+                    FROM (
+                        SELECT p_id, p_date_b, p_date_e, p_cn, p_active FROM tp WHERE (updt = TRUE)
+                    ) AS t WHERE p.p_id = t.p_id;
+                    DROP TABLE tp;`;
                 return [q, p];
             };
             var pricelistLinkF = function(arr) {
                 let pll = [];
-                let q = "CREATE TEMP TABLE tpll ( pl_parent INTEGER, " +
-                " pl_child INTEGER, pll_prior INTEGER, pll_active BOOLEAN, " +
-                " pll_mtime TIMESTAMP, updt BOOLEAN, ins BOOLEAN);";
-                q = q + "INSERT INTO tpll (SELECT plp.pl_id AS pl_parent, " + " plc.pl_id AS pl_child, t.pll_prior,t.pll_active, " + " CASE WHEN pll.pll_active NOTNULL THEN NOW() ELSE pll.pll_mtime END AS pll_mtime, " + " ((pll.pll_prior<>t.pll_prior)OR(pll.pll_active<>t.pll_active)) AS updt, " + "(pll.pl_parent ISNULL OR pll.pl_child ISNULL) AND " + "(plp.pl_id NOTNULL AND plc.pl_id NOTNULL) AS ins FROM pricelist plp RIGHT JOIN (VALUES";
+                let q = `CREATE TEMP TABLE tpll (
+                        pl_parent INTEGER, pl_child INTEGER,
+                        pll_prior INTEGER, pll_active BOOLEAN,
+                        updt BOOLEAN, ins BOOLEAN);
+                    INSERT INTO tpll (
+                        SELECT
+                            plp.pl_id AS pl_parent, plc.pl_id AS pl_child,
+                            t.pll_prior, t.pll_active,
+                            ((pll.pll_prior<>t.pll_prior)OR(pll.pll_active<>t.pll_active)) AS updt,
+                            (pll.pl_parent ISNULL OR pll.pl_child ISNULL) AND (plp.pl_id NOTNULL AND plc.pl_id NOTNULL) AS ins
+                        FROM pricelist plp RIGHT JOIN (VALUES`;
                 arr.forEach((elem, i) => {
                     if (i !== 0)
                         q = q + ", ";
@@ -831,10 +1088,18 @@ var wsfunc = {
                     pll.push(elem.pll_prior);
                     pll.push(elem.pll_active);
                 });
-                q = q + ") AS t(pl_exparent, pl_exchild, pll_prior, pll_active) ON plp.pl_exid=t.pl_exparent" + " LEFT JOIN pricelist plc ON plc.pl_exid=t.pl_exchild" + " LEFT JOIN pricelist_link pll ON pll.pl_parent=plp.pl_id AND pll.pl_child=plc.pl_id);";
-                q = q + "INSERT INTO pricelist_link (pl_parent,pl_child,pll_prior,pll_active) " + " SELECT pl_parent,pl_child,pll_prior,pll_active FROM tpll WHERE (ins=TRUE);";
-                q = q + "UPDATE pricelist_link AS pll SET pll_prior=t.pll_prior, " + "pll_active=t.pll_active, pll_mtime=t.pll_mtime FROM (" + "SELECT * FROM tpll WHERE (updt=TRUE )) AS t " + "WHERE pll.pl_parent=t.pl_parent AND pll.pl_child=t.pl_child;";
-                q = q + " DROP TABLE tpll;";
+                q = q + `) AS t(pl_exparent, pl_exchild, pll_prior, pll_active) ON plp.pl_exid=t.pl_exparent
+                LEFT JOIN pricelist plc ON plc.pl_exid=t.pl_exchild
+                LEFT JOIN pricelist_link pll ON pll.pl_parent=plp.pl_id AND pll.pl_child=plc.pl_id);
+                INSERT INTO pricelist_link (pl_parent,pl_child,pll_prior,pll_active)
+                    SELECT pl_parent,pl_child,pll_prior,pll_active FROM tpll WHERE (ins=TRUE);
+                UPDATE pricelist_link AS pll SET
+                    pll_prior=t.pll_prior, pll_active=t.pll_active, pll_mtime=now()
+                FROM (
+                    SELECT * FROM tpll WHERE (updt=TRUE)
+                ) AS t WHERE pll.pl_parent=t.pl_parent AND pll.pl_child=t.pl_child;
+
+                DROP TABLE tpll;`;
 
                 return [q, pll];
             };
@@ -940,12 +1205,15 @@ var wsfunc = {
             }
             var storesF = function(arr) {
                 let sr = [];
-                let q = "CREATE TEMP TABLE tsr (sr_id INTEGER, sr_exid TEXT, sr_name VARCHAR(50), " +
-                " sr_type smallint, sr_active BOOLEAN, sr_mtime TIMESTAMP, updt BOOLEAN, ins BOOLEAN);" +
-                " INSERT INTO tsr( SELECT sr.sr_id, t.*, " +
-                " CASE WHEN sr.sr_active NOTNULL THEN now() ELSE sr.sr_mtime END AS sr_mtime, " +
-                "((sr.sr_name <> t.sr_name) OR (sr.sr_type <> t.sr_type) OR (sr.sr_active <> t.sr_active)) as updt, " +
-                " sr_id ISNULL  as ins FROM stores sr RIGHT JOIN ( VALUES ";
+                let q = `CREATE TEMP TABLE tsr (
+                sr_id INTEGER, sr_exid TEXT, sr_name VARCHAR(50),
+                sr_type smallint, sr_active BOOLEAN,
+                updt BOOLEAN, ins BOOLEAN);
+                INSERT INTO tsr(
+                    SELECT
+                        sr.sr_id, t.*,
+                        ((sr.sr_name <> t.sr_name) OR (sr.sr_type <> t.sr_type) OR (sr.sr_active <> t.sr_active)) as updt,
+                        sr_id ISNULL  as ins FROM stores sr RIGHT JOIN (VALUES `;
                 arr.forEach((elem, i) => {
                     if (i !== 0)
                         q = q + ", ";
@@ -955,17 +1223,31 @@ var wsfunc = {
                     sr.push(elem.sr_type);
                     sr.push(elem.sr_active);
                 });
-                q = q + ") AS t(sr_exid, sr_name, sr_type, sr_active) ON t.sr_exid = sr.sr_exid);";
-                q = q + " INSERT INTO stores (sr_exid, sr_name, sr_type, sr_active)" + " SELECT sr_exid,sr_name,sr_type,sr_active FROM tsr WHERE (ins= TRUE);";
-                q = q + " UPDATE stores AS sr SET sr_exid=t.sr_exid, sr_name=t.sr_name, " + " sr_type=t.sr_type, sr_active=t.sr_active, sr_mtime=t.sr_mtime  FROM (" + " SELECT sr_id, sr_exid,sr_name,sr_type,sr_active,sr_mtime FROM tsr " + " WHERE (updt = TRUE)) AS t WHERE sr.sr_id = t.sr_id;";
-                q = q + " DROP TABLE tsr;";
+                q = q + `) AS t(sr_exid, sr_name, sr_type, sr_active) ON t.sr_exid = sr.sr_exid);
+                INSERT INTO stores (sr_exid, sr_name, sr_type, sr_active)
+                    SELECT sr_exid,sr_name,sr_type,sr_active FROM tsr WHERE (ins= TRUE);
+                UPDATE stores AS sr SET
+                    sr_exid=t.sr_exid, sr_name=t.sr_name,
+                    sr_type=t.sr_type, sr_active=t.sr_active, sr_mtime=now()
+                FROM (
+                    SELECT sr_id, sr_exid,sr_name,sr_type,sr_active,sr_mtime FROM tsr  WHERE (updt = TRUE)
+                ) AS t WHERE sr.sr_id = t.sr_id;
+                DROP TABLE tsr;`;
                 return [q, sr];
             };
             var storeLinkF = function(arr) {
                 let srl = [];
-                let q = "CREATE TEMP TABLE tsrl ( srl_id INTEGER, srl_parent INTEGER, srl_child INTEGER, " +
-                " srl_sort INTEGER, srl_active BOOLEAN, srl_mtime TIMESTAMP, updt BOOLEAN, ins BOOLEAN); ";
-                q = q + " INSERT INTO tsrl(" + " SELECT srl.srl_id, s2.sr_id AS srl_parent, s1.sr_id AS srl_child, t.srl_sort, t.srl_active," + " CASE WHEN srl.srl_active NOTNULL THEN now() ELSE srl.srl_mtime END AS srl_mtime, " + " ((srl.srl_sort <> t.srl_sort) OR (srl.srl_active <> t.srl_active)) as updt, " + " ((srl_id ISNULL) AND (s1.sr_id NOTNULL) AND (s2.sr_id NOTNULL)) AS ins FROM stores s1 " + " RIGHT JOIN ( VALUES ";
+                let q = `CREATE TEMP TABLE tsrl (
+                    srl_id INTEGER, srl_parent INTEGER,
+                    srl_child INTEGER, srl_sort INTEGER, srl_active BOOLEAN,
+                    updt BOOLEAN, ins BOOLEAN);
+                INSERT INTO tsrl(
+                    SELECT
+                        srl.srl_id, s2.sr_id AS srl_parent, s1.sr_id AS srl_child,
+                        t.srl_sort, t.srl_active,
+                        ((srl.srl_sort <> t.srl_sort) OR (srl.srl_active <> t.srl_active)) as updt,
+                        ((srl_id ISNULL) AND (s1.sr_id NOTNULL) AND (s2.sr_id NOTNULL)) AS ins
+                    FROM stores s1 RIGHT JOIN ( VALUES`;
                 //console.log('obj.storeLink', obj.storeLink);
                 arr.forEach((elem, i) => {
                     if (i !== 0)
@@ -976,17 +1258,32 @@ var wsfunc = {
                     srl.push(elem.srl_sort);
                     srl.push(elem.srl_active);
                 });
-                q = q + " ) AS t(srl_exparent, srl_exchild, srl_sort, srl_active) ON t.srl_exchild=s1.sr_exid " + " LEFT JOIN stores AS s2 ON t.srl_exparent=s2.sr_exid " + " LEFT JOIN store_link AS srl ON srl.srl_parent=s2.sr_id AND srl.srl_child=s1.sr_id); ";
-                q = q + " INSERT INTO store_link (srl_parent, srl_child, srl_sort, srl_active)" + " SELECT srl_parent, srl_child, srl_sort, srl_active FROM tsrl WHERE (ins= TRUE);";
-                q = q + " UPDATE store_link AS srl SET srl_parent=t.srl_parent, srl_child=t.srl_child, " + " srl_sort=t.srl_sort, srl_active=t.srl_active, srl_mtime=t.srl_mtime FROM (" + " SELECT srl_id, srl_parent, srl_child, srl_sort, srl_active, srl_mtime FROM tsrl " + " WHERE (updt = TRUE)) AS t WHERE srl.srl_id = t.srl_id;";
-                q = q + " DROP TABLE tsrl;";
+                q = q + ` ) AS t(srl_exparent, srl_exchild, srl_sort, srl_active) ON t.srl_exchild=s1.sr_exid
+                LEFT JOIN stores AS s2 ON t.srl_exparent=s2.sr_exid
+                LEFT JOIN store_link AS srl ON srl.srl_parent=s2.sr_id AND srl.srl_child=s1.sr_id);
+                INSERT INTO store_link (srl_parent, srl_child, srl_sort, srl_active)
+                    SELECT srl_parent, srl_child, srl_sort, srl_active FROM tsrl WHERE (ins= TRUE);
+                UPDATE store_link AS srl SET
+                    srl_parent=t.srl_parent, srl_child=t.srl_child,
+                    srl_sort=t.srl_sort, srl_active=t.srl_active,
+                    srl_mtime=now()
+                FROM (
+                    SELECT srl_id, srl_parent, srl_child, srl_sort, srl_active FROM tsrl WHERE (updt = TRUE)
+                ) AS t WHERE srl.srl_id = t.srl_id;
+                DROP TABLE tsrl;`;
                 return [q, srl];
             };
             var stocksF = function(arr) {
                 let sc = [];
-                let q = "CREATE TEMP TABLE tsc ( sc_id INTEGER, sr_id INTEGER, i_id INTEGER, " +
-                " sc_amount INTEGER, sc_active BOOLEAN, sc_mtime TIMESTAMP, updt BOOLEAN, ins BOOLEAN); ";
-                q = q + " INSERT INTO tsc (SELECT sc.sc_id, sr.sr_id, i.i_id, t.sc_amount, t.sc_active," + " CASE WHEN sc.sc_active NOTNULL THEN now() ELSE sc.sc_mtime END AS sc_mtime, " + " ((sc.sc_amount <> t.sc_amount) OR (sc.sc_active <> t.sc_active)) AS updt, " + " ((sc_id ISNULL) AND (sr.sr_id NOTNULL) AND (i.i_id NOTNULL)) AS ins " + " FROM stores sr RIGHT JOIN (VALUES ";
+                let q = `CREATE TEMP TABLE tsc (
+                    sc_id INTEGER, sr_id INTEGER, i_id INTEGER,
+                    sc_amount INTEGER, sc_active BOOLEAN,
+                    updt BOOLEAN, ins BOOLEAN);
+                INSERT INTO tsc (
+                    SELECT sc.sc_id, sr.sr_id, i.i_id, t.sc_amount, t.sc_active,
+                    ((sc.sc_amount <> t.sc_amount) OR (sc.sc_active <> t.sc_active)) AS updt,
+                    ((sc_id ISNULL) AND (sr.sr_id NOTNULL) AND (i.i_id NOTNULL)) AS ins
+                FROM stores sr RIGHT JOIN (VALUES `;
                 //console.log('obj.storeLink', obj.storeLink);
                 arr.forEach((elem, i) => {
                     if (i !== 0)
@@ -997,10 +1294,19 @@ var wsfunc = {
                     sc.push(elem.sc_amount);
                     sc.push(elem.sc_active);
                 });
-                q = q + ") AS t(i_exid, sr_exid, sc_amount, sc_active) ON sr.sr_exid = t.sr_exid " + " LEFT JOIN items i ON i.i_exid = t.i_exid " + " LEFT JOIN stocks sc ON sc.sr_id = sr.sr_id AND sc.i_id = i.i_id);";
-                q = q + " INSERT INTO stocks (i_id, sr_id, sc_amount, sc_active) " + " SELECT i_id, sr_id, sc_amount, sc_active FROM tsc WHERE (ins= TRUE);";
-                q = q + " UPDATE stocks AS sc SET i_id=t.i_id, sr_id=t.sr_id, " + " sc_amount=t.sc_amount, sc_active=t.sc_active, sc_mtime=t.sc_mtime FROM (" + " SELECT sc_id, i_id, sr_id, sc_amount, sc_active, sc_mtime FROM tsc " + " WHERE (updt = TRUE)) AS t WHERE sc.sc_id = t.sc_id; ";
-                q = q + " DROP TABLE tsc;";
+                q = q + `) AS t(i_exid, sr_exid, sc_amount, sc_active) ON sr.sr_exid = t.sr_exid
+                LEFT JOIN items i ON i.i_exid = t.i_exid
+                LEFT JOIN stocks sc ON sc.sr_id = sr.sr_id AND sc.i_id = i.i_id);
+                INSERT INTO stocks (i_id, sr_id, sc_amount, sc_active)
+                    SELECT i_id, sr_id, sc_amount, sc_active FROM tsc WHERE (ins= TRUE);
+                UPDATE stocks AS sc SET
+                    i_id=t.i_id, sr_id=t.sr_id,
+                    sc_amount=t.sc_amount, sc_active=t.sc_active,
+                    sc_mtime=now()
+                FROM (
+                    SELECT sc_id, i_id, sr_id, sc_amount, sc_active, sc_mtime FROM tsc WHERE (updt = TRUE)
+                ) AS t WHERE sc.sc_id = t.sc_id;
+                DROP TABLE tsc;`;
                 return [q, sc];
             };
 
