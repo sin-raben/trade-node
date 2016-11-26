@@ -1,5 +1,0 @@
-INSERT INTO public.wp_users (login, pass, name, role, access, dtcreate, dtchange, interfase) VALUES ('zsg', 1, 'Запорожцев Сергей', NULL, NULL, '2016-05-10 15:10:10.324430', '2016-05-10 15:10:10.324430', NULL);
-INSERT INTO public.wp_users (login, pass, name, role, access, dtcreate, dtchange, interfase) VALUES ('sadovoy', 1, 'Садовой Александр', NULL, NULL, '2016-05-11 15:29:04.172335', '2016-05-11 15:29:04.172335', NULL);
-INSERT INTO public.wp_users (login, pass, name, role, access, dtcreate, dtchange, interfase) VALUES ('rybakov', 1, 'Рыбаков Николай', NULL, NULL, '2016-05-11 15:29:44.887760', '2016-05-11 15:29:44.887760', NULL);
-INSERT INTO public.wp_users (login, pass, name, role, access, dtcreate, dtchange, interfase) VALUES ('igor', 1, 'Полянский Игорь', NULL, NULL, '2016-05-11 15:30:27.732658', '2016-05-11 15:30:27.732658', NULL);
-INSERT INTO public.wp_users (login, pass, name, role, access, dtcreate, dtchange, interfase) VALUES ('gofman', 1, 'Гофман Роман', NULL, NULL, '2016-07-05 10:07:52.528785', '2016-07-05 10:07:52.528785', NULL);

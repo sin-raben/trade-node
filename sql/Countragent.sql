@@ -69,9 +69,9 @@ CREATE TABLE trade.delivery_points (
     dp_name         VARCHAR(100)  DEFAULT ''                , -- наименование товара (тип: строка)
     dp_prn          VARCHAR(100)  DEFAULT ''                , -- наименование для печати (тип: строка)
     dp_info         TEXT          DEFAULT ''                , -- описание (тип: строка)
-    dp_client       BOOLEAN DEFAULT TRUE                    , -- Клиент (0, 1)**********
-    dp_supplier     BOOLEAN DEFAULT FALSE                   , -- Поставщик (0, 1)*********
-    dp_carrier      BOOLEAN DEFAULT FALSE                   , -- Перевозчик (0, 1)***********
+    dp_client       BOOLEAN DEFAULT TRUE                    , -- Клиент (0, 1)**********---------
+    dp_supplier     BOOLEAN DEFAULT FALSE                   , -- Поставщик (0, 1)*******---------
+    dp_carrier      BOOLEAN DEFAULT FALSE                   , -- Перевозчик (0, 1)******---------
     dp_active       BOOLEAN DEFAULT TRUE                    ,
     dp_mtime        TIMESTAMP DEFAULT now()                   -- время изменения товара _в посылаемом на мобильное приложение ответе - необязателен_ (тип: число)
 );

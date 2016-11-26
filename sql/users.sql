@@ -1,5 +1,3 @@
-
-
 DROP TABLE IF EXISTS trade.ki_types;
 CREATE TABLE trade.ki_types (
     kit_id      SERIAL PRIMARY KEY,
@@ -13,7 +11,7 @@ INSERT INTO trade.ki_types(kit_id, kit_name) VALUES
     (4, 'Сайт'),
     (5, 'Мгновенные сообщения'),
     (6, 'Социальные  сети');
-    
+
 DROP TABLE IF EXISTS trade.ki_kind;
 CREATE TABLE trade.ki_kind (
     kik_id      SERIAL PRIMARY KEY,
@@ -37,7 +35,6 @@ INSERT INTRO trade.ki_kind(kik_id, kit_id, kik_name) VALUES
 DROP TABLE IF EXISTS trade.ki_value;
 CREATE TABLE trade.ki_value (
     kiv_id      SERIAL PRIMARY KEY,
-    kit_id      INTEGER REFERENCES trade.ki_types,
     kik_id      INTEGER REFERENCES trade.ki_kind,
     kiv_valiue  TEXT,                       -- значение контактной информации
     kik_mtime   TIMESTAMP DEFAULT now()
@@ -58,17 +55,31 @@ CREATE TABLE trade.people (
     p_F          TEXT, --фамилия
     p_I          TEXT, --имя
     p_O          TEXT, --отчество
-    p_sex        BOOLEAN,--пол
+    --пол
     --дата рождения
     --тонна прочих реквизитов
     p_mtime      TIMESTAMP DEFAULT now()
 );
 
+DROP TABLE IF EXISTS trade.ki_catalog;
+CREATE TABLE trade.ki_catalog (
+    kic_id  SERIAL PRIMARY KEY,
+    kic_name TEXT
+    );
+
+INSERT INTO trade.ki_catalog (kic_id, kic_name) VALUES
+(1, 'Организации'),
+(2, 'Контрагенты'),
+(3, 'Точки доставки'),
+(4, 'Люди');
+
+
 
 DROP TABLE IF EXISTS trade.ki_link;
 CREATE TABLE trade.ki_link (
     kil_id      SERIAL PRIMARY KEY,
-    p_id        INTEGER REFERENCES trade.people,
+    kic_id      INTEGER REFERENCES trade.ki_catalog,
+    any_id      INTEGER,
     kiv_id      INTEGER REFERENCES trade.ki_value,
     kik_mtime   TIMESTAMP DEFAULT now()
 );
