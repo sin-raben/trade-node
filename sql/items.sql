@@ -1,11 +1,11 @@
-DROP TABLE trade.item_Units;
-DROP TABLE trade.item_Unit_Types;
-DROP TABLE trade.item_Metric_Types;
-DROP TABLE trade.link_Item_Group;
-DROP TABLE trade.item_Groups;
-DROP TABLE trade.item_Group_Types;
-DROP TABLE trade.items CASCADE;
-DROP TABLE trade.item_NDS_Types;
+DROP TABLE IF EXISTS trade.item_Units;
+DROP TABLE IF EXISTS trade.item_Unit_Types;
+DROP TABLE IF EXISTS trade.item_Metric_Types;
+DROP TABLE IF EXISTS trade.link_Item_Group;
+DROP TABLE IF EXISTS trade.item_Groups;
+DROP TABLE IF EXISTS trade.item_Group_Types;
+DROP TABLE IF EXISTS trade.items CASCADE;
+DROP TABLE IF EXISTS trade.item_NDS_Types;
 
 -- ==================СОЗДАНИЕ ТАБЛИЦ=====================
 --Структура списка ставок НДС
