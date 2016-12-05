@@ -50,7 +50,7 @@ CREATE TABLE trade.post_peoples (
 DROP TABLE IF EXISTS trade.people;
 CREATE TABLE trade.people (
     p_id         SERIAL PRIMARY KEY,
-    p_name       VARCHAR(100),
+    p_name    мин
     pp_id         INTEGER REFERENCES trade.post_peoples,
     p_F          TEXT, --фамилия
     p_I          TEXT, --имя

@@ -495,7 +495,8 @@ var wsfunc = {
                     console.log('start i', new Date(), obj.items.length);
                     for (let i = 0; i < obj.items.length; i = i + 100) {
                         let a = obj.items.slice(i, i + 100);
-                        let [q, arr] = itemsF(a);
+                        let [q,
+                            arr] = itemsF(a);
                         yield t.none(q, arr);
                     }
                     console.log('end i', new Date());
@@ -504,7 +505,8 @@ var wsfunc = {
                     console.log('start ig', new Date(), obj.itemsGroup.length);
                     for (let i = 0; i < obj.itemsGroup.length; i = i + 100) {
                         let a = obj.itemsGroup.slice(i, i + 100);
-                        let [q, arr] = itemsGroupF(a);
+                        let [q,
+                            arr] = itemsGroupF(a);
                         yield t.none(q, arr);
                     }
                     console.log('end ig', new Date());
@@ -513,7 +515,8 @@ var wsfunc = {
                     console.log('start igt', new Date(), obj.itemsGroupType.length);
                     for (let i = 0; i < obj.itemsGroupType.length; i = i + 100) {
                         let a = obj.itemsGroupType.slice(i, i + 100);
-                        let [q, arr] = itemsGroupTypeF(a);
+                        let [q,
+                            arr] = itemsGroupTypeF(a);
                         yield t.none(q, arr);
                     }
                     console.log('end igt', new Date());
@@ -522,7 +525,8 @@ var wsfunc = {
                     console.log('start lig', new Date(), obj.linkItemGroup.length);
                     for (let i = 0; i < obj.linkItemGroup.length; i = i + 100) {
                         let a = obj.linkItemGroup.slice(i, i + 100);
-                        let [q, arr] = linkItemGroupF(a);
+                        let [q,
+                            arr] = linkItemGroupF(a);
                         yield t.none(q, arr);
                     }
                     console.log('end lig', new Date());
@@ -531,7 +535,8 @@ var wsfunc = {
                     console.log('start iut', new Date(), obj.itemsUnitType.length);
                     for (let i = 0; i < obj.itemsUnitType.length; i = i + 100) {
                         let a = obj.itemsUnitType.slice(i, i + 100);
-                        let [q, arr] = itemsUnitTypeF(a);
+                        let [q,
+                            arr] = itemsUnitTypeF(a);
                         yield t.none(q, arr);
                     }
                     console.log('end iut', new Date());
@@ -540,7 +545,8 @@ var wsfunc = {
                     console.log('start iu', new Date(), obj.itemsUnit.length);
                     for (let i = 0; i < obj.itemsUnit.length; i = i + 100) {
                         let a = obj.itemsUnit.slice(i, i + 100);
-                        let [q, arr] = itemsUnitF(a);
+                        let [q,
+                            arr] = itemsUnitF(a);
                         yield t.none(q, arr);
                     }
                     console.log('end iu', new Date());
@@ -935,25 +941,46 @@ var wsfunc = {
                 var pr = [];
                 var nm = [];
                 if (obj.countragents === "all") {
-                    pr.push(db.query("SELECT ca_id, ca_type, ca_opf, ca_head, ca_name, ca_prn, ca_inn, ca_kpp, adr_id, ca_client, ca_supplier, " +
-                        " ca_carrier, ca_active, extract(epoch from ca_mtime)::integer as ca_mtime from countragents", {}));
+                    pr.push(db.query(`SELECT
+                    ca_id, cat_id, ca_head, ca_name, ca_prn, ca_inn, ca_kpp,
+                    ca_client, ca_supplier, ca_carrier, ca_active,
+                    extract(epoch from ca_mtime)::integer as ca_mtime
+                    from countragents;`, {}));
                     nm.push("countragents");
                 }
                 if (obj.deliveryPoints === "all") {
-                    pr.push(db.query("SELECT dp_id, dp_name, dp_prn, adr_id,dp_client, dp_supplier, dp_carrier, dp_active, " +
-                        "extract(epoch from dp_mtime)::integer as dp_mtime from delivery_points", {}));
+                    pr.push(db.query(`SELECT
+                    dp_id, dp_name, dp_prn, dp_client, dp_supplier, dp_carrier,
+                    dp_active, extract(epoch from dp_mtime)::integer as dp_mtime
+                    from delivery_points`, {}));
                     nm.push("deliveryPoints");
                 }
                 if (obj.address === "all") {
-                    pr.push(db.query("SELECT *, extract(epoch from adr_mtime)::integer as adr_mtime from address", {}));
+                    pr.push(db.query(`SELECT
+                    a.adr_id,a.any_id,adrt_id,adr_str,adr_geo,
+                    a.adr_json->'nominatim'->'display_name' as display_name
+                    FROM address a;`, {}));
                     nm.push("address");
                 }
                 if (obj.linksCountragentDeliveryPoint === "all") {
-                    pr.push(db.query("SELECT lcp_id, ca_id, dp_id, lcp_active, " +
-                        "extract(epoch from lcp_mtime)::integer as lcp_mtime from links_countragent_delivery_point", {}));
+                    pr.push(db.query(`SELECT
+                    lcp_id, ca_id, dp_id, lcp_active,
+                    extract(epoch from lcp_mtime)::integer as lcp_mtime
+                    from links_countragent_delivery_point`, {}));
                     nm.push("linksCountragentDeliveryPoint");
                 }
+                if (obj.CountragentsSearch==="all") {
+                    pr.push(db.query(`SELECT
+                    dp.dp_id,
+                    concat_ws(' ', dp.dp_name, dp.dp_info, ca.ca_name, ca.ca_info,
+                    ca.ca_inn, ca.ca_kpp, adr.adr_str,(adr.adr_json->'nominatim'->'display_name') )as value
+                    FROM delivery_points dp
+                    LEFT JOIN links_countragent_delivery_point lcdp ON dp.dp_id = lcdp.dp_id
+                    LEFT JOIN countragents ca ON ca.ca_id=lcdp.ca_id
+                    LEFT JOIN address adr ON (adr.any_id=dp.dp_id) AND (adr.adrt_id=3)`, {}));
+                    nm.push("CountragentsSearch");
 
+                }
                 Promise.all(pr).then((value) => {
                     for (let i = 0; i < nm.length; i++) {
                         let arr = value[i];
@@ -978,6 +1005,149 @@ var wsfunc = {
             }
 
         });
+    },
+    setAdressGeoDaData: function(client, obj) {
+        return new Promise(function(resolve, reject) {
+            co(function * () {
+                console.log('start adrrrr', new Date(), obj);
+                console.log(obj);
+                var adrarr = yield db.query(`SELECT adr_id,adr_str FROM address a WHERE (a.adr_json ISNULL)AND(adr_str<>'') LIMIT $1; `, [obj.length]);
+                var dd = require('./dadata');
+                for (let i = 0; i < adrarr.length; i++) {
+                    if (i % 10 === 0)
+                        console.log(i);
+                    var el = adrarr[i];
+                    var jsonb = yield dd.adress(el.adr_str);
+                    if (jsonb === undefined) {
+                        jsonb = {};
+                    }
+                    yield db.none(`UPDATE address SET adr_json = $2::JSONB, adr_mtime=now() WHERE adr_id=$1; `, [el.adr_id, JSON.stringify(jsonb)]);
+                }
+                console.log('end adrrrr', new Date());
+                return Promise.resolve(true);
+            }).then(function(r) {
+                console.log('r', r);
+                resolve({"result": true});
+            }).catch(function(err) {
+                console.log("Gen err", err);
+                resolve({"result": false});
+            });/**/
+        });
+    },
+    setAdressGeoNominatim: function(client, obj) {
+        var nominatim = require('nominatim-client');
+        var nominatimr = function(t) {
+            return new Promise(function(resolve, reject) {
+                var query = {
+                    q: t,
+                    addressdetails: '1'
+                };
+                nominatim.search(query, function(err, data) {
+                    if (err) {
+                        reject(err);
+                    }
+                    //data = data.1;
+                    if (data.length > 0) {
+                        var result = data[0];
+                        if (result.licence)
+                            delete result.licence;
+                        if (result.icon)
+                            delete result.icon;
+                        resolve(result);
+                    } else {
+                        resolve();
+                    }
+                });
+            });
+        };
+        return new Promise(function(resolve, reject) {
+            co(function * () {
+                console.log('start adrrrr', new Date(), obj);
+                var adrarr = yield db.query(`SELECT adr_id,
+                  (adr_json->'data'->'region')||(adr_json->'data'->'area')||(adr_json->'data'->'city') ||
+                  (adr_json->'data'->'city_district') ||(adr_json->'data'->'settlement')||
+                  (adr_json->'data'->'settlement') ||(adr_json->'data'->'street') ||
+                  (adr_json->'data'->'house')||(adr_json->'data'->'flat') AS ar
+                FROM address
+                WHERE (adr_json->'data'->'house' NOTNULL) AND (adr_json->'nominatim' ISNULL )  LIMIT $1; `, [obj.length]);
+
+                //console.log(adrarr);
+
+                for (let i = 0; i < adrarr.length; i++) {
+                    if (i % 10 === 0)
+                        console.log(i);
+                    if (adrarr[i].ar[7] !== null) {
+                        let o = yield nominatimr(adrarr[i].ar.join(","));
+
+                        //console.log("o", adrarr[i].ar.join(","), o);
+                        if (o) {
+                            yield db.none(`UPDATE address SET adr_json = adr_json || $2::JSONB, adr_mtime=now() WHERE adr_id=$1; `, [
+                                adrarr[i].adr_id,
+                                JSON.stringify({"nominatim": o})
+                            ]);
+                        }
+                    }
+
+                }
+
+                console.log('end adrrrr', new Date());
+
+                return Promise.resolve(adrarr.length);
+            }).then(function(r) {
+                console.log('r', r);
+                resolve({"result": true, "aa": r});
+            }).catch(function(err) {
+                console.log("Gen err", err);
+                resolve({"result": false});
+            });/**/
+
+        });
+
+    },
+    setAdressGeoYandex: function(client, obj) {
+        var ya = require('./geocodeya');
+        return new Promise(function(resolve, reject) {
+            co(function * () {
+                console.log('start adrrrr', new Date(), obj);
+                var adrarr = yield db.query(`SELECT adr_id,
+                  (adr_json->'data'->'region')||(adr_json->'data'->'area')||(adr_json->'data'->'city') ||
+                  (adr_json->'data'->'city_district') ||(adr_json->'data'->'settlement')||
+                  (adr_json->'data'->'settlement') ||(adr_json->'data'->'street') ||
+                  (adr_json->'data'->'house')||(adr_json->'data'->'flat') AS ar
+                FROM address
+                WHERE (adr_json->'data'->'house' NOTNULL) AND (adr_json->'yandex' ISNULL) LIMIT $1; `, [obj.length]);
+
+                //console.log(adrarr);
+
+                for (let i = 0; i < adrarr.length; i++) {
+                    if (i % 10 === 0)
+                        console.log(i);
+                    if (adrarr[i].ar[7] !== null) {
+                        let m = yield ya.geocode(adrarr[i].ar.join(","));
+                        //console.log('m', m);
+                        if (m) {
+                            yield db.none(`UPDATE address SET adr_json = adr_json || $2::JSONB, adr_mtime=now() WHERE adr_id=$1; `, [
+                                adrarr[i].adr_id,
+                                JSON.stringify({"yandex": m})
+                            ]);
+                        }
+                    }
+
+                }
+
+                console.log('end adrrrr', new Date());
+
+                return Promise.resolve(adrarr.length);
+            }).then(function(r) {
+                console.log('r', r);
+                resolve({"result": true, "aa": r});
+            }).catch(function(err) {
+                console.log("Gen err", err);
+                resolve({"result": false});
+            });/**/
+
+        });
+
     },
     setPrices: function(client, obj) {
         return new Promise(function(resolve, reject) {
@@ -1157,21 +1327,26 @@ var wsfunc = {
                 var pr = [];
                 var nm = [];
                 if (obj.pricelist === "all") {
-                    console.log(1);
+                    //console.log(1);
                     pr.push(db.query("SELECT pl_id,pl_name,pl_type,pl_active, extract(epoch from pl_mtime)::integer as pl_mtime FROM pricelist", {}));
                     nm.push("pricelist");
                 }
                 if (obj.price === "all") {
-                    console.log(2);
+                    //console.log(2);
                     pr.push(db.query("SELECT p_id,pl_id,i_id,extract(epoch from p_date_b)::bigint::REAL as p_date_b, " +
                         "extract(epoch from p_date_e)::bigint::REAL as p_date_e, " +
                         "p_cn,p_active, extract(epoch from p_mtime)::integer as p_mtime FROM price", {}));
                     nm.push("price");
                 }
                 if (obj.pricelistLink === "all") {
-                    console.log(3);
+                    //console.log(3);
                     pr.push(db.query("SELECT * FROM pricelist_link;", {}));
                     nm.push("pricelistLink");
+                }
+                if (obj.pricelistSearch === "all") {
+                    //console.log(3);
+                    pr.push(db.query("SELECT pl_id,pl_name as value FROM pricelist;", {}));
+                    nm.push("pricelistSearch");
                 }
                 Promise.all(pr).then((value) => {
                     for (let i = 0; i < nm.length; i++) {
@@ -1381,7 +1556,10 @@ var wsfunc = {
                         " extract(epoch from sc_mtime)::integer as sc_mtime FROM stocks", {}));
                     nm.push("stocks");
                 }
-
+                if (obj.storesSearch === "all") {
+                    pr.push(db.query("SELECT sr_id, sr_name as value FROM stores", {}));
+                    nm.push("storesSearch");
+                }
                 Promise.all(pr).then((value) => {
                     for (let i = 0; i < nm.length; i++) {
                         let arr = value[i];

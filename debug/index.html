@@ -73,7 +73,18 @@
 						getCountragents
 					</span>
 					<span class="request-body">
-						{"countragents": "all", "deliveryPoints": "all", "linksCountragentDeliveryPoint": "all"}
+						{"countragents": "all", "deliveryPoints": "all","address":"all", "linksCountragentDeliveryPoint": "all"}
+					</span>
+				</li>
+				<li onclick="setRequest(this)">
+					<div class="request-name">
+						Получить поисковую строку контрагентов<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getCountragents.md" target="_blank">*</a>
+					</div>
+					<span class="request-head">
+						getCountragents
+					</span>
+					<span class="request-body">
+						{"CountragentsSearch": "all"}
 					</span>
 				</li>
 				<li onclick="setRequest(this)">
@@ -84,7 +95,7 @@
 						getPrices
 					</span>
 					<span class="request-body">
-						{"price": "all", "pricelist": "all", "pricelistLink": "all"}
+						{"price": "all", "pricelist": "all", "pricelistLink": "all","pricelistSearch":"all"}
 					</span>
 				</li>
 				<li onclick="setRequest(this)">
@@ -95,7 +106,40 @@
 						getStocks
 					</span>
 					<span class="request-body">
-						{"stores": "all", "storeLink": "all", "stocks": "all"}
+						{"stores": "all", "storeLink": "all", "stocks": "all", "storesSearch":"all"}
+					</span>
+				</li>
+				<li onclick="setRequest(this)">
+					<div class="request-name">
+						Получить данные из Дадаты<a href="#" target="_blank">*</a>
+					</div>
+					<span class="request-head">
+						setAdressGeoDaData
+					</span>
+					<span class="request-body">
+						{"length":2}
+					</span>
+				</li>
+				<li onclick="setRequest(this)">
+					<div class="request-name">
+						Получить данные из openstreetmap<a href="#" target="_blank">*</a>
+					</div>
+					<span class="request-head">
+						setAdressGeoNominatim
+					</span>
+					<span class="request-body">
+						{"length":2}
+					</span>
+				</li>
+				<li onclick="setRequest(this)">
+					<div class="request-name">
+						Получить данные из ya-крат<a href="#" target="_blank">*</a>
+					</div>
+					<span class="request-head">
+						setAdressGeoYandex
+					</span>
+					<span class="request-body">
+						{"length":2}
 					</span>
 				</li>
 			</ul>
