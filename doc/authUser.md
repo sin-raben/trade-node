@@ -8,7 +8,8 @@
 		"authData":{
 			"login": "gofman",
 			"password": "1"
-		}
+		},
+		"clientInfo": {}
 	}
 }
 

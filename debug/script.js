@@ -9,6 +9,7 @@ var request = []; //массив запросов
 var response = []; //массив ответов
 var resLenght = 300;
 //отправить объект на сервер
+
 var wsm = function(head, body) {
 
     var ob = {

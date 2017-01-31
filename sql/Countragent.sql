@@ -7,6 +7,8 @@ DROP TABLE IF EXISTS trade.address;
 DROP TABLE IF EXISTS trade.countragent_types;
 DROP TABLE IF EXISTS trade.address_types;
 
+
+
 CREATE TABLE trade.address_types (
     adrt_id          SERIAL PRIMARY KEY          ,
     adrt_name        TEXT      DEFAULT ''        ,

@@ -35,6 +35,7 @@ var wsfunc = {
         });
     },
     authUser: function(client, obj) {
+        //TODO FUN authUser
         return new Promise(function(resolve, reject) {
             try {
                 console.log('obj', obj);
@@ -84,91 +85,22 @@ var wsfunc = {
         }
 
     },
-    setItems: function(client, obj) {
+    setItemsM: function (client, obj) {
         return new Promise(function(resolve, reject) {
             if (!(client.idToken)) {
                 resolve({"result": false});
                 return;
             }
-            /*if (obj.items) {
-                obj.items.forEach(elem => {
-                    db.query("INSERT INTO items (i_exid, i_name, i_prn, i_info, i_img, i_service, int_id)" +
-                        " VALUES (${i_exid}, ${i_name}, ${i_prn}, ${i_info}, ${i_img}, ${i_service}, ${int_id});",
-                    elem).then((value) => {
-                        //console.log('value', value);
-                    }, (err) => {
-                        console.log('err', elem, '\n\n\n', err);
-                    });
-                });
-            }
-            if (obj.itemsGroupType) {
-                obj.itemsGroupType.forEach(elem => {
-                    db.query("INSERT INTO item_Group_Types (igt_exid, igt_agent, igt_name)" +
-                        " VALUES (${igt_exid}, ${igt_agent}, ${igt_name});",
-                    elem).then((value) => {
-                        //добавлено
-                    }, (err) => {
-                        console.log('err', elem, '\n\n\n', err);
-                    });
-                });
-            }
-            if (obj.itemsGroup) {
-                obj.itemsGroup.forEach(elem => {
-                    db.query("INSERT INTO item_groups (igt_id, ig_exid, ig_value) SELECT igt.igt_id, t.ig_exid, t.ig_value FROM item_group_types AS igt " +
-                        "CROSS JOIN (VALUES (${ig_exid}, ${ig_value})) AS t (ig_exid, ig_value) WHERE igt.igt_exid = ${igt_exid};",
-                    elem).then((value) => {
-                        //добавлено
-                    }, (err) => {
-                        console.log('err', elem, '\n\n\n', err);
-                    });
-                });
-            }
-            if (obj.linkItemGroup) {
-                obj.linkItemGroup.forEach(elem => {
-                    db.query("INSERT INTO link_Item_Group (i_id, igt_id, ig_id) SELECT i_id, igt_id, ig_id FROM items as i " +
-                        "CROSS JOIN (SELECT ig.igt_id, ig_id FROM item_groups AS ig JOIN item_group_types AS igt ON igt.igt_id=ig.igt_id " +
-                        "WHERE igt.igt_exid = ${igt_exid} AND ig.ig_exid = ${ig_exid}) as ig WHERE i.i_exid = ${i_exid};",
-                    elem).then((value) => {
-                        //добавлено
-                    }, (err) => {
-                        console.log('err', elem, '\n\n\n', err);
-                    });
-                });
-            }
-            if (obj.itemsUnitType) {
-                obj.itemsUnitType.forEach(elem => {
-                    db.query("INSERT INTO item_Unit_Types (iut_exid, iut_name, imt_id, iut_okei) " +
-                        "VALUES (${iut_exid}, ${iut_name}, ${imt_id}, ${iut_okei});",
-                    elem).then((value) => {
-                        //добавлено
-                    }, (err) => {
-                        console.log('err', elem, '\n\n\n', err);
-                    });
-                });
-            }
-            if (obj.itemsUnit) {
 
-                obj.itemsUnit.forEach(elem => {
-                    db.query("INSERT INTO item_units " +
-                        "(i_id, iut_id, iu_ean, iu_krat, iu_num, iu_denum, iu_gros, iu_net, " +
-                        "iu_length, iu_width, iu_height, iu_area, iu_volume, iu_agent, iu_base, iu_main) " +
-                        "SELECT i.i_id, iut.iut_id, iu_ean, iu_krat, iu_num, iu_denum, iu_gros, iu_net, " +
-                        "       iu_length, iu_width, iu_height, iu_area, iu_volume, iu_agent, iu_base, iu_main FROM items as i " +
-                        "CROSS JOIN item_unit_types as iut " +
-                        "CROSS JOIN (VALUES(${iu_ean}, ${iu_krat}, ${iu_num}, ${iu_denum}, ${iu_gros}, ${iu_net}, " +
-                        "    ${iu_length}, ${iu_width}, ${iu_height}, ${iu_area}, ${iu_volume}, ${iu_agent}, ${iu_base}, ${iu_main})) " +
-                        "    AS t (iu_ean, iu_krat, iu_num, iu_denum, iu_gros, iu_net, " +
-                        "    iu_length, iu_width, iu_height, iu_area, iu_volume, iu_agent, iu_base, iu_main) " +
-                        "WHERE i.i_exid = ${i_exid} AND iut.iut_exid = ${iut_exid};",
-                    elem).then((value) => {
-                        //добавлено
-                    }, (err) => {
-                        console.log('err', elem, '\n\n\n', err);
-                    });
-                });
+        });
+    },
+    setItems: function(client, obj) {
+        //TODO FUN setItems
+        return new Promise(function(resolve, reject) {
+            if (!(client.idToken)) {
+                resolve({"result": false});
+                return;
             }
-            resolve({"result": true});*/
-
             var itemsF = function(arr) {
                 let it = [];
                 let q = `CREATE TEMP TABLE ti (
@@ -561,6 +493,7 @@ var wsfunc = {
         });
     },
     getItems: function(client, obj) {
+        //TODO FUN getItems
         return new Promise(function(resolve, reject) {
             console.log("title", obj);
             var tov = {};
@@ -637,49 +570,12 @@ var wsfunc = {
         });
     },
     setCountragents: function(client, obj) {
+        //TODO FUN setCountragents
         return new Promise(function(resolve, reject) {
             if (!(client.idToken)) {
                 resolve({"result": false});
                 return;
             }
-            /*if (obj.countragents) {
-                console.log(' set countragents');
-                obj.countragents.forEach(elem => {
-                    db.query("INSERT INTO countragents (ca_exid, ca_type, ca_opf, ca_name, " +
-                        " ca_prn, ca_info, ca_inn, ca_kpp, ca_client, ca_supplier, ca_carrier)" +
-                        " VALUES (${ca_exid}, ${ca_type}, ${ca_opf}, ${ca_name}, " +
-                        " ${ca_prn}, ${ca_info}, ${ca_inn}, ${ca_kpp}, ${ca_client}, ${ca_supplier}, ${ca_carrier})",
-                    elem).then((value) => {
-                        //console.log('value', value);
-                    }, (err) => {
-                        console.log('err', elem, err);
-                    });
-                });
-            }
-            if (obj.deliveryPoints) {
-                console.log(' set deliveryPoints');
-                obj.deliveryPoints.forEach(elem => {
-                    db.query("INSERT INTO delivery_points (dp_exid, dp_name, dp_prn, dp_client, dp_supplier, dp_carrier)" +
-                        " VALUES (${dp_exid}, ${dp_name}, ${dp_prn}, ${dp_client}, ${dp_supplier}, ${dp_carrier})",
-                    elem).then((value) => {
-                        //console.log('value', value);
-                    }, (err) => {
-                        console.log('err', elem, err);
-                    });
-                });
-            }
-            if (obj.linksCountragentDeliveryPoints) {
-                console.log(' set linksCountragentDeliveryPoints');
-                obj.linksCountragentDeliveryPoints.forEach(elem => {
-                    db.query("INSERT INTO links_countragent_delivery_point (ca_id, dp_id) " +
-                        " SELECT ca.ca_id, dp.dp_id FROM delivery_points as dp, countragents as ca WHERE ca.ca_exid=${ca_exid} and dp.dp_exid=${dp_exid}",
-                    elem).then((value) => {
-                        //console.log('value', value);
-                    }, (err) => {
-                        console.log('err', elem, err);
-                    });
-                });
-            }*/
             var countragentsF = function(arr) {
                 let ca = [];
                 let q = `CREATE TEMP TABLE tca (
@@ -725,10 +621,10 @@ var wsfunc = {
                 });
                 q = q + `) AS t(ca_exid, cat_id, ca_exhead, ca_name, ca_prn, ca_info,
                     ca_inn, ca_kpp, ca_client, ca_supplier, ca_carrier, ca_active)
-                LEFT JOIN countragents ca ON (ca.ca_exid = t.ca_exid)
-                LEFT JOIN countragents ch ON (ch.ca_exid = t.ca_exhead));
+                LEFT JOIN trade.countragents ca ON (ca.ca_exid = t.ca_exid)
+                LEFT JOIN trade.countragents ch ON (ch.ca_exid = t.ca_exhead));
 
-                INSERT INTO countragents
+                INSERT INTO trade.countragents
                         (ca_exid, cat_id, ca_head, ca_name, ca_prn,
                         ca_info, ca_inn, ca_kpp, ca_client,
                         ca_supplier, ca_carrier, ca_active)
@@ -737,7 +633,7 @@ var wsfunc = {
                         ca_kpp, ca_client, ca_supplier, ca_carrier, ca_active
                     FROM tca WHERE (ins = TRUE);
 
-                UPDATE countragents AS ca SET
+                UPDATE trade.countragents AS ca SET
                     cat_id = t.cat_id, ca_head = t.ca_head, ca_name = t.ca_name,
                     ca_prn = t.ca_prn, ca_info = t.ca_info, ca_inn = t.ca_inn,
                     ca_kpp = t.ca_kpp, ca_client = t.ca_client, ca_supplier = t.ca_supplier,
@@ -782,12 +678,12 @@ var wsfunc = {
                 });
                 q = q + `) AS t(dp_exid, dp_name, dp_prn, dp_info, dp_client,
                     dp_supplier, dp_carrier, dp_active)
-                    LEFT JOIN delivery_points dp ON (dp.dp_exid=t.dp_exid));
-                INSERT INTO delivery_points (
+                    LEFT JOIN trade.delivery_points dp ON (dp.dp_exid=t.dp_exid));
+                INSERT INTO trade.delivery_points (
                     dp_exid, dp_name, dp_prn, dp_info, dp_client, dp_supplier, dp_carrier, dp_active)
                     SELECT dp_exid, dp_name, dp_prn, dp_info, dp_client, dp_supplier, dp_carrier, dp_active
                 FROM tdp WHERE tdp.ins=TRUE ;
-                UPDATE delivery_points AS dp SET
+                UPDATE trade.delivery_points AS dp SET
                     dp_name=t.dp_name, dp_prn=t.dp_prn,
                     dp_info=t.dp_info, dp_client= t.dp_client,
                     dp_supplier=t.dp_supplier, dp_carrier=t.dp_carrier,
@@ -831,14 +727,14 @@ var wsfunc = {
                     adr.push(elem.adr_active);
                 });
                 q = q + `) AS t(any_exid, adrt_id, adr_str, adr_active)
-                        LEFT JOIN countragents cau ON ((t.any_exid=cau.ca_exid) AND (t.adrt_id=1))
-                        LEFT JOIN countragents caf ON ((t.any_exid=caf.ca_exid)AND(t.adrt_id=2))
-                        LEFT JOIN delivery_points dp ON ((t.any_exid=dp.dp_exid)AND(t.adrt_id=3))
+                        LEFT JOIN trade.countragents cau ON ((t.any_exid=cau.ca_exid) AND (t.adrt_id=1))
+                        LEFT JOIN trade.countragents caf ON ((t.any_exid=caf.ca_exid)AND(t.adrt_id=2))
+                        LEFT JOIN trade.delivery_points dp ON ((t.any_exid=dp.dp_exid)AND(t.adrt_id=3))
                     ) AS t
-                    LEFT JOIN address adr ON ((t.any_id=adr.any_id)AND(t.adrt_id=adr.adrt_id));
-                    INSERT INTO address (any_id,adrt_id,adr_str,adr_active)
+                    LEFT JOIN trade.address adr ON ((t.any_id=adr.any_id)AND(t.adrt_id=adr.adrt_id));
+                    INSERT INTO trade.address (any_id,adrt_id,adr_str,adr_active)
                         SELECT any_id,adrt_id,adr_str,adr_active FROM tadr WHERE (ins=TRUE);
-                    UPDATE address AS adr SET
+                    UPDATE trade.address AS adr SET
                         adr_str=t.adr_str, adr_active=t.adr_active, adr_mtime=now()
                         FROM (
                             SELECT * FROM tadr WHERE updt=TRUE
@@ -855,7 +751,7 @@ var wsfunc = {
                 INSERT INTO tlcp(
                     SELECT lcp.lcp_id ,ca.ca_id,dp.dp_id,t.lcp_active,
                     (t.lcp_active<>lcp.lcp_active) AS updt,
-                    (lcp.lcp_id ISNULL ) AS ins
+                    (lcp.lcp_id ISNULL )AND(ca.ca_id NOTNULL )AND(dp.dp_id NOTNULL ) AS ins
                 FROM (VALUES`;
                 arr.forEach((elem, i) => {
                     if (i !== 0)
@@ -866,12 +762,12 @@ var wsfunc = {
                     lcp.push(elem.lcp_active);
                 });
                 q = q + `) AS t(ca_exid,dp_exid,lcp_active)
-                LEFT JOIN countragents ca ON (t.ca_exid=ca.ca_exid)
-                LEFT JOIN delivery_points dp ON (t.dp_exid=dp.dp_exid)
-                LEFT JOIN links_countragent_delivery_point lcp ON ((ca.ca_id=lcp.ca_id)AND(dp.dp_id=lcp_id)));
-                INSERT INTO links_countragent_delivery_point(ca_id,dp_id,lcp_active)
+                LEFT JOIN trade.countragents ca ON (t.ca_exid=ca.ca_exid)
+                LEFT JOIN trade.delivery_points dp ON (t.dp_exid=dp.dp_exid)
+                LEFT JOIN trade.links_countragent_delivery_point lcp ON ((ca.ca_id=lcp.ca_id)AND(dp.dp_id=lcp.dp_id)));
+                INSERT INTO trade.links_countragent_delivery_point(ca_id,dp_id,lcp_active)
                     SELECT ca_id,dp_id,lcp_active FROM tlcp WHERE ins=TRUE;
-                UPDATE links_countragent_delivery_point AS lcp SET
+                UPDATE trade.links_countragent_delivery_point AS lcp SET
                     lcp_active=t.lcp_active,lcp_mtime=now()
                 FROM (
                     SELECT * FROM tlcp WHERE updt=TRUE
@@ -930,6 +826,7 @@ var wsfunc = {
         });
     },
     getCountragents: function(client, obj) {
+        //TODO FUN getCountragents
         return new Promise(function(resolve, reject) {
             console.log("title", obj);
             var tov = {};
@@ -945,39 +842,40 @@ var wsfunc = {
                     ca_id, cat_id, ca_head, ca_name, ca_prn, ca_inn, ca_kpp,
                     ca_client, ca_supplier, ca_carrier, ca_active,
                     extract(epoch from ca_mtime)::integer as ca_mtime
-                    from countragents;`, {}));
+                    from trade.countragents;`, {}));
                     nm.push("countragents");
                 }
                 if (obj.deliveryPoints === "all") {
                     pr.push(db.query(`SELECT
                     dp_id, dp_name, dp_prn, dp_client, dp_supplier, dp_carrier,
                     dp_active, extract(epoch from dp_mtime)::integer as dp_mtime
-                    from delivery_points`, {}));
+                    from trade.delivery_points`, {}));
                     nm.push("deliveryPoints");
                 }
                 if (obj.address === "all") {
                     pr.push(db.query(`SELECT
                     a.adr_id,a.any_id,adrt_id,adr_str,adr_geo,
                     a.adr_json->'nominatim'->'display_name' as display_name
-                    FROM address a;`, {}));
+                    FROM trade.address a;`, {}));
                     nm.push("address");
                 }
                 if (obj.linksCountragentDeliveryPoint === "all") {
                     pr.push(db.query(`SELECT
                     lcp_id, ca_id, dp_id, lcp_active,
                     extract(epoch from lcp_mtime)::integer as lcp_mtime
-                    from links_countragent_delivery_point`, {}));
+                    from trade.links_countragent_delivery_point`, {}));
                     nm.push("linksCountragentDeliveryPoint");
                 }
-                if (obj.CountragentsSearch==="all") {
+                if (obj.CountragentsSearch === "all") {
                     pr.push(db.query(`SELECT
-                    dp.dp_id,
-                    concat_ws(' ', dp.dp_name, dp.dp_info, ca.ca_name, ca.ca_info,
-                    ca.ca_inn, ca.ca_kpp, adr.adr_str,(adr.adr_json->'nominatim'->'display_name') )as value
-                    FROM delivery_points dp
-                    LEFT JOIN links_countragent_delivery_point lcdp ON dp.dp_id = lcdp.dp_id
-                    LEFT JOIN countragents ca ON ca.ca_id=lcdp.ca_id
-                    LEFT JOIN address adr ON (adr.any_id=dp.dp_id) AND (adr.adrt_id=3)`, {}));
+                        dp.dp_id,
+                        concat_ws(' ', dp.dp_name, dp.dp_info, ca.ca_name, ca.ca_info,
+                        ca.ca_inn, adr.adr_str,
+                        (adr.adr_json->'nominatim'->'display_name') )as value
+                    FROM trade.delivery_points dp
+                    LEFT JOIN trade.links_countragent_delivery_point lcdp ON dp.dp_id = lcdp.dp_id
+                    LEFT JOIN trade.countragents ca ON ca.ca_id=lcdp.ca_id
+                    LEFT JOIN trade.address adr ON (adr.any_id=dp.dp_id) AND (adr.adrt_id=3);`, {}));
                     nm.push("CountragentsSearch");
 
                 }
@@ -1007,11 +905,12 @@ var wsfunc = {
         });
     },
     setAdressGeoDaData: function(client, obj) {
+        //TODO FUN setAdressGeoDaData
         return new Promise(function(resolve, reject) {
             co(function * () {
                 console.log('start adrrrr', new Date(), obj);
                 console.log(obj);
-                var adrarr = yield db.query(`SELECT adr_id,adr_str FROM address a WHERE (a.adr_json ISNULL)AND(adr_str<>'') LIMIT $1; `, [obj.length]);
+                var adrarr = yield db.query(`SELECT adr_id,adr_str FROM trade.address a WHERE (a.adr_json ISNULL)AND(adr_str<>'') LIMIT $1; `, [obj.length]);
                 var dd = require('./dadata');
                 for (let i = 0; i < adrarr.length; i++) {
                     if (i % 10 === 0)
@@ -1021,7 +920,7 @@ var wsfunc = {
                     if (jsonb === undefined) {
                         jsonb = {};
                     }
-                    yield db.none(`UPDATE address SET adr_json = $2::JSONB, adr_mtime=now() WHERE adr_id=$1; `, [el.adr_id, JSON.stringify(jsonb)]);
+                    yield db.none(`UPDATE trade.address SET adr_json = $2::JSONB, adr_mtime=now() WHERE adr_id=$1; `, [el.adr_id, JSON.stringify(jsonb)]);
                 }
                 console.log('end adrrrr', new Date());
                 return Promise.resolve(true);
@@ -1035,6 +934,7 @@ var wsfunc = {
         });
     },
     setAdressGeoNominatim: function(client, obj) {
+        //TODO FUN setAdressGeoNominatim
         var nominatim = require('nominatim-client');
         var nominatimr = function(t) {
             return new Promise(function(resolve, reject) {
@@ -1068,7 +968,7 @@ var wsfunc = {
                   (adr_json->'data'->'city_district') ||(adr_json->'data'->'settlement')||
                   (adr_json->'data'->'settlement') ||(adr_json->'data'->'street') ||
                   (adr_json->'data'->'house')||(adr_json->'data'->'flat') AS ar
-                FROM address
+                FROM trade.address
                 WHERE (adr_json->'data'->'house' NOTNULL) AND (adr_json->'nominatim' ISNULL )  LIMIT $1; `, [obj.length]);
 
                 //console.log(adrarr);
@@ -1081,7 +981,7 @@ var wsfunc = {
 
                         //console.log("o", adrarr[i].ar.join(","), o);
                         if (o) {
-                            yield db.none(`UPDATE address SET adr_json = adr_json || $2::JSONB, adr_mtime=now() WHERE adr_id=$1; `, [
+                            yield db.none(`UPDATE trade.address SET adr_json = adr_json || $2::JSONB, adr_mtime=now() WHERE adr_id=$1; `, [
                                 adrarr[i].adr_id,
                                 JSON.stringify({"nominatim": o})
                             ]);
@@ -1105,6 +1005,7 @@ var wsfunc = {
 
     },
     setAdressGeoYandex: function(client, obj) {
+        //TODO FUN setAdressGeoYandex
         var ya = require('./geocodeya');
         return new Promise(function(resolve, reject) {
             co(function * () {
@@ -1114,7 +1015,7 @@ var wsfunc = {
                   (adr_json->'data'->'city_district') ||(adr_json->'data'->'settlement')||
                   (adr_json->'data'->'settlement') ||(adr_json->'data'->'street') ||
                   (adr_json->'data'->'house')||(adr_json->'data'->'flat') AS ar
-                FROM address
+                FROM trade.address
                 WHERE (adr_json->'data'->'house' NOTNULL) AND (adr_json->'yandex' ISNULL) LIMIT $1; `, [obj.length]);
 
                 //console.log(adrarr);
@@ -1126,7 +1027,7 @@ var wsfunc = {
                         let m = yield ya.geocode(adrarr[i].ar.join(","));
                         //console.log('m', m);
                         if (m) {
-                            yield db.none(`UPDATE address SET adr_json = adr_json || $2::JSONB, adr_mtime=now() WHERE adr_id=$1; `, [
+                            yield db.none(`UPDATE trade.address SET adr_json = adr_json || $2::JSONB, adr_mtime=now() WHERE adr_id=$1; `, [
                                 adrarr[i].adr_id,
                                 JSON.stringify({"yandex": m})
                             ]);
@@ -1150,6 +1051,7 @@ var wsfunc = {
 
     },
     setPrices: function(client, obj) {
+        //TODO FUN setPrices
         return new Promise(function(resolve, reject) {
             if (!(client.idToken)) {
                 resolve({"result": false});
@@ -1317,6 +1219,7 @@ var wsfunc = {
         });
     },
     getPrices: function(client, obj) {
+        //TODO FUN getPrices
         return new Promise(function(resolve, reject) {
             if (!(client.idToken)) {
                 resolve({"result": false});
@@ -1373,6 +1276,7 @@ var wsfunc = {
         });
     },
     setStocks: function(client, obj) {
+        //TODO FUN setStocks
         return new Promise(function(resolve, reject) {
             if (!(client.idToken)) {
                 resolve({"result": false});
@@ -1531,6 +1435,7 @@ var wsfunc = {
         });
     },
     getStocks: function(client, obj) {
+        //TODO FUN getStocks
         return new Promise(function(resolve, reject) {
             console.log("title", obj);
             var tov = {};
@@ -1586,6 +1491,7 @@ var wsfunc = {
         });
     },
     setLogCoord: function(client, obj) {
+        //TODO FUN setLogCoord
         return new Promise(function(resolve, reject) {
             if (!(client.idToken)) {
                 resolve({"result": false});
@@ -1618,6 +1524,7 @@ var wsfunc = {
         });
     },
     getLogCoord: function(client, obj) {
+        //TODO FUN getLogCoord
         return new Promise(function(resolve, reject) {
             if (!(client.idToken)) {
                 resolve({"result": false});
@@ -1628,6 +1535,674 @@ var wsfunc = {
                     resolve(value);
                 });
             } catch (err) {}
+        });
+    },
+    setPeople: function(client, obj) {
+        console.log(1);
+        //TODO FUN setPeople
+        return new Promise(function(resolve, reject) {
+            if (!(client.idToken)) {
+                resolve({"result": false});
+                return;
+            }
+                var orgF = function(arr) {
+                    let org = [];
+                    let q = `CREATE TEMP TABLE torg (
+                        org_id        INTEGER,
+                        org_exid      TEXT,
+                        org_name      TEXT,
+                        org_short     TEXT,
+                        org_full      TEXT,
+                        org_inn       TEXT,
+                        org_kpp       TEXT,
+                        org_okpo      TEXT,
+                        org_active  BOOLEAN,
+                        ins         BOOLEAN,
+                        updt        BOOLEAN
+                    );
+                    INSERT INTO torg (
+                      SELECT
+                        o.org_id as org_id,
+                        t.*,
+                        o.org_id ISNULL AS ins,
+                        (o.org_name<>t.org_name)OR(o.org_short <>t.org_short)OR(o.org_full<>t.org_full)OR(o.org_inn <>t.org_inn)OR
+                        (o.org_kpp <>t.org_kpp)OR(o.org_okpo <>t.org_okpo)OR(o.org_active<>t.org_active) as updt
+                      FROM (VALUES `;
+                    arr.forEach((elem, i) => {
+                        if (i !== 0)
+                            q = q + ", ";
+                        org.push(elem.org_exid);
+                        org.push(elem.org_name);
+                        org.push(elem.org_short);
+
+                        org.push(elem.org_full);
+                        org.push(elem.org_inn);
+                        org.push(elem.org_kpp);
+
+                        org.push(elem.org_okpo);
+                        org.push(elem.org_active);
+
+                        let j = i * 8;
+                        for (let ii = 1; ii <= 8; ii++) {
+                            if (ii === 1) {
+                                q = q + "($" + (j + ii);
+                            } else {
+                                q = q + ",$" + (j + ii);
+                            }
+                        }
+                        q = q + ")";
+                    });
+                    q = q + ` ) AS t(org_exid, org_name, org_short, org_full, org_inn, org_kpp, org_okpo, org_active)
+                        LEFT JOIN trade.organization o ON o.org_exid=t.org_exid
+                      );
+
+                      INSERT INTO trade.organization(
+                        org_exid, org_name, org_short, org_full, org_inn, org_kpp, org_okpo, org_active
+                      ) SELECT org_exid, org_name, org_short, org_full, org_inn, org_kpp, org_okpo, org_active FROM torg  WHERE ins;
+
+                      UPDATE trade.organization as o SET
+                        org_name=t.org_name,
+                        org_short=t.org_short,
+                        org_full=t.org_full,
+                        org_inn=t.org_inn,
+                        org_kpp=t.org_kpp,
+                        org_okpo=t.org_okpo,
+                        org_active=t.org_active
+                        FROM (SELECT * FROM torg WHERE updt) AS t WHERE (t.org_id=o.org_id);
+
+                      DROP TABLE torg;`;
+                      /**/
+                    return [q, org];
+                };
+                var postpeoplesF = function(arr) {
+                    let pp = [];
+                    let q = `CREATE TEMP TABLE tpp (
+                        pp_id      INTEGER,
+                        pp_exid    TEXT,
+                        pp_name    TEXT, --наименование должности
+                        pp_active  BOOLEAN,
+                        updt       BOOLEAN,
+                        ins        BOOLEAN
+                    );
+
+                    INSERT INTO tpp(
+                        SELECT pp.pp_id, t.pp_exid, t.pp_name, t.pp_active,
+                        (t.pp_active<>pp.pp_active)OR(t.pp_name<>pp.pp_name) AS updt,
+                        (pp.pp_id ISNULL) AS ins
+                    FROM (VALUES`;
+                    arr.forEach((elem, i) => {
+                        if (i !== 0)
+                            q = q + ", ";
+                        pp.push(elem.pp_exid);
+                        pp.push(elem.pp_name);
+                        pp.push(elem.pp_active);
+                        let j = i * 3;
+                        for (let ii = 1; ii <= 3; ii++) {
+                            if (ii === 1) {
+                                q = q + "($" + (j + ii);
+                            } else {
+                                q = q + ",$" + (j + ii);
+                            }
+                        }
+                        q = q + ")";
+                    });
+                    q = q + ` ) AS t(pp_exid,pp_name,pp_active)
+                        LEFT JOIN trade.post_peoples pp ON (t.pp_exid=pp.pp_exid)
+                    );
+
+                    INSERT INTO trade.post_peoples(pp_exid, pp_name, pp_active)
+                       SELECT tpp.pp_exid, tpp.pp_name, tpp.pp_active FROM tpp WHERE ins=TRUE;
+                    UPDATE trade.post_peoples AS pp SET
+                        pp_name=t.pp_name, pp_active=t.pp_active, pp_mtime=now()
+                    FROM (
+                        SELECT * FROM tpp WHERE updt=TRUE
+                    ) AS t WHERE (t.pp_id=pp.pp_id);
+                    DROP TABLE tpp; `;
+
+                    return [q, pp];
+                };
+                var peopleF = function(arr) {
+                    let pp = [];
+                    let q = `CREATE TEMP TABLE tp (
+                        p_id         INTEGER,
+                        p_exid       TEXT,
+                        p_name       TEXT,
+                        p_F          TEXT,
+                        p_I          TEXT,
+                        p_O          TEXT,
+                        p_sex        BOOLEAN,
+                        p_birthdate  TIMESTAMP,
+                        p_active     BOOLEAN,
+                        updt         BOOLEAN,
+                        ins          BOOLEAN
+                    );
+                    INSERT INTO tp(
+                      SELECT
+                        p.p_id,
+                        t.p_exid,
+                        t.p_name,
+                        t.p_F,
+                        t.p_I,
+                        t.p_O,
+                        t.p_sex,
+                        now(),
+                        t.p_active,
+                        (t.p_active<>p.p_active)OR(t.p_name<>p.p_name)OR(t.p_F<>p.p_F)OR(t.p_I<>p.p_I)OR
+                        (t.p_O<>p.p_O)OR(t.p_sex<>p.p_sex)OR(t.p_active<>p.p_active) AS updt,
+                        (p.p_id ISNULL) AS ins
+                      FROM (VALUES`;
+                    arr.forEach((elem, i) => {
+                        if (i !== 0)
+                            q = q + ", ";
+                        pp.push(elem.p_exid);
+                        pp.push(elem.p_name);
+                        pp.push(elem.p_f);
+                        pp.push(elem.p_i);
+                        pp.push(elem.p_o);
+                        pp.push(elem.p_sex);
+                        pp.push(elem.p_active);
+                        let j = i * 7;
+                        for (let ii = 1; ii <= 7; ii++) {
+                            if (ii === 1) {
+                                q = q + "($" + (j + ii);
+                            } else {
+                                q = q + ",$" + (j + ii);
+                            }
+                        }
+                        q = q + ")";
+                    });
+                    q = q + ` ) AS t(p_exid, p_name, p_f, p_i, p_o, p_sex, p_active)
+                            LEFT JOIN trade.people p ON (t.p_exid=p.p_exid)
+                        );
+
+                        INSERT INTO trade.people(p_exid, p_name,p_F, p_I, p_O, p_sex, p_active)
+                            SELECT tp.p_exid, tp.p_name, tp.p_F, tp.p_I, tp.p_O, tp.p_sex,tp.p_active FROM tp WHERE ins=TRUE ;
+
+                        UPDATE trade.people AS p SET
+                        p_name=t.p_name,p_F=t.p_F, p_I=t.p_I, p_O=t.p_O, p_sex=t.p_sex, p_active=t.p_active
+                        FROM (
+                            SELECT * FROM tp WHERE updt=TRUE
+                        ) AS t WHERE (t.p_id=p.p_id);
+                        DROP TABLE tp;`;
+
+                    return [q, pp];
+                };
+                var people_link_typeF = function(arr) {
+                    let plt = [];
+                    let q = `CREATE TEMP TABLE tplt (
+                        plt_id      INTEGER,
+                        plt_exid    TEXT,
+                        plt_name    TEXT,
+                        at_id       INTEGER,
+                        plt_active  BOOLEAN,
+                        updt        BOOLEAN,
+                        ins         BOOLEAN
+                    );
+                    INSERT INTO tplt(
+                      SELECT
+                        plt.plt_id,
+                        t.plt_exid,
+                        t.plt_name,
+                        t.at_id,
+                        t.plt_active,
+                        (t.plt_name<>plt.plt_name)OR(t.at_id<>plt.at_id)OR(t.plt_active<>plt.plt_active) AS updt,
+                        (plt.plt_id ISNULL) AS ins
+                      FROM (VALUES`;
+                    arr.forEach((elem, i) => {
+                        if (i !== 0)
+                            q = q + ", ";
+                        plt.push(elem.plt_exid);
+                        plt.push(elem.plt_name);
+                        plt.push(elem.at_id);
+                        plt.push(elem.plt_active);
+                        let j = i * 4;
+                        for (let ii = 1; ii <= 4; ii++) {
+                            if (ii === 1) {
+                                q = q + "($" + (j + ii);
+                            } else {
+                                q = q + ",$" + (j + ii);
+                            }
+                        }
+                        q = q + ")";
+                    });
+                    q = q + `
+                  ) AS t(plt_exid, plt_name, at_id, plt_active)
+                  LEFT JOIN trade.any_type AS ayt ON (t.at_id=ayt.at_id)
+                  LEFT JOIN trade.people_link_type AS plt ON (plt.plt_exid=t.plt_exid)
+                );
+
+                INSERT INTO trade.people_link_type(plt_exid, plt_name, at_id, plt_active)
+                    SELECT plt_exid, plt_name, at_id, plt_active FROM tplt WHERE ins=TRUE ;
+
+                UPDATE trade.people_link_type AS plt SET
+                  plt_name=t.plt_name,
+                  at_id=t.at_id,
+                  plt_mtime=now(),
+                  plt_active=t.plt_active
+                  FROM (
+                    SELECT * FROM tplt WHERE updt=TRUE
+                  ) AS t WHERE (t.plt_id=plt.plt_id);
+                DROP TABLE tplt;`;/**/
+                    //console.log(q,kiv);
+                    return [q, plt];
+                };
+                var people_linkF = function(arr) {
+                    let pl = [];
+                    let q = `CREATE TEMP TABLE tpl (
+                        pl_id       INTEGER,
+                        plt_id      INTEGER,
+                        pp_id       INTEGER,
+                        p_id        INTEGER,
+                        any_id      INTEGER,
+                        pl_date_b   TIMESTAMP,
+                        pl_date_e   TIMESTAMP,
+                        pl_active   BOOLEAN,
+                        updt        BOOLEAN,
+                        ins         BOOLEAN
+                    );
+
+                    INSERT INTO tpl(
+                      SELECT
+                        pl.pl_id,
+                        plt.plt_id,
+                        pp.pp_id,
+                        p.p_id,
+                        coalesce(org.org_id,0)+coalesce(ca.ca_id,0)+coalesce(dp.dp_id,0)+coalesce(pa.p_id,0) AS any_id,
+                        t.pl_date_b::TIMESTAMP,
+                        t.pl_date_e::TIMESTAMP,
+                        t.pl_active,
+                        (t.pl_active<>pl.pl_active) AS updt,
+                        (pl.pl_id ISNULL) AS ins
+
+                      FROM (VALUES`;
+                    arr.forEach((elem, i) => {
+                        if (i !== 0)
+                            q = q + ", ";
+                            pl.push(elem.plt_exid);
+                            pl.push(elem.pp_exid);
+                            pl.push(elem.p_exid);
+                            pl.push(elem.any_exid);
+                            pl.push(elem.pl_date_b || new Date('1990'));
+                            pl.push(elem.pl_date_e || new Date('2100'));
+                            pl.push(elem.pl_active);
+
+                        let j = i * 7;
+                        for (let ii = 1; ii <= 7; ii++) {
+                            if (ii === 1) {
+                                q = q + "($" + (j + ii);
+                            } else {
+                                q = q + ",$" + (j + ii);
+                            }
+                        }
+                        q = q + ")";
+                    });
+                    q = q + `) AS t(plt_exid, pp_exid, p_exid, any_exid, pl_date_b, pl_date_e, pl_active)
+                  LEFT JOIN trade.people_link_type AS plt ON (plt.plt_exid=t.plt_exid)
+                  LEFT JOIN trade.post_peoples AS pp ON (pp.pp_exid=t.pp_exid)
+                  LEFT JOIN trade.people AS p ON (p.p_exid=t.p_exid)
+                  LEFT JOIN trade.any_type AS ayt ON (plt.at_id=ayt.at_id)
+                  LEFT JOIN trade.organization AS org ON (ayt.at_id=1)AND(t.any_exid=org.org_exid)
+                  LEFT JOIN trade.countragents AS ca ON (ayt.at_id=2)AND(t.any_exid=ca.ca_exid)
+                  LEFT JOIN trade.delivery_points AS dp ON (ayt.at_id=3)AND(t.any_exid=dp.dp_exid)
+                  LEFT JOIN trade.people AS pa ON (ayt.at_id=4)AND(t.any_exid=pa.p_exid)
+                  LEFT JOIN trade.people_link AS pl ON ((p.p_id=pl.p_id) AND (pl.plt_id=plt.plt_id) AND (pl.pp_id=pp.pp_id) AND
+                                                        (pl.any_id=coalesce(org.org_id,0)+coalesce(ca.ca_id,0)+coalesce(dp.dp_id,0)+coalesce(pa.p_id,0)))
+                );
+
+                INSERT INTO trade.people_link(plt_id, pp_id, p_id, any_id,pl_date_b,pl_date_e, pl_active)
+                    SELECT plt_id, pp_id, p_id, any_id,pl_date_b,pl_date_e, pl_active FROM tpl WHERE ins=TRUE ;
+
+                UPDATE trade.people_link AS plt SET
+                  pl_date_b=t.pl_date_b,
+                  pl_date_e=t.pl_date_e,
+                  pl_mtime=now(),
+                  pl_active=t.pl_active
+                  FROM (
+                    SELECT * FROM tpl WHERE updt=TRUE
+                  ) AS t WHERE (t.plt_id=plt.plt_id);
+                DROP TABLE tpl;`;/**/
+                    //console.log(q,kiv);
+                    return [q, pl];
+                };
+                var ki_valueF = function(arr) {
+                    let kiv = [];
+                    let q = `CREATE TEMP TABLE tkiv (
+                        kiv_id      INTEGER,
+                        kiv_exid    TEXT,
+                        kik_id      INTEGER,
+                        kiv_valiue  TEXT,
+                        kiv_active  BOOLEAN,
+                        updt        BOOLEAN,
+                        ins         BOOLEAN
+                    );
+
+                    INSERT INTO tkiv(
+                      SELECT
+                        kiv.kiv_id,
+                        t.kiv_exid,
+                        t.kik_id,
+                        t.kiv_valiue,
+                        t.kiv_active,
+                        (t.kik_id<>kiv.kik_id)OR(t.kiv_valiue<>kiv.kiv_valiue)OR(t.kiv_active<>kiv.kiv_active) AS updt,
+                        (kiv.kiv_id ISNULL) AS ins
+                      FROM (VALUES`;
+                    arr.forEach((elem, i) => {
+                        if (i !== 0)
+                            q = q + ", ";
+                        kiv.push(elem.kiv_exid);
+                        kiv.push(elem.kik_id);
+                        kiv.push(elem.kiv_valiue);
+                        kiv.push(elem.kiv_active);
+                        let j = i * 4;
+                        for (let ii = 1; ii <= 4; ii++) {
+                            if (ii === 1) {
+                                q = q + "($" + (j + ii);
+                            } else {
+                                q = q + ",$" + (j + ii);
+                            }
+                        }
+                        q = q + ")";
+                    });
+                    q = q + ` ) AS t(kiv_exid, kik_id, kiv_valiue, kiv_active)
+                      LEFT JOIN trade.ki_value AS kiv ON (kiv.kiv_exid=t.kiv_exid)
+                    );
+
+                    INSERT INTO trade.ki_value(kiv_exid, kik_id, kiv_valiue, kiv_active)
+                        SELECT kiv_exid, kik_id, kiv_valiue, kiv_active FROM tkiv WHERE ins=TRUE ;
+
+                    UPDATE trade.ki_value AS kiv SET
+                      kik_id=t.kik_id,
+                      kiv_valiue=t.kiv_valiue,
+                      kiv_active=t.kiv_active,
+                      kiv_mtime=now()
+
+                      FROM (
+                        SELECT * FROM tkiv WHERE updt=TRUE
+                      ) AS t WHERE (t.kiv_id=kiv.kiv_id);
+                    DROP TABLE tkiv;`;/**/
+                    //console.log(q,kiv);
+                    return [q, kiv];
+                };
+                var ki_linkF = function(arr) {
+                    let kil = [];
+                    let q = `CREATE TEMP TABLE tkil (
+                        kil_id      INTEGER,
+                        at_id       INTEGER,
+                        any_id      INTEGER,
+                        kiv_id      INTEGER,
+                        kil_active  BOOLEAN,
+                        updt        BOOLEAN,
+                        ins         BOOLEAN
+                    );
+
+                    INSERT INTO tkil(
+                      SELECT
+                        kil.kil_id,
+                        ayt.at_id,
+                        coalesce(org.org_id,0)+coalesce(ca.ca_id,0)+coalesce(dp.dp_id,0)+coalesce(p.p_id,0) AS any_id,
+                        kiv.kiv_id,
+                        t.kil_active,
+                        (t.kil_active<>kil.kil_active) AS updt,
+                        (kil.kil_id ISNULL) AS ins
+                      FROM (VALUES`;
+                    arr.forEach((elem, i) => {
+                        if (i !== 0)
+                            q = q + ", ";
+                        kil.push(elem.at_id);
+                        kil.push(elem.any_exid);
+                        kil.push(elem.kiv_exid);
+                        kil.push(elem.kil_active);
+                        let j = i * 4;
+                        for (let ii = 1; ii <= 4; ii++) {
+                            if (ii === 1) {
+                                q = q + "($" + (j + ii);
+                            } else {
+                                q = q + ",$" + (j + ii);
+                            }
+                        }
+                        q = q + ")";
+                    });
+                    q = q + `) AS t(at_id, any_exid,kiv_exid,kil_active)
+                    LEFT JOIN trade.any_type AS ayt ON (t.at_id=ayt.at_id)
+                    LEFT JOIN trade.organization AS org ON (t.at_id=1)AND(t.any_exid=org.org_exid)
+                    LEFT JOIN trade.countragents AS ca ON (t.at_id=2)AND(t.any_exid=ca.ca_exid)
+                    LEFT JOIN trade.delivery_points AS dp ON (t.at_id=3)AND(t.any_exid=dp.dp_exid)
+                    LEFT JOIN trade.people AS p ON (t.at_id=4)AND(t.any_exid=p.p_exid)
+                    LEFT JOIN trade.ki_value AS kiv ON (t.kiv_exid=kiv.kiv_exid)
+                    LEFT JOIN trade.ki_link AS kil ON (kil.at_id=t.at_id)AND (kiv.kiv_id=kil.kiv_id) AND
+                                    (kil.any_id=coalesce(org.org_id,0)+coalesce(ca.ca_id,0)+coalesce(dp.dp_id,0)+coalesce(p.p_id,0))
+                  );
+
+                  INSERT INTO trade.ki_link(at_id, any_id, kiv_id, kil_active)
+                      SELECT at_id, any_id, kiv_id, kil_active FROM tkil WHERE ins=TRUE ;
+
+                  UPDATE trade.ki_link AS kil SET
+                    kil_mtime=now(),
+                    kil_active=t.kil_active
+                    FROM (
+                      SELECT * FROM tkil WHERE updt=TRUE
+                    ) AS t WHERE (kil.kil_id=t.kil_id);
+                  DROP TABLE tkil;`;/**/
+                    //console.log(q,kiv);
+                    return [q, kil];
+                };
+                db.task(function * (t) {
+                    if (obj.organization) {
+                        console.log('start org', new Date(), obj.organization.length);
+                        for (let i = 0; i < obj.organization.length; i = i + 100) {
+                            let a = obj.organization.slice(i, i + 100);
+                            let [q, arr] = orgF(a);
+                            yield t.none(q, arr);
+                        }
+                        console.log('end org', new Date());
+                    }
+                    if (obj.post_peoples) {
+                        console.log('start pp', new Date(), obj.post_peoples.length);
+                        for (let i = 0; i < obj.post_peoples.length; i = i + 100) {
+                            let a = obj.post_peoples.slice(i, i + 100);
+                            let [q, arr] = postpeoplesF(a);
+                            yield t.none(q, arr);
+                        }
+                        console.log('end pp', new Date());
+                    }
+                    if (obj.people) {
+                        console.log('start people', new Date(), obj.people.length);
+                        for (let i = 0; i < obj.people.length; i = i + 100) {
+                            let a = obj.people.slice(i, i + 100);
+                            let [q, arr] = peopleF(a);
+                            yield t.none(q, arr);
+                        }
+                        console.log('end people', new Date());
+                    }
+                    if (obj.people_link_type) {
+                        console.log('start people_link_type', new Date(), obj.people_link_type.length);
+                        for (let i = 0; i < obj.people_link_type.length; i = i + 100) {
+                            let a = obj.people_link_type.slice(i, i + 100);
+                            let [q, arr] = people_link_typeF(a);
+                            yield t.none(q, arr);
+                        }
+                        console.log('end people_link_type', new Date());
+                    }
+                    if (obj.people_link) {
+                        console.log('start people_link', new Date(), obj.people_link.length);
+                        for (let i = 0; i < obj.people_link.length; i = i + 100) {
+                            let a = obj.people_link.slice(i, i + 100);
+                            let [q, arr] = people_linkF(a);
+                            yield t.none(q, arr);
+                        }
+                        console.log('end people_link', new Date());
+                    }
+                    if (obj.ki_value) {
+                        console.log('start ki_value', new Date(), obj.ki_value.length);
+                        for (let i = 0; i < obj.ki_value.length; i = i + 100) {
+                            let a = obj.ki_value.slice(i, i + 100);
+                            let [q, arr] = ki_valueF(a);
+                            yield t.none(q, arr);
+                        }
+                        console.log('end ki_value', new Date());
+                    }
+                    if (obj.ki_link) {
+                        console.log('start ki_link', new Date(), obj.ki_link.length);
+                        for (let i = 0; i < obj.ki_link.length; i = i + 100) {
+                            let a = obj.ki_link.slice(i, i + 100);
+                            let [q, arr] = ki_linkF(a);
+                            yield t.none(q, arr);
+                        }
+                        console.log('end ki_link', new Date());
+                    }
+                    return Promise.resolve(true);
+
+                }).then(function(r) {
+                    console.log('r', r);
+                    resolve({"result": true});
+                }).catch(function(err) {
+                    console.log("Gen err", err);
+                    resolve({"result": false});
+                });/**/
+                resolve({"result": false});
+                return;
+
+
+        });
+    },
+    getPeople: function(client, obj) {
+        //TODO FUN getPeople
+        return new Promise(function(resolve, reject) {
+            if (!(client.idToken)) {
+                resolve({"result": false});
+                return;
+            }
+
+        });
+    },
+    setKI: function(client, obj) {
+        //TODO FUN setKI
+        return new Promise(function(resolve, reject) {
+            if (!(client.idToken)) {
+                resolve({"result": false});
+                return;
+            }
+
+        });
+    },
+    getKI: function(client, obj) {
+        //TODO FUN getKI
+        return new Promise(function(resolve, reject) {
+            if (!(client.idToken)) {
+                resolve({"result": false});
+                return;
+            }
+
+        });
+    },
+    setOrg: function(client, obj) {
+        //TODO FUN setOrg
+        return new Promise(function(resolve, reject) {
+            var orgF = function(arr) {
+                let org = [];
+                let q = `CREATE TEMP TABLE torg (
+                    org_id        INTEGER,
+                    org_exid      TEXT,
+                    org_name      TEXT,
+                    org_short     TEXT,
+                    org_full      TEXT,
+                    org_inn       TEXT,
+                    org_kpp       TEXT,
+                    org_okpo      TEXT,
+                    org_active  BOOLEAN,
+                    ins         BOOLEAN,
+                    updt        BOOLEAN
+                );
+
+                INSERT INTO torg (
+                  SELECT
+                    o.org_id as org_id,
+                    t.*,
+                    o.org_id ISNULL AS ins,
+                    (o.org_name<>t.org_name)OR(o.org_short <>t.org_short)OR(o.org_full <>t.org_full)OR(o.org_inn <>t.org_inn)OR
+                    (o.org_kpp <>t.org_kpp)OR(o.org_okpo <>t.org_okpo)OR(o.org_active <>t.org_active) as updt
+                  FROM (VALUES `;
+                arr.forEach((elem, i) => {
+                    if (i !== 0)
+                        q = q + ", ";
+                    org.push(elem.org_exid);
+                    org.push(elem.org_name);
+                    org.push(elem.org_short);
+                    org.push(elem.org_full);
+                    org.push(elem.org_inn);
+                    org.push(elem.org_kpp);
+                    org.push(elem.org_okpo);
+                    org.push(elem.org_active);
+
+                    let j = i * 8;
+                    for (let ii = 1; ii <= 8; ii++) {
+                        if (ii === 1) {
+                            q = q + "($" + (j + ii);
+                        } else {
+                            q = q + ",$" + (j + ii);
+                        }
+                    }
+                    q = q + ")";
+                });
+                q = q + ` ) AS t(org_exid, org_name, org_short, org_full, org_inn, org_kpp, org_okpo, org_active)
+                LEFT JOIN organization o ON o.org_exid=t.org_exid
+              );
+
+              INSERT INTO organization(
+                org_exid, org_name, org_short, org_full, org_inn, org_kpp, org_okpo, org_active
+              ) SELECT org_exid, org_name, org_short, org_full, org_inn, org_kpp, org_okpo, org_active FROM torg  WHERE ins;
+
+              UPDATE organization as o SET
+                org_name=t.org_name,
+                org_short=t.org_short,
+                org_full=t.org_full,
+                org_inn=t.org_inn,
+                org_kpp=t.org_kpp,
+                org_kpp=t.org_okpo,
+                org_active=t.org_active
+                FROM (SELECT * FROM torg WHERE updt) AS t WHERE (t.org_id=o.org_id);
+              DROP TABLE torg;`;
+
+                return [q, org];
+            };
+
+
+
+            db.task(function * (t) {
+                if (obj.organization) {
+                    console.log('start org', new Date(), obj.organization.length);
+                    for (let i = 0; i < obj.organization.length; i = i + 100) {
+                        let a = obj.organization.slice(i, i + 100);
+                        let [q, arr] = orgF(a);
+                        yield t.none(q, arr);
+                    }
+                    console.log('end org', new Date());
+                }
+
+                return Promise.resolve(true);
+            }).then(function(r) {
+                console.log('r', r);
+                resolve({"result": true});
+            }).catch(function(err) {
+                console.log("Gen err", err);
+                resolve({"result": false});
+            });/**/
+            if (!(client.idToken)) {
+                resolve({"result": false});
+                return;
+            }
+
+        });
+    },
+    getOrg: function(client, obj) {
+        //TODO FUN getOrg
+
+        return new Promise(function(resolve, reject) {
+            if (!(client.idToken)) {
+                resolve({"result": false});
+                return;
+            }
+
         });
     }
 };

@@ -4,6 +4,13 @@ var WebSocketServer = new require('ws');
 var fs = require('fs');
 var wsfunc = require('./wsfunc').fun;
 
+{
+    let f = require('./wsfuncmobile').fun;
+    for (let prop in f) {
+        wsfunc[prop] = f[prop];
+    }
+}
+
 //превратить массив ArrM объектов в объект с ключем указанным PolM
 function gr(ArrM, PolM) {
 
