@@ -18,16 +18,16 @@ getPricelistM                     | получение списка прайсл
 getPriceM                         | получение списка цен
 getPricelistLinkM                 | получение списка связей прайслистов
 getPricelistSearchM               | получение поисковой строки цен
-getStoresM                        | получение списка
-getStoreLinkM                     | получение списка
-getStocksM                        | получение списка
-getStoresSearchM                  | получение списка
-getPeopleM                        | получение списка
-getPeopleLinkM                    | получение списка
-getPeopleLinkTypeM                | получение списка
-getOrganizationM                  | получение списка
-getAnyTypeM                       | получение списка
-getKiValueM                       | получение списка
-getKiKindM                        | получение списка
-getKiTypesM                       | получение списка
-getKiLinkM                        | получение списка
+getStoresM                        | получение списка складов
+getStoreLinkM                     | получение списка связи складов
+getStocksM                        | получение списка остатков
+getStoresSearchM                  | получение поисковой строки остатков по складу
+getPeopleM                        | получение списка людей
+getPeopleLinkM                    | получение списка связей
+getPeopleLinkTypeM                | получение списка типов связей людей
+getOrganizationM                  | получение списка собственных организаций
+getAnyTypeM                       | получение списка связываемых объектов
+getKiValueM                       | получение списка значений контактной информации
+getKiKindM                        | получение списка подтипов контактной информации
+getKiTypesM                       | получение списка основных типов контактной информации
+getKiLinkM                        | получение списка связей контактной информации
