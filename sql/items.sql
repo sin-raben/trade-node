@@ -1,32 +1,32 @@
-DROP TABLE item_Units;
-DROP TABLE item_Unit_Types;
-DROP TABLE item_Metric_Types;
-DROP TABLE link_Item_Group;
-DROP TABLE item_Groups;
-DROP TABLE item_Group_Types;
-DROP TABLE items CASCADE;
-DROP TABLE item_NDS_Types;
+DROP TABLE IF EXISTS trade.item_Units;
+DROP TABLE IF EXISTS trade.item_Unit_Types;
+DROP TABLE IF EXISTS trade.item_Metric_Types;
+DROP TABLE IF EXISTS trade.link_Item_Group;
+DROP TABLE IF EXISTS trade.item_Groups;
+DROP TABLE IF EXISTS trade.item_Group_Types;
+DROP TABLE IF EXISTS trade.items CASCADE;
+DROP TABLE IF EXISTS trade.item_NDS_Types;
 
 -- ==================СОЗДАНИЕ ТАБЛИЦ=====================
 --Структура списка ставок НДС
-CREATE TABLE public.item_NDS_Types (
+CREATE TABLE trade.item_NDS_Types (
   int_id    SERIAL PRIMARY KEY, -- идентификатор ставки НДС
   int_name  VARCHAR(20), -- наименование ставки
   int_value INTEGER, -- значение для расчетов
   int_mtime TIMESTAMP DEFAULT now()                     -- время изменения товара _в посылаемом на мобильное приложение ответе - необязателен_ (тип: число)
 );
 
-COMMENT ON TABLE public.item_NDS_Types IS 'Ставки НДС';
-COMMENT ON COLUMN public.item_NDS_Types.int_id IS 'идентификатор ставки НДС';
+COMMENT ON TABLE trade.item_NDS_Types IS 'Ставки НДС';
+COMMENT ON COLUMN trade.item_NDS_Types.int_id IS 'идентификатор ставки НДС';
 
-INSERT INTO item_NDS_Types (int_id, int_name, int_value) VALUES
+INSERT INTO trade.item_NDS_Types (int_id, int_name, int_value) VALUES
   (1, 'НДС: 0%', 00),
   (2, 'НДС: 10%', 10),
   (3, 'НДС: 18%', 18),
   (4, 'Без НДС', 00);
 
 -- Структура массива объектов содержащих основную информацию о товаре/услуге `items`
-CREATE TABLE public.items (
+CREATE TABLE trade.items (
   i_id       SERIAL PRIMARY KEY, -- идентификатор товара (тип: число)
   i_exid     TEXT UNIQUE, -- внешний код, используется для синхронизации, _в посылаемом на мобильное приложение ответе - необязателен_ (тип: строка)
   i_name     VARCHAR(100), -- наименование товара (тип: строка)
@@ -41,7 +41,7 @@ CREATE TABLE public.items (
 );
 
 --Структура массива типов групп товаров `itemsGroupType` перечисленны все группы, категории, подкатегории
-CREATE TABLE public.item_Group_Types (
+CREATE TABLE trade.item_Group_Types (
   igt_id       SERIAL PRIMARY KEY, -- идентификатор типа группы товаров (тип: число)
   igt_exid     TEXT UNIQUE, -- внешний код, используется для синхронизации, _в посылаемом на мобильное приложение ответе - необязателен_ (тип: строка)
   igt_name     VARCHAR(50) UNIQUE, -- наименование типа группы товаров (тип: строка)
@@ -52,7 +52,7 @@ CREATE TABLE public.item_Group_Types (
 );
 
 -- Структура массива групп товаров `itemsGroup`
-CREATE TABLE public.item_Groups (
+CREATE TABLE trade.item_Groups (
   ig_id     SERIAL PRIMARY KEY, -- идентификатор значения группы товаров (тип: число)                 ,
   igt_id    INTEGER REFERENCES item_Group_Types, -- тип спойства (тип: число)
   ig_exid   TEXT, -- внешний код
@@ -62,7 +62,7 @@ CREATE TABLE public.item_Groups (
 );
 
 
-CREATE TABLE public.link_Item_Group (
+CREATE TABLE trade.link_Item_Group (
   lig_id     SERIAL PRIMARY KEY, -- идентификатор типа (тип: число)
   i_id       INTEGER REFERENCES items,
   ig_id      INTEGER REFERENCES item_Groups,
@@ -72,14 +72,14 @@ CREATE TABLE public.link_Item_Group (
 );
 
 -- `length` - мера длинны, `area` - мера площади, `volume` - мера объема, `quantity` - количествеенная характеристика, `bulk` - мера веса
-CREATE TABLE public.item_Metric_Types (
+CREATE TABLE trade.item_Metric_Types (
   imt_id     SERIAL PRIMARY KEY, -- идентификатор метрики
   imt_value  VARCHAR(20) UNIQUE, -- наименование метрики
   imt_active BOOLEAN   DEFAULT TRUE,
   imt_mtime  TIMESTAMP DEFAULT now()                     -- время изменения  информации о товаре (тип: число)
 );
 
-INSERT INTO item_Metric_Types (imt_id, imt_value) VALUES
+INSERT INTO trade.item_Metric_Types (imt_id, imt_value) VALUES
   (1, 'мера длинны'),
   (2, 'мера площади'),
   (3, 'мера объёма'),
@@ -87,7 +87,7 @@ INSERT INTO item_Metric_Types (imt_id, imt_value) VALUES
   (5, 'мера количества');
 
 -- Структура массива типов единиц измерения `itemsUnitType`
-CREATE TABLE public.item_Unit_Types (
+CREATE TABLE trade.item_Unit_Types (
   iut_id     SERIAL PRIMARY KEY, -- идентификатор типа (тип: число)
   iut_exid   TEXT UNIQUE, -- внешний код, используется для синхронизации, _в посылаемом на мобильное приложение ответе - необязателен_ (тип: строка)
   iut_name   VARCHAR(10) UNIQUE, -- наименование единицы измерения (тип: строка)
@@ -98,7 +98,7 @@ CREATE TABLE public.item_Unit_Types (
 );
 
 -- Структура массива значений единиц измерения `itemsUnit`
-CREATE TABLE public.item_Units (
+CREATE TABLE trade.item_Units (
   iu_id     SERIAL PRIMARY KEY, -- идентификатор записи (тип: число)
   i_id      INTEGER REFERENCES items, -- идентификатор товара (тип: число)
   iut_id    INTEGER REFERENCES item_Unit_Types, -- единица измерения (тип: число)
