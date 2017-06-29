@@ -35,3 +35,7 @@ TABLE items
 SELECT * FROM items JOIN sync ON (items.i_id=sync.id) and (sync_time_begin < i_mtime) WHERE token='gofman-1' and table= 'Item';
 ```
 users
+
+
+добавить тип номенклатуры (товары/услуги/материалы/тара/оборудование/)
+добавить учет остатков по сумме хранимого товара/ учет ГТД/номер оборудования

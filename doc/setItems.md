@@ -23,7 +23,7 @@
         "igt_active": true
     }],
     "itemsGroup": [{
-        "i_exid": "#JV",
+        //"i_exid": "#JV",
         "igt_exid": "A->ATR",
         "ig_exid": "АССОРТИ ИЗ МОРЕПРОД.",
         "ig_value": "АССОРТИ ИЗ МОРЕПРОД.",
