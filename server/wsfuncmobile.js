@@ -10,6 +10,174 @@ var cn = 'postgres://postgres:postgres@localhost:5432/office';
 var db = pgp(cn);
 
 var wsfunc = {
+
+	authUserМ: function (client, obj) {
+		//TODO FUN authUser
+		return new Promise(function (resolve, reject) {
+			try {
+				console.log("obj", obj);
+				db.query(`SELECT t.t_id,t.t_name,t.t_key,u.u_login,u.u_pass from trade.token t
+  							LEFT JOIN trade.users u ON t.u_id = u.u_id where t_name=$1;`,
+					obj.idToken).then((token) => {
+						if (token[0]) {
+							//t_id: 7, t_key: '1', u_login: 'gofman', u_pass: '1'
+							//console.log("token[0]", token[0]);
+							client.idToken = token[0].t_name;
+							client.user = token[0].u_login;
+							client.t_id = token[0].t_id;
+							if ((token[0].u_login === obj.authData.login) && (token[0].u_pass === obj.authData.password)) {
+								resolve({ "result": true });
+							} else {
+								resolve({ "result": false });
+							}
+						} else {
+							resolve({ "result": false });
+							console.error(obj.idToken + " нет такого токена");
+						}
+					}).catch((error) => {
+						console.log("error1", error);
+						reject(error);
+					});/**/
+			} catch (err) {
+				console.log("errA", err);
+			}
+
+		});
+	},
+	setFCM: function (client, obj) {
+		return new Promise(function (resolve, reject) {
+			if (!(client.idToken)) {
+				resolve({ "result": false });
+				return;
+			}
+			//console.log(obj, client);
+			db.query(`UPDATE trade.token AS t SET t_fcm=$1, t_mtime = NOW()
+			 WHERE t.t_name=$2;`, [obj.token, client.idToken]).then(
+				(value) => {
+					resolve({});
+				});
+		});
+	},
+	getNewsM: function (client, obj) {
+		return new Promise(function (resolve, reject) {
+			if (!(client.idToken)) {
+				resolve({ "result": false });
+				return;
+			}
+			//console.log(obj, client);
+			db.query(`SELECT n.*
+				FROM trade.news n
+				JOIN trade.links_news ln ON (n.n_id = ln.n_id) AND (ln.at_id = 4)
+				JOIN trade.token t ON (ln.any_id = t.u_id)
+				JOIN trade.sync_token st
+					ON (st.st_table = 'getNewsM') AND (t.t_id = st.t_id) AND (st.st_stime <= n.n_date) AND (st.st_result = TRUE)
+				WHERE (t.t_name = $1);`, [client.idToken]).then(
+				(value) => {
+					db.one(`INSERT INTO trade.sync_token (t_id, st_table, st_stime, st_etime, st_result) VALUES
+  						($1,'getNewsM',now(),null, FALSE ) RETURNING trade.sync_token.st_id`, [client.t_id]).then(
+						(st_id) => {
+							var sync = +st_id.st_id;
+							resolve({ "data": value, sync });
+						}
+						);
+
+				});
+
+		});
+	},
+	setSync: function (client, obj) {
+		return new Promise(function (resolve, reject) {
+			if (!(client.idToken)) {
+				resolve({ "result": false });
+				return;
+			}
+			console.log(obj);
+			db.query(`UPDATE trade.sync_token st SET
+				st_result = $1,
+				st_etime = now()
+				WHERE (st.st_id=$2) AND(st.st_table=$3)`, [obj.result, obj.id, obj.name]).then(
+				(value) => {
+					resolve({});
+				});
+
+		});
+	},
+	setLogCoord: function (client, obj) {
+		//TODO FUN setLogCoord
+		return new Promise(function (resolve, reject) {
+			if (!(client.idToken)) {
+				resolve({ "result": false });
+				return;
+			}
+			console.log("obj", obj);
+			var coord,
+				res;
+			var vr = (value) => {
+				console.log("value", value);
+			};
+			var ve = (err) => {
+				console.log("err", err);
+			};
+			for (var i = 0; i < obj.points.length; i++) {
+				coord = "(" + obj.points[i].coord.lat + "," + obj.points[i].coord.lon + ")";
+				res = {
+					"idToken": client.idToken,
+					"coord": coord,
+					"time": new Date(obj.points[i].time * 1000),
+					"token": client.t_id,
+					"event": obj.points[i].event
+					//"atime": new Date()
+				};
+				try {
+					db.query("INSERT INTO trade.log_coords (lc_coord, lc_time, lc_token,lc_event) VALUES (${coord}, ${time}, ${token}, ${event});", res).then(vr, ve);
+				} catch (err) { reject(err); }
+				console.log("setLogCoord", res);
+			}
+
+			resolve({ "result": true });
+		});
+	},
+	getLogCoord: function (client, obj) {
+		//TODO FUN getLogCoord
+		return new Promise(function (resolve, reject) {
+			if (!(client.idToken)) {
+				resolve({ "result": false });
+				return;
+			}
+			try {
+				db.query(`SELECT lc_coord, lc_token,lc_event, extract(epoch from lc_time)::integer as time 
+					FROM  trade.log_coords as c ORDER BY time;`, obj).then((value) => {
+						resolve(value);
+					});
+			} catch (err) { reject(err); }
+		});
+	},
+	setCalls: function (client, obj) {
+		return new Promise(function (resolve, reject) {
+			if (!(client.idToken)) {
+				resolve({ "result": false });
+				return;
+			}
+			var st = "", arr = [];
+
+			for (var i = 0; i < obj.calls.length; i++) {
+				let call = obj.calls[i];
+				arr.push(client.t_id);
+				arr.push(call.lc_stime);
+				arr.push(call.lc_billsec);
+				arr.push(call.lc_phone);
+				arr.push(call.lc_name);
+				if (i !== 0) st = st + ",";
+				st = st + "$" + (i + 1) + ", $" + (i + 2) + ", $" + (i + 3) + ",$" + (i + 4) + ",$" + (i + 5);
+
+			}
+			db.query(`INSERT INTO trade.log_coords (t_id, lc_stime, lc_billsec, lc_phone, lc_name) VALUES (` + st + `);`, arr).then(
+				(value) => {
+					resolve({});
+				});
+
+		});
+	},
 	getItemsM: function (client, obj) {
 		return new Promise(function (resolve, reject) {
 			if (!(client.idToken)) {
@@ -25,7 +193,7 @@ var wsfunc = {
 						int_id,
 						i_active,
 						extract(epoch from i_mtime)::integer as i_mtime
-					from items`, {})
+					from trade.items`, {})
 					.then((value) => {
 						resolve({ "data": value });
 					});
@@ -48,7 +216,7 @@ var wsfunc = {
 					igt_agent,
 					igt_active,
 					extract(epoch from igt_mtime)::integer as igt_mtime
-				from item_Group_Types;`, {})
+				from trade.item_Group_Types;`, {})
 					.then((value) => {
 						resolve({ "data": value });
 					});
@@ -70,7 +238,7 @@ var wsfunc = {
 					ig_value,
 					ig_active,
 					extract(epoch from ig_mtime)::integer as ig_mtime
-				from item_Groups`, {})
+				from trade.item_Groups`, {})
 					.then((value) => {
 						resolve({ "data": value });
 					});
@@ -93,7 +261,7 @@ var wsfunc = {
 					igt_id,
 					lig_active,
 					extract(epoch from lig_mtime)::integer as lig_mtime
-				from link_Item_Group`, {})
+				from trade.link_Item_Group`, {})
 					.then((value) => {
 						resolve({ "data": value });
 					});
@@ -116,7 +284,7 @@ var wsfunc = {
 					iut_okei,
 					iut_active,
 					extract(epoch from iut_mtime)::integer as iut_mtime
-				from item_Unit_Types`, {})
+				from trade.item_Unit_Types`, {})
 					.then((value) => {
 						resolve({ "data": value });
 					});
@@ -152,7 +320,7 @@ var wsfunc = {
 					iu_main,
 					iu_active,
 					extract(epoch from iu_mtime)::integer as iu_mtime
-				from item_Units`, {})
+				from trade.item_Units`, {})
 					.then((value) => {
 						resolve({ "data": value });
 					});
@@ -319,7 +487,7 @@ var wsfunc = {
 						pl_type,
 						pl_active,
 						extract(epoch from pl_mtime)::integer as pl_mtime
-					FROM pricelist`, {})
+					FROM trade.pricelist`, {})
 					.then((value) => {
 						resolve({ "data": value });
 					});
@@ -344,7 +512,7 @@ var wsfunc = {
 						p_cn,
 						p_active,
 						extract(epoch from p_mtime)::integer as p_mtime
-					FROM price`, {})
+					FROM trade.price`, {})
 					.then((value) => {
 						resolve({ "data": value });
 					});
@@ -366,7 +534,7 @@ var wsfunc = {
 				  pll_prior,
 				  pll_active,
 				  extract(epoch from pll_mtime)::integer as pll_mtime
-				FROM pricelist_link;`, {})
+				FROM trade.pricelist_link;`, {})
 					.then((value) => {
 						resolve({ "data": value });
 					});
@@ -385,7 +553,7 @@ var wsfunc = {
 				db.query(`SELECT
 						pl_id,
 						pl_name as value
-					FROM pricelist;`, {})
+					FROM trade.pricelist;`, {})
 					.then((value) => {
 						resolve({ "data": value });
 					});
@@ -407,7 +575,7 @@ var wsfunc = {
 					sr_active,
 					sr_type,
 					extract(epoch from sr_mtime)::integer as sr_mtime
-				FROM stores;`, {})
+				FROM trade.stores;`, {})
 					.then((value) => {
 						resolve({ "data": value });
 					});
@@ -430,7 +598,7 @@ var wsfunc = {
 					srl_sort,
 					srl_active,
 					extract(epoch from srl_mtime)::integer as srl_mtime
-				FROM store_link`, {})
+				FROM trade.store_link`, {})
 					.then((value) => {
 						resolve({ "data": value });
 					});
@@ -453,7 +621,7 @@ var wsfunc = {
 					sc_amount,
 					sc_active,
 					extract(epoch from sc_mtime)::integer as sc_mtime
-				FROM stocks`, {})
+				FROM trade.stocks`, {})
 					.then((value) => {
 						resolve({ "data": value });
 					});
@@ -472,7 +640,7 @@ var wsfunc = {
 				db.query(`SELECT
 						sr_id,
 						sr_name as value
-					FROM stores`, {})
+					FROM trade.stores`, {})
 					.then((value) => {
 						resolve({ "data": value });
 					});

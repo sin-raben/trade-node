@@ -12,6 +12,7 @@ var wsfunc = require('./wsfunc').fun;
 		wsfunc[prop] = f[prop];
 	}
 }
+
 /*
 //превратить массив ArrM объектов в объект с ключем указанным PolM
 function gr(ArrM, PolM) {
@@ -56,22 +57,25 @@ webSocketServer.on('connection', function (ws) {
 	console.log("новое соединение " + id);
 
 	ws.on('message', function (message) {
-		//console.log('+получено сообщение ' + message);
+		console.log('+получено сообщение ' + message);
 		var obj;
 		try {
 			obj = JSON.parse(message);
 		} catch (err) {
-			wsm(clients[id], "error", { "err": "" + err });
+			wsm(clients[id], "error", {
+				"err": "" + err
+			});
 		}
 
 		try {
 			if (obj.head && obj.body) {
 				if (wsfunc[obj.head]) {
 					wsfunc[obj.head](clients[id], obj.body).then((ret) => {
+						console.log(ret);
 						wsm(clients[id], obj.head, ret);
 					});
 				} else {
-					console.log('err', wsfunc);
+					console.log('err', obj);
 					wsfunc.zero(clients[id], obj.head, obj.body);
 				}
 			}

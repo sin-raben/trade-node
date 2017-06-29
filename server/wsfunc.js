@@ -1,6 +1,5 @@
-
-/*eslint no-console: 0, "quotes": [0, "single"], module: 0, globals:[0, "obj"]*/
-/*eslint no-unused-vars: ["error", { "args": "none" }]*/
+/*eslint no-console: 0, "quotes": [0, "single"],no-unused-vars: ["error", { "args": "none" }] */
+/*eslint */
 /*jshint node:true, esversion: 6 */
 "use strict";
 var pgp = require("pg-promise")({
@@ -70,13 +69,14 @@ var wsfunc = {
 
 		});
 	},
+	
 	updateToken: function (client, obj) {
 		return new Promise(function (resolve, reject) {
 			//
 		});
 	},
 	zero: function (id, head, str) {
-		console.log("error", "Метод " + str + " не найден");
+		console.log("error",head, str, "Метод " + str + " не найден");
 	},
 	wsm: function (client, head, body) {
 		try {
@@ -1506,54 +1506,7 @@ var wsfunc = {
 
 		});
 	},
-	setLogCoord: function (client, obj) {
-		//TODO FUN setLogCoord
-		return new Promise(function (resolve, reject) {
-			if (!(client.idToken)) {
-				resolve({ "result": false });
-				return;
-			}
-			console.log("obj", obj);
-			var coord,
-				res;
-			var vr = (value) => {
-				console.log("value", value);
-			};
-			var ve = (err) => {
-				console.log("err", err);
-			};
-			for (var i = 0; i < obj.points.length; i++) {
-				coord = "(" + obj.points[i].coord.lat + "," + obj.points[i].coord.lon + ")";
-				res = {
-					"idToken": client.idToken,
-					"coord": coord,
-					"time": new Date(obj.points[i].time * 1000)
-					//"atime": new Date()
-				};
-				try {
-					db.query("INSERT INTO wp_coords (coord, time, token) VALUES (${coord}, ${time}, ${idToken});", res).then(vr, ve);
-				} catch (err) { reject(err); }
-				console.log("setLogCoord", res);
-			}
-
-			resolve({ "result": true });
-		});
-	},
-	getLogCoord: function (client, obj) {
-		//TODO FUN getLogCoord
-		return new Promise(function (resolve, reject) {
-			if (!(client.idToken)) {
-				resolve({ "result": false });
-				return;
-			}
-			try {
-				db.query(`SELECT coord, token, extract(epoch from time)::integer as time 
-					FROM  wp_coords as c ORDER BY time;`, obj).then((value) => {
-						resolve(value);
-					});
-			} catch (err) { reject(err); }
-		});
-	},
+	
 	setPeople: function (client, obj) {
 		console.log(1);
 		//TODO FUN setPeople

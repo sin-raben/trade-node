@@ -1,3 +1,22 @@
 {
-    "eslint.enable": true
+    "eslint.enable": true,
+    "sftp-sync": {
+        "local": {
+            "files": [
+                "**/*.js"
+            ],
+            "root": "/var/www/html/node/koa/mobile",
+            "syncOnSave": true
+        },
+        "remotes": [
+            {
+                "host": "pol-ice.ru",
+                "username": "root",
+                "port": 2211,
+                "password": "WEGZdcrn19",
+                "root": "/home/node/koa/mobile"
+            }
+        ]
+    },
+    "pgsql.connection": "postgres://postgres:postgres@192.168.0.1:5432/office"
 }

@@ -22,46 +22,46 @@ https://suggestions.dadata.ru/suggestions/api/4_1/rs/suggest/email
 
 
 const https = require('https');
-var fadress = function(adr) {
-	return new Promise(function(resolve, reject) {
+var fadress = function (adr) {
+	return new Promise(function (resolve, reject) {
 		var options = {
-		    hostname: 'suggestions.dadata.ru',
-		    port: 443,
-		    path: '/suggestions/api/4_1/rs/suggest/address',
-		    method: 'POST',
-		    headers: {
-		        'Content-Type': 'application/json',
-		        'Accept': 'application/json',
-		        'Authorization': 'Token b56aea5d46095861a068daf91fbfd4c671d1ba90',
-		        /*'Content-Length': Buffer.byteLength(post_data)/**/
-		    },
-		    json: true
+			hostname: 'suggestions.dadata.ru',
+			port: 443,
+			path: '/suggestions/api/4_1/rs/suggest/address',
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				'Accept': 'application/json',
+				'Authorization': 'Token b56aea5d46095861a068daf91fbfd4c671d1ba90',
+				/*'Content-Length': Buffer.byteLength(post_data)/**/
+			},
+			json: true
 
 		};
 		var post_data = '{"query": "' + adr + '", "count": 1}';
 		var req = https.request(options, (res) => {
-		    // console.log('statusCode: ', res.statusCode);
-		    var str = "";
-		    res.on('data', (d) => {
-		        str = str + d.toString();
-		    });
-		    res.on('end', () => {
-		        var json;
-		        try {
-		            json = JSON.parse(str.toString());
+			// console.log('statusCode: ', res.statusCode);
+			var str = "";
+			res.on('data', (d) => {
+				str = str + d.toString();
+			});
+			res.on('end', () => {
+				var json;
+				try {
+					json = JSON.parse(str.toString());
 					resolve(json.suggestions[0]);
-		        } catch (err) {
-		            reject(err);
-		            return;
-		        }
-		    });
+				} catch (err) {
+					reject(err);
+					return;
+				}
+			});
 		});
 
 		req.write(post_data);
 		req.end();
 
 		req.on('error', (e) => {
-		    reject(e);
+			reject(e);
 		});
 
 	});
