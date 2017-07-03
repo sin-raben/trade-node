@@ -13,6 +13,7 @@ CREATE TABLE trade.log_calls (
   lc_stime TIMESTAMP,
   lc_billsec INTEGER,
   lc_phone TEXT,
-  lc_name TEXT
+  lc_name TEXT,
+  lc_incoming BOOLEAN
 
 );

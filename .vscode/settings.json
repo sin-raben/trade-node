@@ -3,7 +3,8 @@
     "sftp-sync": {
         "local": {
             "files": [
-                "**/*.js"
+                "**/*.js",
+                "**/*.html"
             ],
             "root": "/var/www/html/node/koa/mobile",
             "syncOnSave": true
