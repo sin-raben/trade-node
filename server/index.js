@@ -84,9 +84,9 @@ wsf.reload = function (client, obj) {
 						console.log("restart function", el.name);
 						if (wsf[el.name]) {
 							//wsf[el.name] = reload(path + el.name).fun;
-
+							wsf[el.name] = false;
 							delete require.cache[require.resolve(el.name)];
-							delete wsf[el.name];
+
 							return el.name;
 						}
 						return el.name + "*";
@@ -99,8 +99,8 @@ wsf.reload = function (client, obj) {
 					console.log("restart function", el);
 					if (wsf[el]) {
 						try {
+							wsf[el] = false;
 							delete require.cache[require.resolve(el)];
-							delete wsf[el];
 						} catch (error) {
 							console.log(error);
 						}
@@ -162,16 +162,15 @@ webSocketServer.on('connection', function (ws) {
 				if (!wsf[obj.head]) {
 					try {
 						wsf[obj.head] = require(obj.head).fun;
-						console.log(wsf[obj.head]);
+						console.log("загрузка функции "+obj.head);
 					} catch (error) {
-						console.error("метод не загружен",error);
+						console.error(obj.head+" метод не загружен", error);
 						wsf.zero(clients[id], obj.head, obj.body);
 					}
-					
 				}
 				if (wsf[obj.head]) {
 					wsf[obj.head](clients[id], obj.body, db).then((ret) => {
-						console.log(obj.head,obj.body,ret);
+						//console.log(obj.head, obj.body, ret);
 						wsm(clients[id], obj.head, ret);
 					});
 				} else {
