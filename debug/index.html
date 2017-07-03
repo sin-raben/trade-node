@@ -23,92 +23,229 @@
 			<ul id="request-template" class="">
 				<li onclick="setRequest(this)">
 					<div class="request-name">
-						авторизация<a href="https://github.com/sin-raben/trade-node/blob/master/doc/authUser.md" target="_blank">*</a>
+						Перезагрузка функций<a href="https://github.com/sin-raben/trade-node/blob/master/doc/authUser.md" target="_blank">*</a>
+					</div>
+					<span class="request-head">
+						reload
+					</span>
+					<span class="request-body">
+						{"names": ["fun1"],"mtime":1000000}
+					</span>
+				</li>
+				
+
+
+
+				<li onclick="setRequest(this)">
+					<div class="request-name">
+						Функция возвращает настройки синхронизации<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getItems.md"
+						 target="_blank">*</a>
+					</div>
+					<span class="request-head">
+						f010001g
+					</span>
+					<span class="request-body">
+						{}					</span>
+				</li>
+				<li onclick="setRequest(this)">
+					<div class="request-name">
+						Авторизует пользователя<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getItems.md" target="_blank">*</a>
 					</div>
 					<span class="request-head">
 						f010002s
 					</span>
 					<span class="request-body">
-						{"idToken": "gofman-1","authData":{"login": "gofman","password": "1"}}
-					</span>
+						{"idToken": "gofman-1",	"authData": {"login": "gofman",	"password": "1"	}}</span>
 				</li>
 				<li onclick="setRequest(this)">
 					<div class="request-name">
-						Получить всю номенклатуру и её свойства<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getItems.md" target="_blank">*</a>
+						Мобильное устройство получает токен FCM от сервера GOOGLE и отправляется на сервер, он необходим для отправки уведомлений
+						<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getItems.md" target="_blank">*</a>
 					</div>
 					<span class="request-head">
-						getItems
+						f010003s
 					</span>
-					<span class="request-body">
-						{"items": "all","itemGroupTypes": "all","itemGroups": "all","linkItemGroups": "all","itemUnitTypes": "all","itemUnits": "all"}
-					</span>
+					<span class="request-body">	{"token": "fffffffff"}</span>
 				</li>
 				<li onclick="setRequest(this)">
 					<div class="request-name">
-						Получить только товары<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getItems.md" target="_blank">*</a>
+						Функция выполняется после окончания любой загрузки данных<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getItems.md"
+						 target="_blank">*</a>
 					</div>
 					<span class="request-head">
-						getItems
+						f010004s
 					</span>
-					<span class="request-body">
-						{"items": "all"}
-					</span>
+					<span class="request-body">{"id": 5,"name": "f010003s"}					</span>
 				</li>
 				<li onclick="setRequest(this)">
 					<div class="request-name">
-						Получить поисковую строку<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getItems.md" target="_blank">*</a>
+						Мобильный клиент отправляет на сервер координаты<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getItems.md"
+						 target="_blank">*</a>
 					</div>
 					<span class="request-head">
-						getItems
+						f020004s
 					</span>
-					<span class="request-body">
-						{"itemsSearch": "all"}
-					</span>
+					<span class="request-body">{"points": [{"coord": {"lat": 10,"lon": 10},"time": 1499073135,"event": 5}]}					</span>
 				</li>
 				<li onclick="setRequest(this)">
 					<div class="request-name">
-						Получить Контрагентов<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getCountragents.md" target="_blank">*</a>
+						Мобильный клиент отправляет на сервер информацию о звонках<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getItems.md"
+						 target="_blank">*</a>
 					</div>
 					<span class="request-head">
-						getCountragents
+						f020005s
 					</span>
-					<span class="request-body">
-						{"countragents": "all", "deliveryPoints": "all","address":"all", "linksCountragentDeliveryPoint": "all"}
-					</span>
+					<span class="request-body">{"calls": [{"lc_stime": 1499073135,"lc_billsec": 100,"lc_phone": "+79281001010","lc_name": "Иванов","lc_incoming": true}]}					</span>
 				</li>
 				<li onclick="setRequest(this)">
 					<div class="request-name">
-						Получить поисковую строку контрагентов<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getCountragents.md" target="_blank">*</a>
+						Мобильный клиент получает данные справочника номенклатуры<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getItems.md"
+						 target="_blank">*</a>
 					</div>
 					<span class="request-head">
-						getCountragents
+						f020006g
 					</span>
-					<span class="request-body">
-						{"CountragentsSearch": "all"}
-					</span>
+					<span class="request-body">{"fullsync": true}</span>
 				</li>
 				<li onclick="setRequest(this)">
 					<div class="request-name">
-						Получить цены<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getItems.md" target="_blank">*</a>
+						Мобильный клиент получает типы групп номенклатуры<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getItems.md"
+						 target="_blank">*</a>
 					</div>
 					<span class="request-head">
-						getPrices
+						f020007g
 					</span>
-					<span class="request-body">
-						{"price": "all", "pricelist": "all", "pricelistLink": "all","pricelistSearch":"all"}
-					</span>
+					<span class="request-body">{"fullsync": true}</span>
 				</li>
 				<li onclick="setRequest(this)">
 					<div class="request-name">
-						Получить остатки<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getStocks.md" target="_blank">*</a>
+						Мобильный клиент получает наименования групп номенклатуры<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getItems.md"
+						 target="_blank">*</a>
 					</div>
 					<span class="request-head">
-						getStocks
+						f020008g
 					</span>
-					<span class="request-body">
-						{"stores": "all", "storeLink": "all", "stocks": "all", "storesSearch":"all"}
-					</span>
+					<span class="request-body">{"fullsync": true}</span>
 				</li>
+				<li onclick="setRequest(this)">
+					<div class="request-name">
+						Мобильный клиент получает связи номенклатуры и групп<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getItems.md"
+						 target="_blank">*</a>
+					</div>
+					<span class="request-head">
+						f020009g
+					</span>
+					<span class="request-body">{"fullsync": true}</span>
+				</li>
+				<li onclick="setRequest(this)">
+					<div class="request-name">
+						Мобильный клиент получает единицы измерения номенклатуры<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getItems.md"
+						 target="_blank">*</a>
+					</div>
+					<span class="request-head">
+						f020010g
+					</span>
+					<span class="request-body">{"fullsync": true}</span>
+				</li>
+				<li onclick="setRequest(this)">
+					<div class="request-name">
+						Мобильный клиент получает связи номенклатуры и единиц измерения<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getItems.md"
+						 target="_blank">*</a>
+					</div>
+					<span class="request-head">
+						f020011g
+					</span>
+					<span class="request-body">{"fullsync": true}</span>
+				</li>
+				<li onclick="setRequest(this)">
+					<div class="request-name">
+						Мобильный клиент получает строку поиска номенклатуры. Может содержать данные которых нет на мобильном клиенте<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getItems.md"
+						 target="_blank">*</a>
+					</div>
+					<span class="request-head">
+						f020012g
+					</span>
+					<span class="request-body">{"fullsync": true}</span>
+				</li>
+				<li onclick="setRequest(this)">
+					<div class="request-name">
+						Мобильный клиент получает данные справочника контрагентов<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getItems.md"
+						 target="_blank">*</a>
+					</div>
+					<span class="request-head">
+						f020013g
+					</span>
+					<span class="request-body">{"fullsync": true}</span>
+				</li>
+				<li onclick="setRequest(this)">
+					<div class="request-name">
+						Мобильный клиент получает данные справочника Партнеры<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getItems.md"
+						 target="_blank">*</a>
+					</div>
+					<span class="request-head">
+						f020014g
+					</span>
+					<span class="request-body">{"fullsync": true}</span>
+				</li>
+				<li onclick="setRequest(this)">
+					<div class="request-name">
+						Мобильный клиент получает связи контрагентов и точек доставки<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getItems.md"
+						 target="_blank">*</a>
+					</div>
+					<span class="request-head">
+						f020015g
+					</span>
+					<<span class="request-body">{"fullsync": true}</span>
+				</li>
+				<li onclick="setRequest(this)">
+					<div class="request-name">
+						Мобильный клиент получает адреса для всех типов данных содержащие адреса<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getItems.md"
+						 target="_blank">*</a>
+					</div>
+					<span class="request-head">
+						f020016g
+					</span>
+					<span class="request-body">{"fullsync": true}</span>
+				</li>
+				<li onclick="setRequest(this)">
+					<div class="request-name">
+						Мобильный клиент получает строку поиска клиентов. Может содержать данные которых нет на мобильном клиенте<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getItems.md"
+						 target="_blank">*</a>
+					</div>
+					<span class="request-head">
+						f020017g
+					</span>
+					<span class="request-body">{"fullsync": true}</span>
+				</li>
+				<li onclick="setRequest(this)">
+					<div class="request-name">
+						Мобильный клиент получает новости по каналу синхронизации<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getItems.md"
+						 target="_blank">*</a>
+					</div>
+					<span class="request-head">
+						f020018g
+					</span>
+					<<span class="request-body">{"fullsync": true}</span>
+				</li>
+				<li onclick="setRequest(this)">
+					<div class="request-name">
+						Добавление новости<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getItems.md" target="_blank">*</a>
+					</div>
+					<span class="request-head">
+						f020018s
+					</span>
+					<span class="request-body">{"title": "Заголовок","text": "","data": null,"type": 1,"links": [{"at": 4,"any": 1},{"at": 4,"any": 2}]}</span>
+				</li>
+
+
+
+
+
+
+
+
+
+
 				<li onclick="setRequest(this)">
 					<div class="request-name">
 						Получить данные из Дадаты<a href="#" target="_blank">*</a>
@@ -142,17 +279,7 @@
 						{"length":2}
 					</span>
 				</li>
-				<li onclick="setRequest(this)">
-					<div class="request-name">
-						Добавить новость<a href="#" target="_blank">*</a>
-					</div>
-					<span class="request-head">
-						f020018s
-					</span>
-					<span class="request-body">
-						{"title": "Заголовок 2","text": "fffffffffffffff","data": null,"type": 1,"links": [{"at": 4, "any": 1}, {"at": 4,"any": 2}]}
-					</span>
-				</li>
+
 			</ul>
 
 		</div>
