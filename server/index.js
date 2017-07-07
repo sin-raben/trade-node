@@ -121,10 +121,11 @@ wsf.reload = function (client, obj) {
 	});
 };
 
-function wsm(client, head, body) {
+function wsm(client, head, body, id) {
 	var ob = {
 		"head": head,
-		"body": body
+		"body": body,
+		"id": id || 0
 	};
 	var st = JSON.stringify(ob);
 	//console.log("st", st);
@@ -162,16 +163,16 @@ webSocketServer.on('connection', function (ws) {
 				if (!wsf[obj.head]) {
 					try {
 						wsf[obj.head] = require(obj.head).fun;
-						console.log("загрузка функции "+obj.head);
+						console.log("загрузка функции " + obj.head);
 					} catch (error) {
-						console.error(obj.head+" метод не загружен", error);
+						console.error(obj.head + " метод не загружен", error);
 						wsf.zero(clients[id], obj.head, obj.body);
 					}
 				}
 				if (wsf[obj.head]) {
 					wsf[obj.head](clients[id], obj.body, db).then((ret) => {
 						//console.log(obj.head, obj.body, ret);
-						wsm(clients[id], obj.head, ret);
+						wsm(clients[id], obj.head, ret, obj.id);
 					});
 				} else {
 					console.error('err', "метод не найден");

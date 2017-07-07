@@ -13,6 +13,7 @@
 		<div id="request" class="">
 			<div class="menu-submit">
 				<input id="request-head" type="text" name="head" value="">
+				<input id="request-id" type="text" name="head" value="">
 				<textarea id="request-body" name="comment" cols="40" rows="9"></textarea>
 				<input id="request-submit" type="button" name="name" value="отправить запрос" onclick="submitRequest()">
 			</div>
@@ -77,6 +78,29 @@
 					</span>
 					<span class="request-body">{"id": 5,"name": "f010003s"}					</span>
 				</li>
+<li onclick="setRequest(this)">
+					<div class="request-name">
+						Получить список пользователей со всеми реквизитами<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getItems.md"
+						 target="_blank">*</a>
+					</div>
+					<span class="request-head">
+						f010005g
+					</span>
+					<span class="request-body">{"fullsync": true}</span>
+				</li>
+				<li onclick="setRequest(this)">
+					<div class="request-name">
+						Получить список токенов (инентификаторов сеанса/устройства)<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getItems.md"
+						 target="_blank">*</a>
+					</div>
+					<span class="request-head">
+						f010006g
+					</span>
+					<span class="request-body">{"fullsync": true}</span>
+				</li>
+
+
+
 				<li onclick="setRequest(this)">
 					<div class="request-name">
 						Мобильный клиент отправляет на сервер координаты<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getItems.md"

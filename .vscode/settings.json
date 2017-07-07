@@ -4,7 +4,8 @@
         "local": {
             "files": [
                 "**/*.js",
-                "**/*.html"
+                "**/*.html",
+                "**/*.css"
             ],
             "root": "/var/www/html/node/koa/mobile",
             "syncOnSave": true

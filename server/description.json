@@ -40,6 +40,44 @@
 				"result": true
 			}
 		},
+		"f010005g": {
+			"title": "Пользователи",
+			"info": "Получить список пользователей со всеми реквизитами",
+			"example body": {},
+			"example return": {
+				"data": [
+					{
+						"id": 1,
+						"u_login": "gofman",
+						"u_pass": "1",
+						"p_id": 324,
+						"u_permission": null,
+						"u_mtime": 1499073135
+					}
+				]
+			}
+		},
+		"f010006g": {
+			"title": "Токены",
+			"info": "Получить список токенов (инентификаторов сеанса/устройства)",
+			"example body": {
+				"user": 2
+			},
+			"example return": {
+				"data": [
+					{
+						"id": 8,
+						"u_id": 1,
+						"t_name": "gofman-2",
+						"t_key": "2",
+						"t_info": null,
+						"t_fcm": null,
+						"t_type": 1,
+						"t_mtime": 1499073135
+					}
+				]
+			}
+		},
 		"f020004s": {
 			"title": "Координаты",
 			"info": "Мобильный клиент отправляет на сервер координаты",
@@ -366,43 +404,43 @@
 			}
 		},
 		"f020019g": {
-			"title": "",
-			"info": "",
+			"title": "Организации",
+			"info": "Получить список организаций",
 			"example body": {},
 			"example return": {}
 		},
 		"f020020g": {
-			"title": "",
-			"info": "",
+			"title": "Должности",
+			"info": "Получить список должностей",
 			"example body": {},
 			"example return": {}
 		},
 		"f020021g": {
-			"title": "",
-			"info": "",
+			"title": "Люди",
+			"info": "Получить список людей",
 			"example body": {},
 			"example return": {}
 		},
 		"f020022g": {
-			"title": "",
-			"info": "",
+			"title": "Типы связей",
+			"info": "Получить типы связей людей с должностями и организаиями (клиентами и т.д.)",
 			"example body": {},
 			"example return": {}
 		},
 		"f020023g": {
-			"title": "",
-			"info": "",
+			"title": "Связи людей",
+			"info": "Получить связи людей с должностями и организаиями (клиентами и т.д.)",
 			"example body": {},
 			"example return": {}
 		},
 		"f020024g": {
-			"title": "",
+			"title": "Значения контактной информации",
 			"info": "",
 			"example body": {},
 			"example return": {}
 		},
 		"f020999g": {
-			"title": "",
+			"title": "Связь контактной информации",
 			"info": "",
 			"example body": {},
 			"example return": {}

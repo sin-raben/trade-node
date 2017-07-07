@@ -1,28 +1,29 @@
-/*jshint browser: true, undef: true, unused: true, devel: true, esversion: 6, -W097 */
-/*global  */
+/*eslint no-console: 0, "quotes": [0, "single"], module: 0, "globals": {"webix": true }*/
+/*eslint no-unused-vars: ["error", { "args": "none" }]*/
 /*exported submitRequest, setRequest */
 /*devel: true ///не ругаться на console и алерт*/
-"use strict";
+'use strict';
 var socket;
-var ff;
 var request = []; //массив запросов 
 var response = []; //массив ответов
 var resLenght = 300;
 //отправить объект на сервер
 
-var wsm = function (head, body) {
+var wsm = function (head, body, id) {
 
 	var ob = {
-		head: "",
-		body: {}
+		head: '',
+		body: {},
+		id: 0
 	};
 	if ((typeof body) === "string") {
 		body = JSON.parse(body);
 	}
 	ob.head = head;
 	ob.body = body;
+	ob.id = id;
 	var st = JSON.stringify(ob);
-	console.log('Заголовок:', head, '\nТело:', body, '\nСтрока запроса к серверу: ', st);
+	console.log('Заголовок:', head, '\nid:', id, '\nТело:', body, '\nСтрока запроса к серверу: ', st);
 	socket.send(st);
 	var div = document.createElement('div');
 	div.classList.add("log-request");
@@ -32,14 +33,14 @@ var wsm = function (head, body) {
 	}
 	bod = bod.replace(/,"/g, ', "');
 
-	div.innerHTML = `<span class="response-head">${ob.head}</span><span class="response-body">${bod}</span>`;
+	div.innerHTML = `<span class="response-head">${ob.head}</span><span class="response-id">${ob.id}</span><span class="response-body">${bod}</span>`;
 	var d = document.getElementById('response');
 	d.appendChild(div);
 	request.push({ obj: ob, string: st });
 };
 var setRequest = function (el) {
 	var span = el.getElementsByTagName('span');
-	ff = span;
+	//ff = span;
 	document.getElementById("request-head").value = span[0].innerText.trim();
 	document.getElementById("request-body").value = span[1].innerText.trim();
 };
@@ -47,7 +48,8 @@ var setRequest = function (el) {
 var submitRequest = function () {
 	var head = document.getElementById("request-head").value;
 	var body = document.getElementById("request-body").value;
-	wsm(head, body);
+	var id = + document.getElementById("request-id").value;
+	wsm(head, body, id);
 };
 var saveFile = function (dom, head, body) {
 
@@ -92,7 +94,7 @@ window.onload = function () {
 
 		try {
 			if (obj.head && obj.body) {
-				console.log('ответ', obj.head, obj.body);
+				console.log('ответ', obj.head, obj.body, obj.id);
 				var div = document.createElement('div');
 				div.classList.add("log-response");
 				var body = JSON.stringify(obj.body);
@@ -103,7 +105,7 @@ window.onload = function () {
 				var a = document.createElement('a');
 				a.innerHTML = "*";
 				a.onclick = function () { saveFile(a, obj.head, message); };
-				div.innerHTML = `<span class="response-head">${obj.head}</span><span class="response-body">${body}</span>`;
+				div.innerHTML = `<span class="response-head">${obj.head}</span><span class="response-id">${obj.id}</span><span class="response-body">${body}</span>`;
 				div.appendChild(a);
 				var d = document.getElementById('response');
 				d.appendChild(div);

@@ -34,8 +34,15 @@ body {
     height: 15em;
 }
 #request-head {
-    width: 95%;
+    width: 70%;
     /*margin: 1em 0;*/
+}
+#request-id {
+    width: 25%;
+ 
+    top: 0;
+    margin: 1em 0;
+
 }
 
 #request-body {
@@ -68,11 +75,11 @@ body {
     background-color: rgb(69, 139, 83);
 }
 
-.request-name {}
+/*.request-name {}
 
 .request-head {}
 
-.request-body {}
+.request-body {}*/
 
 #response {
     background-color: rgb(241, 239, 199);
@@ -93,7 +100,13 @@ body {
     background-color: rgb(241, 90, 75);
     line-height: 1.5;
 }
-
+.response-id {
+    border-radius: 0.5em;
+    padding: 0.3em;
+    margin: 0.3em;
+    background-color: rgb(100, 150, 200);
+    line-height: 1.5;
+}
 .response-body {
     border-radius: 0.5em;
     padding: 0.3em;
