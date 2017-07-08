@@ -69,14 +69,14 @@ var wsfunc = {
 
 		});
 	},
-	
+
 	updateToken: function (client, obj) {
 		return new Promise(function (resolve, reject) {
 			//
 		});
 	},
 	zero: function (id, head, str) {
-		console.log("error",head, str, "Метод " + str + " не найден");
+		console.log("error", head, str, "Метод " + str + " не найден");
 	},
 	wsm: function (client, head, body) {
 		try {
@@ -145,10 +145,10 @@ var wsfunc = {
 					it.push(elem.i_active);
 				});
 				q = q + ` ) AS t(i_exid, i_name, i_prn, i_info, i_img, i_service, int_id, i_active)
-                    LEFT JOIN items i ON (i.i_exid=t.i_exid));
-                INSERT INTO items(i_exid, i_name, i_prn, i_info, i_img, i_service, int_id,i_active)
+                    LEFT JOIN trade.items i ON (i.i_exid=t.i_exid));
+                INSERT INTO trade.items(i_exid, i_name, i_prn, i_info, i_img, i_service, int_id,i_active)
                     SELECT i_exid, i_name, i_prn, i_info, i_img, i_service, int_id,i_active FROM ti WHERE ti.ins=TRUE;
-                UPDATE items AS i SET
+                UPDATE trade.items AS i SET
                     i_name=t.i_name, i_prn=t.i_prn,
                     i_info=t.i_info, i_img=t.i_img,
                     i_service=t.i_service, int_id=t.int_id,
@@ -191,10 +191,10 @@ var wsfunc = {
 					igt.push(elem.igt_active);
 				});
 				q = q + ` ) AS t(igt_exid, igt_name, igt_priority, igt_agent, igt_active)
-                LEFT JOIN item_group_types igt ON igt.igt_exid=t.igt_exid);
-                INSERT INTO item_group_types (igt_exid, igt_name, igt_priority, igt_agent,  igt_active)
+                LEFT JOIN trade.item_group_types igt ON igt.igt_exid=t.igt_exid);
+                INSERT INTO trade.item_group_types (igt_exid, igt_name, igt_priority, igt_agent,  igt_active)
                     SELECT igt_exid, igt_name, igt_priority, igt_agent, igt_active FROM tigt WHERE (ins=TRUE);
-                UPDATE item_group_types igt SET
+                UPDATE trade.item_group_types igt SET
                     igt_exid=t.igt_exid, igt_name=t.igt_name,
                     igt_priority=t.igt_priority, igt_agent=t.igt_agent,
                     igt_active=t.igt_active, igt_mtime=now()
@@ -231,12 +231,12 @@ var wsfunc = {
 					ig.push(elem.ig_active);
 				});
 				q = q + `) AS t(igt_exid, ig_exid, ig_value, ig_active)
-                        LEFT JOIN item_group_types igt ON (igt.igt_exid = t.igt_exid)
-                        LEFT JOIN item_groups ig ON (ig.ig_exid = t.ig_exid)
+                        LEFT JOIN trade.item_group_types igt ON (igt.igt_exid = t.igt_exid)
+                        LEFT JOIN trade.item_groups ig ON (ig.ig_exid = t.ig_exid)
                     );
-                    INSERT INTO item_groups(igt_id, ig_exid, ig_value, ig_active)
+                    INSERT INTO trade.item_groups(igt_id, ig_exid, ig_value, ig_active)
                         SELECT igt_id, ig_exid, ig_value, ig_active FROM tig WHERE (ins=TRUE);
-                    UPDATE item_groups ig SET
+                    UPDATE trade.item_groups ig SET
                         igt_id=t.igt_id, ig_exid=t.ig_exid,
                         ig_value=t.ig_value, ig_active=t.ig_active,
                         ig_mtime=now()
@@ -275,14 +275,14 @@ var wsfunc = {
 					lig.push(elem.lig_active);
 				});
 				q = q + `) AS t(i_exid, igt_exid, ig_exid, lig_active)
-                LEFT JOIN items AS i ON t.i_exid=i.i_exid
-                LEFT JOIN item_group_types igt ON t.igt_exid=igt.igt_exid
-                LEFT JOIN item_groups ig ON t.ig_exid=ig.ig_exid
-                LEFT JOIN link_item_group lig ON (i.i_id=lig.i_id) AND (igt.igt_id=lig.igt_id));
-                INSERT INTO link_item_group(i_id,ig_id,igt_id,lig_active)
+                LEFT JOIN trade.items AS i ON t.i_exid=i.i_exid
+                LEFT JOIN trade.item_group_types igt ON t.igt_exid=igt.igt_exid
+                LEFT JOIN trade.item_groups ig ON t.ig_exid=ig.ig_exid
+                LEFT JOIN trade.link_item_group lig ON (i.i_id=lig.i_id) AND (igt.igt_id=lig.igt_id));
+                INSERT INTO trade.link_item_group(i_id,ig_id,igt_id,lig_active)
                     SELECT i_id,ig_id,igt_id,lig_active FROM tlig WHERE (ins);
 
-                UPDATE link_item_group AS lig SET
+                UPDATE trade.link_item_group AS lig SET
                     ig_id=t.ig_id, lig_active=t.lig_active,
                     lig_mtime=now()
                 FROM (
@@ -324,11 +324,11 @@ var wsfunc = {
 					iut.push(elem.iut_active);
 				});
 				q = q + `) AS t(iut_exid,iut_name,imt_id,iut_okei,iut_active)
-                  LEFT JOIN item_unit_types iut ON iut.iut_exid=t.iut_exid
-                  LEFT JOIN item_metric_types imt ON t.imt_id=imt.imt_id);
-                INSERT INTO item_unit_types(iut_exid,iut_name,imt_id,iut_okei,iut_active)
+                  LEFT JOIN trade.item_unit_types iut ON iut.iut_exid=t.iut_exid
+                  LEFT JOIN trade.item_metric_types imt ON t.imt_id=imt.imt_id);
+                INSERT INTO trade.item_unit_types(iut_exid,iut_name,imt_id,iut_okei,iut_active)
                   SELECT iut_exid,iut_name,imt_id,iut_okei,iut_active FROM tiut WHERE (ins);
-                UPDATE item_unit_types AS iut SET
+                UPDATE trade.item_unit_types AS iut SET
                   iut_name=t.iut_name,imt_id=t.imt_id,
                   iut_okei=t.iut_okei,iut_active=t.iut_active
                 FROM (
@@ -412,15 +412,15 @@ var wsfunc = {
 				q = q + ` ) AS t(i_exid, iut_exid, iu_ean, iu_krat, iu_num, iu_denum,
                      iu_gros, iu_net, iu_length, iu_width, iu_height, iu_area,
                      iu_volume, iu_agent, iu_base, iu_main, iu_active)
-                  LEFT JOIN items i ON i.i_exid = t.i_exid
-                  LEFT JOIN item_unit_types iut ON iut.iut_exid = t.iut_exid
-                  LEFT JOIN item_units iu ON (iu.iut_id = iut.iut_id) AND (iu.i_id = i.i_id));
+                  LEFT JOIN trade.items i ON i.i_exid = t.i_exid
+                  LEFT JOIN trade.item_unit_types iut ON iut.iut_exid = t.iut_exid
+                  LEFT JOIN trade.item_units iu ON (iu.iut_id = iut.iut_id) AND (iu.i_id = i.i_id));
 
-                INSERT INTO item_units (i_id, iut_id, iu_ean, iu_krat, iu_num, iu_denum, iu_gros, iu_net, iu_length, iu_width, iu_height, iu_area, iu_volume, iu_agent, iu_base, iu_main, iu_active)
+                INSERT INTO trade.item_units (i_id, iut_id, iu_ean, iu_krat, iu_num, iu_denum, iu_gros, iu_net, iu_length, iu_width, iu_height, iu_area, iu_volume, iu_agent, iu_base, iu_main, iu_active)
                     SELECT i_id, iut_id, iu_ean, iu_krat, iu_num, iu_denum, iu_gros, iu_net, iu_length, iu_width, iu_height, iu_area, iu_volume, iu_agent, iu_base, iu_main, iu_active
                     FROM tiu WHERE ins;
 
-                UPDATE item_units AS iu SET
+                UPDATE trade.item_units AS iu SET
                   iu_ean=t.iu_ean,iu_krat=t.iu_krat,iu_num=t.iu_num,iu_denum=t.iu_denum,iu_gros=t.iu_gros,iu_net=t.iu_net,iu_length=t.iu_length,iu_width=t.iu_width,iu_height=t.iu_height,iu_area=t.iu_area,iu_volume=t.iu_volume,iu_agent=t.iu_agent,iu_base=t.iu_base,iu_main=t.iu_main,iu_active=t.iu_active
                 FROM (
                     SELECT * FROM tiu WHERE updt=TRUE
@@ -1506,7 +1506,7 @@ var wsfunc = {
 
 		});
 	},
-	
+
 	setPeople: function (client, obj) {
 		console.log(1);
 		//TODO FUN setPeople
@@ -2031,7 +2031,7 @@ var wsfunc = {
 				reject(err);
 			});/**/
 			resolve({ "result": false });
-			
+
 			return;
 
 

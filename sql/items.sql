@@ -7,6 +7,7 @@ DROP TABLE IF EXISTS trade.item_Group_Types;
 DROP TABLE IF EXISTS trade.items CASCADE;
 DROP TABLE IF EXISTS trade.item_NDS_Types;
 
+
 -- ==================СОЗДАНИЕ ТАБЛИЦ=====================
 --Структура списка ставок НДС
 CREATE TABLE trade.item_NDS_Types (
