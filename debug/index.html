@@ -33,7 +33,7 @@
 						{"names": ["fun1"],"mtime":1000000}
 					</span>
 				</li>
-				
+
 
 
 
@@ -78,7 +78,7 @@
 					</span>
 					<span class="request-body">{"id": 5,"name": "f010003s"}					</span>
 				</li>
-<li onclick="setRequest(this)">
+				<li onclick="setRequest(this)">
 					<div class="request-name">
 						Получить список пользователей со всеми реквизитами<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getItems.md"
 						 target="_blank">*</a>
@@ -90,6 +90,17 @@
 				</li>
 				<li onclick="setRequest(this)">
 					<div class="request-name">
+						Добавление/редактирование пользователей<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getItems.md"
+						 target="_blank">*</a>
+					</div>
+					<span class="request-head">
+						f010005s
+					</span>
+					<span class="request-body">{"users": [{	"u_id": 1, "u_login": "gofman", "u_pass": "1", "p_id": 324, "u_permission": null, "u_mtime": 1498314763},{ "u_login": "new", "u_pass": "11", "p_id": 326, "u_permission": null, "u_mtime": 1498314763}]}</span>
+				</li>
+
+				<li onclick="setRequest(this)">
+					<div class="request-name">
 						Получить список токенов (инентификаторов сеанса/устройства)<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getItems.md"
 						 target="_blank">*</a>
 					</div>
@@ -98,8 +109,17 @@
 					</span>
 					<span class="request-body">{"fullsync": true}</span>
 				</li>
-
-
+				
+				<li onclick="setRequest(this)">
+					<div class="request-name">
+						Добавление/редактирование токенов пользователей<a href="https://github.com/sin-raben/trade-node/blob/master/doc/getItems.md"
+						 target="_blank">*</a>
+					</div>
+					<span class="request-head">
+						f010006s
+					</span>
+					<span class="request-body">{"tokens": [{"t_id": 8,"u_id": 1,"t_name": "gofman-2","t_key": "2","t_info": null,"t_fcm": null,"t_type": 1}]}</span>
+				</li>
 
 				<li onclick="setRequest(this)">
 					<div class="request-name">
