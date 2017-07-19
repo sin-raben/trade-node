@@ -4,5 +4,7 @@ other/*
 *.pdf
 *.xls
 *.dbf
+test/*
+client/
 .remote-sync.json
 .vscode/*

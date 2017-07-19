@@ -71,7 +71,6 @@
 						"u_mtime": 1498314763
 					},
 					{
-
 						"u_login": "new",
 						"u_pass": "11",
 						"p_id": 326,
@@ -103,6 +102,27 @@
 						"t_mtime": 1499073135
 					}
 				]
+			}
+		},
+		"f010006s": {
+			"title": "Токены",
+			"info": "Добавление/редактирование токенов пользователей",
+			"example body": {
+				"tokens": [
+					{
+						"t_id": 8,
+						"u_id": 1,
+						"t_name": "gofman-2",
+						"t_key": "2",
+						"t_info": null,
+						"t_fcm": null,
+						"t_type": 1,
+						"t_mtime": 1498315199
+					}
+				]
+			},
+			"example return": {
+				"result": true
 			}
 		},
 		"f020004s": {
@@ -461,13 +481,109 @@
 			"example return": {}
 		},
 		"f020024g": {
+			"title": "Типы связываемых объектов",
+			"info": "getAnyTypeM",
+			"example body": {},
+			"example return": {}
+		},
+		"f020025g": {
+			"title": "Основные типов контактной информации",
+			"info": "getKiTypesM",
+			"example body": {},
+			"example return": {}
+		},
+		"f020026g": {
+			"title": "Подтипы контактной информации",
+			"info": "getKiKindM",
+			"example body": {},
+			"example return": {}
+		},
+		"f020027g": {
 			"title": "Значения контактной информации",
+			"info": "getKiValueM",
+			"example body": {},
+			"example return": {}
+		},
+		"f020028g": {
+			"title": "Связи контактной информации",
+			"info": "getKiLinkM",
+			"example body": {},
+			"example return": {}
+		},
+		"f020029g": {
+			"title": "",
 			"info": "",
 			"example body": {},
 			"example return": {}
 		},
-		"f020999g": {
-			"title": "Связь контактной информации",
+		"f020030g": {
+			"title": "",
+			"info": "",
+			"example body": {},
+			"example return": {}
+		},
+		"f020031g": {
+			"title": "",
+			"info": "",
+			"example body": {},
+			"example return": {}
+		},
+		"f020032g": {
+			"title": "",
+			"info": "",
+			"example body": {},
+			"example return": {}
+		},
+		"f020033g": {
+			"title": "",
+			"info": "",
+			"example body": {},
+			"example return": {}
+		},
+		"f020034g": {
+			"title": "",
+			"info": "",
+			"example body": {},
+			"example return": {}
+		},
+		"f020035g": {
+			"title": "",
+			"info": "",
+			"example body": {},
+			"example return": {}
+		},
+		"f020036g": {
+			"title": "",
+			"info": "",
+			"example body": {},
+			"example return": {}
+		},
+		"f020037g": {
+			"title": "",
+			"info": "",
+			"example body": {},
+			"example return": {}
+		},
+		"f020038g": {
+			"title": "",
+			"info": "",
+			"example body": {},
+			"example return": {}
+		},
+		"f020039g": {
+			"title": "",
+			"info": "",
+			"example body": {},
+			"example return": {}
+		},
+		"f020040g": {
+			"title": "",
+			"info": "",
+			"example body": {},
+			"example return": {}
+		},
+		"f020041g": {
+			"title": "",
 			"info": "",
 			"example body": {},
 			"example return": {}
