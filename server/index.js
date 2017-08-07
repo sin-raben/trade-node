@@ -173,7 +173,7 @@ webSocketServer.on('connection', function (ws) {
 					wsf[obj.head](clients[id], obj.body, db).then((ret) => {
 						//console.log(obj.head, obj.body, ret);
 						wsm(clients[id], obj.head, ret, obj.id);
-					});
+					}, (e) => { console.log(e); });
 				} else {
 					console.error('err', "метод не найден");
 					wsf.zero(clients[id], obj.head, obj.body);
