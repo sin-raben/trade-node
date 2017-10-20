@@ -1,4 +1,5 @@
 other/*
+out/*
 *.zip
 *.log
 *.pdf

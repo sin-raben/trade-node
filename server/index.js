@@ -129,7 +129,9 @@ function wsm(client, head, body, id) {
 	};
 	var st = JSON.stringify(ob);
 	//console.log("st", st);
-	client.send(st);
+	client.send(st, { compress: true });
+	console.log("принято", client.bytesReceived/*, /*client*/);
+	console.log("отправлено", client._sender._socket._bytesDispatched);
 }
 
 // подключенные клиенты
@@ -170,10 +172,11 @@ webSocketServer.on('connection', function (ws) {
 					}
 				}
 				if (wsf[obj.head]) {
+					console.log(obj.head, "запрос");
 					wsf[obj.head](clients[id], obj.body, db).then((ret) => {
-						//console.log(obj.head, obj.body, ret);
+						console.log(obj.head, "ответ");
 						wsm(clients[id], obj.head, ret, obj.id);
-					}, (e) => { console.log(e); });
+					}, (e) => { console.log(e, obj.head); });
 				} else {
 					console.error('err', "метод не найден");
 					wsf.zero(clients[id], obj.head, obj.body);

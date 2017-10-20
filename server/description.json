@@ -33,7 +33,7 @@
 			"title": "Подтверждение получения данных",
 			"info": "Функция выполняется после окончания любой загрузки данных",
 			"example body": {
-				"id": 5,
+				"sync": 5,
 				"name": "f010003s"
 			},
 			"example return": {
@@ -77,7 +77,8 @@
 						"u_permission": null,
 						"u_mtime": 1498314763
 					}
-				]
+				],
+				"sync": 5
 			},
 			"example return": {
 				"result": true
@@ -101,7 +102,8 @@
 						"t_type": 1,
 						"t_mtime": 1499073135
 					}
-				]
+				],
+				"sync": 5
 			}
 		},
 		"f010006s": {
@@ -119,7 +121,8 @@
 						"t_type": 1,
 						"t_mtime": 1498315199
 					}
-				]
+				],
+				"sync": 5
 			},
 			"example return": {
 				"result": true

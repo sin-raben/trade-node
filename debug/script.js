@@ -29,7 +29,7 @@ var wsm = function (head, body, id) {
 	div.classList.add("log-request");
 	var bod = JSON.stringify(ob.body);
 	if (bod.length > resLenght) {
-		bod = body.slice(0, resLenght) + "...";
+		bod = bod.slice(0, resLenght) + "...";
 	}
 	bod = bod.replace(/,"/g, ', "');
 

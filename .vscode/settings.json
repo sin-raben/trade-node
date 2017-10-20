@@ -20,5 +20,6 @@
             }
         ]
     },
-    "pgsql.connection": "postgres://postgres:postgres@192.168.0.1:5432/office"
+    "pgsql.connection": "postgres://postgres:postgres@192.168.0.1:5432/office",
+    "git.ignoreLimitWarning": true
 }
