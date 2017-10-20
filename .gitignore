@@ -6,6 +6,6 @@ out/*
 *.xls
 *.dbf
 test/*
-client/
+client/*
 .remote-sync.json
 .vscode/*
