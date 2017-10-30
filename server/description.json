@@ -513,11 +513,17 @@
 			"example body": {},
 			"example return": {}
 		},
-		"f020029g": {
-			"title": "",
+		"f020029s": {
+			"title": "результат взаимодействия пользователя с новостью",
 			"info": "",
-			"example body": {},
-			"example return": {}
+			"example body": {
+				"n_id": 123,
+				"na_action": 2,
+				"na_data":{}
+			},
+			"example return": {
+				"rusult": true
+			}
 		},
 		"f020030g": {
 			"title": "",

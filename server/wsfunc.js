@@ -12,21 +12,22 @@ var cn = "postgres://postgres:postgres@localhost:5432/office";
 var db = pgp(cn);
 
 var wsfunc = {
-	getServers: function (client, obj) {
-		return new Promise(function (resolve, reject) {
+	getServers: function(client, obj) {
+		return new Promise(function(resolve, reject) {
 			try {
 				var d = {
-					"SyncConnection": [
+					SyncConnection: [
 						{
-							"ID": 1,
-							"Organization": "Полайс 1",
-							"Protocol": "ws",
-							"Host": "pol-ice.ru",
-							"Port": 8890,
-							"Path": "/ws",
-							"ConnectionTimeout": 5000,
-							"Compression": false,
-							"Description": "Настройка подключения к серверу синхронизации"
+							ID: 1,
+							Organization: "Полайс 1",
+							Protocol: "ws",
+							Host: "pol-ice.ru",
+							Port: 8890,
+							Path: "/ws",
+							ConnectionTimeout: 5000,
+							Compression: false,
+							Description:
+								"Настройка подключения к серверу синхронизации"
 						}
 					]
 				};
@@ -35,79 +36,83 @@ var wsfunc = {
 				console.log("errA", err);
 				reject(err);
 			}
-
 		});
 	},
-	authUser: function (client, obj) {
+	authUser: function(client, obj) {
 		//TODO FUN authUser
-		return new Promise(function (resolve, reject) {
+		return new Promise(function(resolve, reject) {
 			try {
 				console.log("obj", obj);
-				db.query("SELECT t.idtoken,t.keytoken,u.login,u.pass from wp_tokens t " +
-					"LEFT JOIN wp_users u ON t.login = u.login where idToken=$1",
-					obj.idToken).then((token) => {
+				db
+					.query(
+						"SELECT t.idtoken,t.keytoken,u.login,u.pass from wp_tokens t " +
+							"LEFT JOIN wp_users u ON t.login = u.login where idToken=$1",
+						obj.idToken
+					)
+					.then(token => {
 						if (token[0]) {
 							console.log("token[0]", token[0]);
 							client.idToken = token[0].idtoken;
 							client.user = token[0].login;
-							if ((token[0].login === obj.authData.login) && (token[0].pass === obj.authData.password)) {
-								resolve({ "result": true });
+							if (
+								token[0].login === obj.authData.login &&
+								token[0].pass === obj.authData.password
+							) {
+								resolve({ result: true });
 							} else {
-								resolve({ "result": false });
+								resolve({ result: false });
 							}
 						} else {
-							resolve({ "result": false });
+							resolve({ result: false });
 							console.error(obj.idToken + " нет такого токена");
 						}
-					}).catch((error) => {
+					})
+					.catch(error => {
 						console.log("error1", error);
 						reject(error);
-					});/**/
+					}); /**/
 			} catch (err) {
 				console.log("errA", err);
 			}
-
 		});
 	},
 
-	updateToken: function (client, obj) {
-		return new Promise(function (resolve, reject) {
+	updateToken: function(client, obj) {
+		return new Promise(function(resolve, reject) {
 			//
 		});
 	},
-	zero: function (id, head, str) {
+	zero: function(id, head, str) {
 		console.log("error", head, str, "Метод " + str + " не найден");
 	},
-	wsm: function (client, head, body) {
+	wsm: function(client, head, body) {
 		try {
 			var ob = {
-				"head": head,
-				"body": body
+				head: head,
+				body: body
 			};
 			var st = JSON.stringify(ob);
 			client.send(st);
 		} catch (err) {
 			console.log("err", err);
 		}
-
 	},
-	setItemsM: function (client, obj) {
-		return new Promise(function (resolve, reject) {
-			if (!(client.idToken)) {
-				resolve({ "result": false });
+	setItemsM: function(client, obj) {
+		return new Promise(function(resolve, reject) {
+			if (!client.idToken) {
+				resolve({ result: false });
 				return;
 			}
-
 		});
 	},
-	setItems: function (client, obj) {
+	setItems: function(client, obj) {
 		//TODO FUN setItems
-		return new Promise(function (resolve, reject) {
-			if (!(client.idToken)) {
-				resolve({ "result": false });
+		return new Promise(function(resolve, reject) {
+			if (!client.idToken) {
+				resolve({ result: false });
 				return;
 			}
-			var itemsF = function (arr) {
+			var itemsF = function(arr) {
 				let it = [];
 				let q = `CREATE TEMP TABLE ti (
                             i_id INTEGER,
@@ -131,10 +136,28 @@ var wsfunc = {
                             (i.i_id ISNULL ) AS ins
                         FROM (VALUES`;
 				arr.forEach((elem, i) => {
-					if (i !== 0)
-						q = q + ", ";
-					q = q + "($" + (i * 8 + 1) + ",$" + (i * 8 + 2) + ",$" + (i * 8 + 3) + ",$" + (i * 8 + 4);
-					q = q + ",$" + (i * 8 + 5) + ",$" + (i * 8 + 6) + ",$" + (i * 8 + 7) + ",$" + (i * 8 + 8) + ")";
+					if (i !== 0) q = q + ", ";
+					q =
+						q +
+						"($" +
+						(i * 8 + 1) +
+						",$" +
+						(i * 8 + 2) +
+						",$" +
+						(i * 8 + 3) +
+						",$" +
+						(i * 8 + 4);
+					q =
+						q +
+						",$" +
+						(i * 8 + 5) +
+						",$" +
+						(i * 8 + 6) +
+						",$" +
+						(i * 8 + 7) +
+						",$" +
+						(i * 8 + 8) +
+						")";
 					it.push(elem.i_exid);
 					it.push(elem.i_name);
 					it.push(elem.i_prn);
@@ -144,7 +167,9 @@ var wsfunc = {
 					it.push(elem.int_id);
 					it.push(elem.i_active);
 				});
-				q = q + ` ) AS t(i_exid, i_name, i_prn, i_info, i_img, i_service, int_id, i_active)
+				q =
+					q +
+					` ) AS t(i_exid, i_name, i_prn, i_info, i_img, i_service, int_id, i_active)
                     LEFT JOIN trade.items i ON (i.i_exid=t.i_exid));
                 INSERT INTO trade.items(i_exid, i_name, i_prn, i_info, i_img, i_service, int_id,i_active)
                     SELECT i_exid, i_name, i_prn, i_info, i_img, i_service, int_id,i_active FROM ti WHERE ti.ins=TRUE;
@@ -159,7 +184,7 @@ var wsfunc = {
                 DROP TABLE ti;`;
 				return [q, it];
 			};
-			var itemsGroupTypeF = function (arr) {
+			var itemsGroupTypeF = function(arr) {
 				let igt = [];
 				let q = `CREATE TEMP TABLE tigt (
                     igt_id INTEGER,
@@ -180,9 +205,15 @@ var wsfunc = {
                     (igt.igt_id ISNULL ) AS ins
                 FROM (VALUES `;
 				arr.forEach((elem, i) => {
-					if (i !== 0)
-						q = q + ", ";
-					q = q + "($" + (i * 5 + 1) + ",$" + (i * 5 + 2) + ",$" + (i * 5 + 3);
+					if (i !== 0) q = q + ", ";
+					q =
+						q +
+						"($" +
+						(i * 5 + 1) +
+						",$" +
+						(i * 5 + 2) +
+						",$" +
+						(i * 5 + 3);
 					q = q + ",$" + (i * 5 + 4) + ",$" + (i * 5 + 5) + ")";
 					igt.push(elem.igt_exid);
 					igt.push(elem.igt_name);
@@ -190,7 +221,9 @@ var wsfunc = {
 					igt.push(elem.igt_agent);
 					igt.push(elem.igt_active);
 				});
-				q = q + ` ) AS t(igt_exid, igt_name, igt_priority, igt_agent, igt_active)
+				q =
+					q +
+					` ) AS t(igt_exid, igt_name, igt_priority, igt_agent, igt_active)
                 LEFT JOIN trade.item_group_types igt ON igt.igt_exid=t.igt_exid);
                 INSERT INTO trade.item_group_types (igt_exid, igt_name, igt_priority, igt_agent,  igt_active)
                     SELECT igt_exid, igt_name, igt_priority, igt_agent, igt_active FROM tigt WHERE (ins=TRUE);
@@ -204,7 +237,7 @@ var wsfunc = {
                 DROP TABLE tigt;`;
 				return [q, igt];
 			};
-			var itemsGroupF = function (arr) {
+			var itemsGroupF = function(arr) {
 				let ig = [];
 				let q = `CREATE TEMP TABLE tig (
                     ig_id     INTEGER,
@@ -222,15 +255,26 @@ var wsfunc = {
                         ((ig.ig_id ISNULL) AND (igt.igt_id NOTNULL))                   AS ins
                     FROM (VALUES`;
 				arr.forEach((elem, i) => {
-					if (i !== 0)
-						q = q + ", ";
-					q = q + "($" + (i * 4 + 1) + ",$" + (i * 4 + 2) + ",$" + (i * 4 + 3) + ",$" + (i * 4 + 4) + ")";
+					if (i !== 0) q = q + ", ";
+					q =
+						q +
+						"($" +
+						(i * 4 + 1) +
+						",$" +
+						(i * 4 + 2) +
+						",$" +
+						(i * 4 + 3) +
+						",$" +
+						(i * 4 + 4) +
+						")";
 					ig.push(elem.igt_exid);
 					ig.push(elem.ig_exid);
 					ig.push(elem.ig_value);
 					ig.push(elem.ig_active);
 				});
-				q = q + `) AS t(igt_exid, ig_exid, ig_value, ig_active)
+				q =
+					q +
+					`) AS t(igt_exid, ig_exid, ig_value, ig_active)
                         LEFT JOIN trade.item_group_types igt ON (igt.igt_exid = t.igt_exid)
                         LEFT JOIN trade.item_groups ig ON (ig.ig_exid = t.ig_exid)
                     );
@@ -246,7 +290,7 @@ var wsfunc = {
                     DROP TABLE tig;`;
 				return [q, ig];
 			};
-			var linkItemGroupF = function (arr) {
+			var linkItemGroupF = function(arr) {
 				let lig = [];
 				let q = `CREATE TEMP TABLE tlig (
                     lig_id INTEGER,
@@ -266,15 +310,26 @@ var wsfunc = {
                         (lig.lig_id ISNULL AND (i.i_id NOTNULL )AND (igt.igt_id NOTNULL )) AS ins
                     FROM (VALUES `;
 				arr.forEach((elem, i) => {
-					if (i !== 0)
-						q = q + ", ";
-					q = q + "($" + (i * 4 + 1) + ",$" + (i * 4 + 2) + ",$" + (i * 4 + 3) + ",$" + (i * 4 + 4) + ")";
+					if (i !== 0) q = q + ", ";
+					q =
+						q +
+						"($" +
+						(i * 4 + 1) +
+						",$" +
+						(i * 4 + 2) +
+						",$" +
+						(i * 4 + 3) +
+						",$" +
+						(i * 4 + 4) +
+						")";
 					lig.push(elem.i_exid);
 					lig.push(elem.igt_exid);
 					lig.push(elem.ig_exid);
 					lig.push(elem.lig_active);
 				});
-				q = q + `) AS t(i_exid, igt_exid, ig_exid, lig_active)
+				q =
+					q +
+					`) AS t(i_exid, igt_exid, ig_exid, lig_active)
                 LEFT JOIN trade.items AS i ON t.i_exid=i.i_exid
                 LEFT JOIN trade.item_group_types igt ON t.igt_exid=igt.igt_exid
                 LEFT JOIN trade.item_groups ig ON t.ig_exid=ig.ig_exid
@@ -292,7 +347,7 @@ var wsfunc = {
                 DROP TABLE tlig;`;
 				return [q, lig];
 			};
-			var itemsUnitTypeF = function (arr) {
+			var itemsUnitTypeF = function(arr) {
 				let iut = [];
 				let q = `CREATE TEMP TABLE tiut (
                   iut_id     INTEGER,
@@ -313,17 +368,30 @@ var wsfunc = {
                   (iut_id ISNULL AND (imt.imt_id NOTNULL )) as ins
                 FROM (VALUES `;
 				arr.forEach((elem, i) => {
-					if (i !== 0)
-						q = q + ", ";
+					if (i !== 0) q = q + ", ";
 					let j = i * 5;
-					q = q + "($" + (j + 1) + ",$" + (j + 2) + ",$" + (j + 3) + ",$" + (j + 4) + ",$" + (j + 5) + ")";
+					q =
+						q +
+						"($" +
+						(j + 1) +
+						",$" +
+						(j + 2) +
+						",$" +
+						(j + 3) +
+						",$" +
+						(j + 4) +
+						",$" +
+						(j + 5) +
+						")";
 					iut.push(elem.iut_exid);
 					iut.push(elem.iut_name);
 					iut.push(elem.imt_id);
 					iut.push(elem.iut_okei);
 					iut.push(elem.iut_active);
 				});
-				q = q + `) AS t(iut_exid,iut_name,imt_id,iut_okei,iut_active)
+				q =
+					q +
+					`) AS t(iut_exid,iut_name,imt_id,iut_okei,iut_active)
                   LEFT JOIN trade.item_unit_types iut ON iut.iut_exid=t.iut_exid
                   LEFT JOIN trade.item_metric_types imt ON t.imt_id=imt.imt_id);
                 INSERT INTO trade.item_unit_types(iut_exid,iut_name,imt_id,iut_okei,iut_active)
@@ -337,7 +405,7 @@ var wsfunc = {
                 DROP TABLE tiut;`;
 				return [q, iut];
 			};
-			var itemsUnitF = function (arr) {
+			var itemsUnitF = function(arr) {
 				let iu = [];
 				let q = ` CREATE TEMP TABLE tiu (
                   iu_id     INTEGER,
@@ -379,8 +447,7 @@ var wsfunc = {
                   (iu.iu_id ISNULL AND i.i_id NOTNULL AND iut.iut_id NOTNULL)   AS ins
                 FROM (VALUES`;
 				arr.forEach((elem, i) => {
-					if (i !== 0)
-						q = q + ", ";
+					if (i !== 0) q = q + ", ";
 					iu.push(elem.i_exid);
 					iu.push(elem.iut_exid);
 					iu.push(elem.iu_ean);
@@ -407,9 +474,10 @@ var wsfunc = {
 						}
 					}
 					q = q + ")";
-
 				});
-				q = q + ` ) AS t(i_exid, iut_exid, iu_ean, iu_krat, iu_num, iu_denum,
+				q =
+					q +
+					` ) AS t(i_exid, iut_exid, iu_ean, iu_krat, iu_num, iu_denum,
                      iu_gros, iu_net, iu_length, iu_width, iu_height, iu_area,
                      iu_volume, iu_agent, iu_base, iu_main, iu_active)
                   LEFT JOIN trade.items i ON i.i_exid = t.i_exid
@@ -428,163 +496,231 @@ var wsfunc = {
                 DROP TABLE tiu;`;
 				return [q, iu];
 			};
-			db.task(function* (t) {
-				if (obj.items) {
-					console.log("start i", new Date(), obj.items.length);
-					for (let i = 0; i < obj.items.length; i = i + 100) {
-						let a = obj.items.slice(i, i + 100);
-						let [q,
-							arr] = itemsF(a);
-						yield t.none(q, arr);
+			db
+				.task(function*(t) {
+					if (obj.items) {
+						console.log("start i", new Date(), obj.items.length);
+						for (let i = 0; i < obj.items.length; i = i + 100) {
+							let a = obj.items.slice(i, i + 100);
+							let [q, arr] = itemsF(a);
+							yield t.none(q, arr);
+						}
+						console.log("end i", new Date());
 					}
-					console.log("end i", new Date());
-				}
-				if (obj.itemsGroup) {
-					console.log("start ig", new Date(), obj.itemsGroup.length);
-					for (let i = 0; i < obj.itemsGroup.length; i = i + 100) {
-						let a = obj.itemsGroup.slice(i, i + 100);
-						let [q,
-							arr] = itemsGroupF(a);
-						yield t.none(q, arr);
+					if (obj.itemsGroup) {
+						console.log(
+							"start ig",
+							new Date(),
+							obj.itemsGroup.length
+						);
+						for (
+							let i = 0;
+							i < obj.itemsGroup.length;
+							i = i + 100
+						) {
+							let a = obj.itemsGroup.slice(i, i + 100);
+							let [q, arr] = itemsGroupF(a);
+							yield t.none(q, arr);
+						}
+						console.log("end ig", new Date());
 					}
-					console.log("end ig", new Date());
-				}
-				if (obj.itemsGroupType) {
-					console.log("start igt", new Date(), obj.itemsGroupType.length);
-					for (let i = 0; i < obj.itemsGroupType.length; i = i + 100) {
-						let a = obj.itemsGroupType.slice(i, i + 100);
-						let [q,
-							arr] = itemsGroupTypeF(a);
-						yield t.none(q, arr);
+					if (obj.itemsGroupType) {
+						console.log(
+							"start igt",
+							new Date(),
+							obj.itemsGroupType.length
+						);
+						for (
+							let i = 0;
+							i < obj.itemsGroupType.length;
+							i = i + 100
+						) {
+							let a = obj.itemsGroupType.slice(i, i + 100);
+							let [q, arr] = itemsGroupTypeF(a);
+							yield t.none(q, arr);
+						}
+						console.log("end igt", new Date());
 					}
-					console.log("end igt", new Date());
-				}
-				if (obj.linkItemGroup) {
-					console.log("start lig", new Date(), obj.linkItemGroup.length);
-					for (let i = 0; i < obj.linkItemGroup.length; i = i + 100) {
-						let a = obj.linkItemGroup.slice(i, i + 100);
-						let [q,
-							arr] = linkItemGroupF(a);
-						yield t.none(q, arr);
+					if (obj.linkItemGroup) {
+						console.log(
+							"start lig",
+							new Date(),
+							obj.linkItemGroup.length
+						);
+						for (
+							let i = 0;
+							i < obj.linkItemGroup.length;
+							i = i + 100
+						) {
+							let a = obj.linkItemGroup.slice(i, i + 100);
+							let [q, arr] = linkItemGroupF(a);
+							yield t.none(q, arr);
+						}
+						console.log("end lig", new Date());
 					}
-					console.log("end lig", new Date());
-				}
-				if (obj.itemsUnitType) {
-					console.log("start iut", new Date(), obj.itemsUnitType.length);
-					for (let i = 0; i < obj.itemsUnitType.length; i = i + 100) {
-						let a = obj.itemsUnitType.slice(i, i + 100);
-						let [q,
-							arr] = itemsUnitTypeF(a);
-						yield t.none(q, arr);
+					if (obj.itemsUnitType) {
+						console.log(
+							"start iut",
+							new Date(),
+							obj.itemsUnitType.length
+						);
+						for (
+							let i = 0;
+							i < obj.itemsUnitType.length;
+							i = i + 100
+						) {
+							let a = obj.itemsUnitType.slice(i, i + 100);
+							let [q, arr] = itemsUnitTypeF(a);
+							yield t.none(q, arr);
+						}
+						console.log("end iut", new Date());
 					}
-					console.log("end iut", new Date());
-				}
-				if (obj.itemsUnit) {
-					console.log("start iu", new Date(), obj.itemsUnit.length);
-					for (let i = 0; i < obj.itemsUnit.length; i = i + 100) {
-						let a = obj.itemsUnit.slice(i, i + 100);
-						let [q,
-							arr] = itemsUnitF(a);
-						yield t.none(q, arr);
+					if (obj.itemsUnit) {
+						console.log(
+							"start iu",
+							new Date(),
+							obj.itemsUnit.length
+						);
+						for (let i = 0; i < obj.itemsUnit.length; i = i + 100) {
+							let a = obj.itemsUnit.slice(i, i + 100);
+							let [q, arr] = itemsUnitF(a);
+							yield t.none(q, arr);
+						}
+						console.log("end iu", new Date());
 					}
-					console.log("end iu", new Date());
-				}
-				return Promise.resolve(true);
-			}).then(function (r) {
-				resolve({ "result": true });
-			}).catch(function (err) {
-				console.log("Gen err", err);
-				resolve({ "result": false });
-				reject(err);
-			});/**/
+					return Promise.resolve(true);
+				})
+				.then(function(r) {
+					resolve({ result: true });
+				})
+				.catch(function(err) {
+					console.log("Gen err", err);
+					resolve({ result: false });
+					reject(err);
+				}); /**/
 		});
 	},
-	getItems: function (client, obj) {
+	getItems: function(client, obj) {
 		//TODO FUN getItems
-		return new Promise(function (resolve, reject) {
+		return new Promise(function(resolve, reject) {
 			console.log("title", obj);
 			var tov = {};
-			if (!(client.idToken)) {
-				resolve({ "result": false });
+			if (!client.idToken) {
+				resolve({ result: false });
 				return;
 			}
 			try {
 				var pr = [];
 				var nm = [];
 				if (obj.items === "all") {
-					pr.push(db.query("SELECT i_id,i_name,i_prn,i_service,int_id,i_active, extract(epoch from i_mtime)::integer as i_mtime from items", {}));
+					pr.push(
+						db.query(
+							"SELECT i_id,i_name,i_prn,i_service,int_id,i_active, extract(epoch from i_mtime)::integer as i_mtime from items",
+							{}
+						)
+					);
 					nm.push("items");
 				}
 				if (obj.itemGroupTypes === "all") {
-					pr.push(db.query(`SELECT igt_id, igt_name, igt_agent, igt_active, 
-						extract(epoch from igt_mtime)::integer as igt_mtime from item_Group_Types;`, {}));
+					pr.push(
+						db.query(
+							`SELECT igt_id, igt_name, igt_agent, igt_active, 
+						extract(epoch from igt_mtime)::integer as igt_mtime from item_Group_Types;`,
+							{}
+						)
+					);
 					nm.push("itemGroupTypes");
 				}
 				if (obj.itemGroups === "all") {
-					pr.push(db.query(`SELECT ig_id,igt_id,ig_value,ig_active, 
-						extract(epoch from ig_mtime)::integer as ig_mtime from item_Groups`, {}));
+					pr.push(
+						db.query(
+							`SELECT ig_id,igt_id,ig_value,ig_active, 
+						extract(epoch from ig_mtime)::integer as ig_mtime from item_Groups`,
+							{}
+						)
+					);
 					nm.push("itemGroups");
 				}
 				if (obj.linkItemGroups === "all") {
-					pr.push(db.query(`SELECT lig_id,i_id,ig_id,igt_id,lig_active, 
-						extract(epoch from lig_mtime)::integer as lig_mtime from link_Item_Group`, {}));
+					pr.push(
+						db.query(
+							`SELECT lig_id,i_id,ig_id,igt_id,lig_active, 
+						extract(epoch from lig_mtime)::integer as lig_mtime from link_Item_Group`,
+							{}
+						)
+					);
 					nm.push("linkItemGroups");
 				}
 				if (obj.itemUnitTypes === "all") {
-					pr.push(db.query(`SELECT iut_id,iut_name,imt_id,iut_okei,iut_active, 
-						extract(epoch from iut_mtime)::integer as iut_mtime from item_Unit_Types`, {}));
+					pr.push(
+						db.query(
+							`SELECT iut_id,iut_name,imt_id,iut_okei,iut_active, 
+						extract(epoch from iut_mtime)::integer as iut_mtime from item_Unit_Types`,
+							{}
+						)
+					);
 					nm.push("itemUnitTypes");
 				}
 				if (obj.itemUnits === "all") {
-					pr.push(db.query(`SELECT iu_id,i_id, iut_id, iu_ean,iu_krat, iu_num, iu_denum,
+					pr.push(
+						db.query(
+							`SELECT iu_id,i_id, iut_id, iu_ean,iu_krat, iu_num, iu_denum,
 						 iu_gros, iu_net, iu_length, iu_width, iu_height, iu_area, iu_volume,
-						 iu_agent, iu_base, iu_main, iu_active, extract(epoch from iu_mtime)::integer as iu_mtime from item_Units`, {}));
+						 iu_agent, iu_base, iu_main, iu_active, extract(epoch from iu_mtime)::integer as iu_mtime from item_Units`,
+							{}
+						)
+					);
 					nm.push("itemUnits");
 				}
 				if (obj.itemsSearch === "all") {
-					pr.push(db.query(`SELECT i.i_id, concat_ws(' ', ig1.ig_value, ig2.ig_value, ig3.ig_value, i_name) as value FROM items i 
+					pr.push(
+						db.query(
+							`SELECT i.i_id, concat_ws(' ', ig1.ig_value, ig2.ig_value, ig3.ig_value, i_name) as value FROM items i 
 						LEFT JOIN link_item_group lig1 ON (i.i_id = lig1.i_id) AND (lig1.igt_id=1)
 						LEFT JOIN item_groups ig1 ON lig1.ig_id = ig1.ig_id
 						LEFT JOIN link_item_group lig2 ON (i.i_id = lig2.i_id) AND (lig2.igt_id=2)
 						LEFT JOIN item_groups ig2 ON lig2.ig_id = ig2.ig_id
 						LEFT JOIN link_item_group lig3 ON (i.i_id = lig3.i_id) AND (lig3.igt_id=3)
-						LEFT JOIN item_groups ig3 ON lig3.ig_id = ig3.ig_id;`, {}));
+						LEFT JOIN item_groups ig3 ON lig3.ig_id = ig3.ig_id;`,
+							{}
+						)
+					);
 					nm.push("itemsSearch");
 				}
-				Promise.all(pr).then((value) => {
-					for (let i = 0; i < nm.length; i++) {
-						let arr = value[i];
-						arr.forEach(elem => {
-							for (let prop in elem) {
-								if (elem[prop] === null)
-									delete elem[prop];
-							}
-						});
-						tov[nm[i]] = arr;
+				Promise.all(pr).then(
+					value => {
+						for (let i = 0; i < nm.length; i++) {
+							let arr = value[i];
+							arr.forEach(elem => {
+								for (let prop in elem) {
+									if (elem[prop] === null) delete elem[prop];
+								}
+							});
+							tov[nm[i]] = arr;
+						}
+						console.log("tov");
+						resolve(tov);
+					},
+					err => {
+						console.log("err all", err);
+						reject(err);
 					}
-					console.log("tov");
-					resolve(tov);
-				}, (err) => {
-					console.log("err all", err);
-					reject(err);
-				});
+				);
 				//var tov = require("../db/tov");
-
 			} catch (err) {
 				console.log("err", err);
 				reject(err);
 			}
-
 		});
 	},
-	setCountragents: function (client, obj) {
+	setCountragents: function(client, obj) {
 		//TODO FUN setCountragents
-		return new Promise(function (resolve, reject) {
-			if (!(client.idToken)) {
-				resolve({ "result": false });
+		return new Promise(function(resolve, reject) {
+			if (!client.idToken) {
+				resolve({ result: false });
 				return;
 			}
-			var countragentsF = function (arr) {
+			var countragentsF = function(arr) {
 				let ca = [];
 				let q = `CREATE TEMP TABLE tca (
                     ca_id INTEGER, ca_exid TEXT,
@@ -609,11 +745,38 @@ var wsfunc = {
                         (ca.ca_id ISNULL) AS ins
                     FROM (VALUES`;
 				arr.forEach((elem, i) => {
-					if (i !== 0)
-						q = q + ", ";
-					q = q + "($" + (i * 12 + 1) + ",$" + (i * 12 + 2) + ",$" + (i * 12 + 3) + ",$" + (i * 12 + 4);
-					q = q + ",$" + (i * 12 + 5) + ",$" + (i * 12 + 6) + ",$" + (i * 12 + 7) + ",$" + (i * 12 + 8);
-					q = q + ",$" + (i * 12 + 9) + ",$" + (i * 12 + 10) + ",$" + (i * 12 + 11) + ",$" + (i * 12 + 12) + ")";
+					if (i !== 0) q = q + ", ";
+					q =
+						q +
+						"($" +
+						(i * 12 + 1) +
+						",$" +
+						(i * 12 + 2) +
+						",$" +
+						(i * 12 + 3) +
+						",$" +
+						(i * 12 + 4);
+					q =
+						q +
+						",$" +
+						(i * 12 + 5) +
+						",$" +
+						(i * 12 + 6) +
+						",$" +
+						(i * 12 + 7) +
+						",$" +
+						(i * 12 + 8);
+					q =
+						q +
+						",$" +
+						(i * 12 + 9) +
+						",$" +
+						(i * 12 + 10) +
+						",$" +
+						(i * 12 + 11) +
+						",$" +
+						(i * 12 + 12) +
+						")";
 					ca.push(elem.ca_exid);
 					ca.push(elem.cat_id);
 					ca.push(elem.ca_exhead);
@@ -627,7 +790,9 @@ var wsfunc = {
 					ca.push(elem.ca_carrier);
 					ca.push(elem.ca_active);
 				});
-				q = q + `) AS t(ca_exid, cat_id, ca_exhead, ca_name, ca_prn, ca_info,
+				q =
+					q +
+					`) AS t(ca_exid, cat_id, ca_exhead, ca_name, ca_prn, ca_info,
                     ca_inn, ca_kpp, ca_client, ca_supplier, ca_carrier, ca_active)
                 LEFT JOIN trade.countragents ca ON (ca.ca_exid = t.ca_exid)
                 LEFT JOIN trade.countragents ch ON (ch.ca_exid = t.ca_exhead));
@@ -653,7 +818,7 @@ var wsfunc = {
 
 				return [q, ca];
 			};
-			var deliveryPointsF = function (arr) {
+			var deliveryPointsF = function(arr) {
 				let dp = [];
 				let q = `CREATE TEMP TABLE tdp(
                     dp_id INTEGER, dp_exid TEXT, dp_name VARCHAR(100),
@@ -671,10 +836,28 @@ var wsfunc = {
                     dp_id ISNULL AS ins
                  FROM (VALUES`;
 				arr.forEach((elem, i) => {
-					if (i !== 0)
-						q = q + ", ";
-					q = q + "($" + (i * 8 + 1) + ",$" + (i * 8 + 2) + ",$" + (i * 8 + 3) + ",$" + (i * 8 + 4);
-					q = q + ",$" + (i * 8 + 5) + ",$" + (i * 8 + 6) + ",$" + (i * 8 + 7) + ",$" + (i * 8 + 8) + ")";
+					if (i !== 0) q = q + ", ";
+					q =
+						q +
+						"($" +
+						(i * 8 + 1) +
+						",$" +
+						(i * 8 + 2) +
+						",$" +
+						(i * 8 + 3) +
+						",$" +
+						(i * 8 + 4);
+					q =
+						q +
+						",$" +
+						(i * 8 + 5) +
+						",$" +
+						(i * 8 + 6) +
+						",$" +
+						(i * 8 + 7) +
+						",$" +
+						(i * 8 + 8) +
+						")";
 					dp.push(elem.dp_exid);
 					dp.push(elem.dp_name);
 					dp.push(elem.dp_prn);
@@ -684,7 +867,9 @@ var wsfunc = {
 					dp.push(elem.dp_carrier);
 					dp.push(elem.dp_active);
 				});
-				q = q + `) AS t(dp_exid, dp_name, dp_prn, dp_info, dp_client,
+				q =
+					q +
+					`) AS t(dp_exid, dp_name, dp_prn, dp_info, dp_client,
                     dp_supplier, dp_carrier, dp_active)
                     LEFT JOIN trade.delivery_points dp ON (dp.dp_exid=t.dp_exid));
                 INSERT INTO trade.delivery_points (
@@ -702,7 +887,7 @@ var wsfunc = {
                 DROP TABLE tdp;`;
 				return [q, dp];
 			};
-			var addressF = function (arr) {
+			var addressF = function(arr) {
 				let adr = [];
 				let q = `CREATE TEMP TABLE tadr (
                     adr_id INTEGER, any_id INTEGER,
@@ -726,15 +911,26 @@ var wsfunc = {
                     FROM (VALUES
                     `;
 				arr.forEach((elem, i) => {
-					if (i !== 0)
-						q = q + ", ";
-					q = q + "($" + (i * 4 + 1) + ",$" + (i * 4 + 2) + ",$" + (i * 4 + 3) + ",$" + (i * 4 + 4) + ")";
+					if (i !== 0) q = q + ", ";
+					q =
+						q +
+						"($" +
+						(i * 4 + 1) +
+						",$" +
+						(i * 4 + 2) +
+						",$" +
+						(i * 4 + 3) +
+						",$" +
+						(i * 4 + 4) +
+						")";
 					adr.push(elem.any_exid);
 					adr.push(elem.adrt_id);
 					adr.push(elem.adr_str);
 					adr.push(elem.adr_active);
 				});
-				q = q + `) AS t(any_exid, adrt_id, adr_str, adr_active)
+				q =
+					q +
+					`) AS t(any_exid, adrt_id, adr_str, adr_active)
                         LEFT JOIN trade.countragents cau ON ((t.any_exid=cau.ca_exid) AND (t.adrt_id=1))
                         LEFT JOIN trade.countragents caf ON ((t.any_exid=caf.ca_exid)AND(t.adrt_id=2))
                         LEFT JOIN trade.delivery_points dp ON ((t.any_exid=dp.dp_exid)AND(t.adrt_id=3))
@@ -750,7 +946,7 @@ var wsfunc = {
                     DROP TABLE tadr;`;
 				return [q, adr];
 			};
-			var linksCountragentDeliveryPointsF = function (arr) {
+			var linksCountragentDeliveryPointsF = function(arr) {
 				let lcp = [];
 				let q = ` CREATE TEMP TABLE tlcp (
                     lcp_id INTEGER, ca_id INTEGER,
@@ -762,14 +958,23 @@ var wsfunc = {
                     (lcp.lcp_id ISNULL )AND(ca.ca_id NOTNULL )AND(dp.dp_id NOTNULL ) AS ins
                 FROM (VALUES`;
 				arr.forEach((elem, i) => {
-					if (i !== 0)
-						q = q + ", ";
-					q = q + "($" + (i * 3 + 1) + ",$" + (i * 3 + 2) + ",$" + (i * 3 + 3) + ")";
+					if (i !== 0) q = q + ", ";
+					q =
+						q +
+						"($" +
+						(i * 3 + 1) +
+						",$" +
+						(i * 3 + 2) +
+						",$" +
+						(i * 3 + 3) +
+						")";
 					lcp.push(elem.ca_exid);
 					lcp.push(elem.dp_exid);
 					lcp.push(elem.lcp_active);
 				});
-				q = q + `) AS t(ca_exid,dp_exid,lcp_active)
+				q =
+					q +
+					`) AS t(ca_exid,dp_exid,lcp_active)
                 LEFT JOIN trade.countragents ca ON (t.ca_exid=ca.ca_exid)
                 LEFT JOIN trade.delivery_points dp ON (t.dp_exid=dp.dp_exid)
                 LEFT JOIN trade.links_countragent_delivery_point lcp ON ((ca.ca_id=lcp.ca_id)AND(dp.dp_id=lcp.dp_id)));
@@ -783,100 +988,152 @@ var wsfunc = {
                 DROP TABLE tlcp;`;
 				return [q, lcp];
 			};
-			db.task(function* (t) {
-				if (obj.countragents) {
-					console.log("start ca", new Date(), obj.countragents.length);
-					for (let i = 0; i < obj.countragents.length; i = i + 100) {
-						let a = obj.countragents.slice(i, i + 100);
-						let [q,
-							arr] = countragentsF(a);
-						yield t.none(q, arr);
+			db
+				.task(function*(t) {
+					if (obj.countragents) {
+						console.log(
+							"start ca",
+							new Date(),
+							obj.countragents.length
+						);
+						for (
+							let i = 0;
+							i < obj.countragents.length;
+							i = i + 100
+						) {
+							let a = obj.countragents.slice(i, i + 100);
+							let [q, arr] = countragentsF(a);
+							yield t.none(q, arr);
+						}
+						console.log("end ca", new Date());
 					}
-					console.log("end ca", new Date());
-				}
-				if (obj.deliveryPoints) {
-					console.log("start dp", new Date(), obj.deliveryPoints.length);
-					for (let i = 0; i < obj.deliveryPoints.length; i = i + 100) {
-						let a = obj.deliveryPoints.slice(i, i + 100);
-						let [q,
-							arr] = deliveryPointsF(a);
-						yield t.none(q, arr);
+					if (obj.deliveryPoints) {
+						console.log(
+							"start dp",
+							new Date(),
+							obj.deliveryPoints.length
+						);
+						for (
+							let i = 0;
+							i < obj.deliveryPoints.length;
+							i = i + 100
+						) {
+							let a = obj.deliveryPoints.slice(i, i + 100);
+							let [q, arr] = deliveryPointsF(a);
+							yield t.none(q, arr);
+						}
+						console.log("end dp", new Date());
 					}
-					console.log("end dp", new Date());
-				}
-				if (obj.address) {
-					console.log("start adr", new Date(), obj.address.length);
-					for (let i = 0; i < obj.address.length; i = i + 100) {
-						let a = obj.address.slice(i, i + 100);
-						let [q,
-							arr] = addressF(a);
-						yield t.none(q, arr);
+					if (obj.address) {
+						console.log(
+							"start adr",
+							new Date(),
+							obj.address.length
+						);
+						for (let i = 0; i < obj.address.length; i = i + 100) {
+							let a = obj.address.slice(i, i + 100);
+							let [q, arr] = addressF(a);
+							yield t.none(q, arr);
+						}
+						console.log("end adr", new Date());
 					}
-					console.log("end adr", new Date());
-				}
-				if (obj.linksCountragentDeliveryPoints) {
-					console.log("start lcp", new Date(), obj.linksCountragentDeliveryPoints.length);
-					for (let i = 0; i < obj.linksCountragentDeliveryPoints.length; i = i + 100) {
-						let a = obj.linksCountragentDeliveryPoints.slice(i, i + 100);
-						let [q,
-							arr] = linksCountragentDeliveryPointsF(a);
-						yield t.none(q, arr);
+					if (obj.linksCountragentDeliveryPoints) {
+						console.log(
+							"start lcp",
+							new Date(),
+							obj.linksCountragentDeliveryPoints.length
+						);
+						for (
+							let i = 0;
+							i < obj.linksCountragentDeliveryPoints.length;
+							i = i + 100
+						) {
+							let a = obj.linksCountragentDeliveryPoints.slice(
+								i,
+								i + 100
+							);
+							let [q, arr] = linksCountragentDeliveryPointsF(a);
+							yield t.none(q, arr);
+						}
+						console.log("end lcp", new Date());
 					}
-					console.log("end lcp", new Date());
-				}
-				return Promise.resolve(true);
-			}).then(function (r) {
-				resolve({ "result": true });
-			}).catch(function (err) {
-				console.log("Gen err", err);
-				resolve({ "result": false });
-				reject(err);
-			});/**/
+					return Promise.resolve(true);
+				})
+				.then(function(r) {
+					resolve({ result: true });
+				})
+				.catch(function(err) {
+					console.log("Gen err", err);
+					resolve({ result: false });
+					reject(err);
+				}); /**/
 		});
 	},
-	getCountragents: function (client, obj) {
+	getCountragents: function(client, obj) {
 		//TODO FUN getCountragents
-		return new Promise(function (resolve, reject) {
+		return new Promise(function(resolve, reject) {
 			console.log("title", obj);
 			var tov = {};
-			if (!(client.idToken)) {
-				resolve({ "result": false });
+			if (!client.idToken) {
+				resolve({ result: false });
 				return;
 			}
 			try {
 				var pr = [];
 				var nm = [];
 				if (obj.countragents === "all") {
-					pr.push(db.query(`SELECT
+					pr.push(
+						db.query(
+							`SELECT
                     ca_id, cat_id, ca_head, ca_name, ca_prn, ca_inn, ca_kpp,
                     ca_client, ca_supplier, ca_carrier, ca_active,
                     extract(epoch from ca_mtime)::integer as ca_mtime
-                    from trade.countragents;`, {}));
+                    from trade.countragents;`,
+							{}
+						)
+					);
 					nm.push("countragents");
 				}
 				if (obj.deliveryPoints === "all") {
-					pr.push(db.query(`SELECT
+					pr.push(
+						db.query(
+							`SELECT
                     dp_id, dp_name, dp_prn, dp_client, dp_supplier, dp_carrier,
                     dp_active, extract(epoch from dp_mtime)::integer as dp_mtime
-                    from trade.delivery_points`, {}));
+                    from trade.delivery_points`,
+							{}
+						)
+					);
 					nm.push("deliveryPoints");
 				}
 				if (obj.address === "all") {
-					pr.push(db.query(`SELECT
+					pr.push(
+						db.query(
+							`SELECT
                     a.adr_id,a.any_id,adrt_id,adr_str,adr_geo,
                     a.adr_json->'nominatim'->'display_name' as display_name
-                    FROM trade.address a;`, {}));
+                    FROM trade.address a;`,
+							{}
+						)
+					);
 					nm.push("address");
 				}
 				if (obj.linksCountragentDeliveryPoint === "all") {
-					pr.push(db.query(`SELECT
+					pr.push(
+						db.query(
+							`SELECT
                     lcp_id, ca_id, dp_id, lcp_active,
                     extract(epoch from lcp_mtime)::integer as lcp_mtime
-                    from trade.links_countragent_delivery_point`, {}));
+                    from trade.links_countragent_delivery_point`,
+							{}
+						)
+					);
 					nm.push("linksCountragentDeliveryPoint");
 				}
 				if (obj.CountragentsSearch === "all") {
-					pr.push(db.query(`SELECT
+					pr.push(
+						db.query(
+							`SELECT
                         dp.dp_id,
                         concat_ws(' ', dp.dp_name, dp.dp_info, ca.ca_name, ca.ca_info,
                         ca.ca_inn, adr.adr_str,
@@ -884,87 +1141,94 @@ var wsfunc = {
                     FROM trade.delivery_points dp
                     LEFT JOIN trade.links_countragent_delivery_point lcdp ON dp.dp_id = lcdp.dp_id
                     LEFT JOIN trade.countragents ca ON ca.ca_id=lcdp.ca_id
-                    LEFT JOIN trade.address adr ON (adr.any_id=dp.dp_id) AND (adr.adrt_id=3);`, {}));
+                    LEFT JOIN trade.address adr ON (adr.any_id=dp.dp_id) AND (adr.adrt_id=3);`,
+							{}
+						)
+					);
 					nm.push("CountragentsSearch");
-
 				}
-				Promise.all(pr).then((value) => {
-					for (let i = 0; i < nm.length; i++) {
-						let arr = value[i];
-						arr.forEach(elem => {
-							for (let prop in elem) {
-								if (elem[prop] === null)
-									delete elem[prop];
-							}
-						});
-						tov[nm[i]] = arr;
+				Promise.all(pr).then(
+					value => {
+						for (let i = 0; i < nm.length; i++) {
+							let arr = value[i];
+							arr.forEach(elem => {
+								for (let prop in elem) {
+									if (elem[prop] === null) delete elem[prop];
+								}
+							});
+							tov[nm[i]] = arr;
+						}
+						console.log("getCountragents");
+						resolve(tov);
+					},
+					err => {
+						console.log("err all", err);
 					}
-					console.log("getCountragents");
-					resolve(tov);
-				}, (err) => {
-					console.log("err all", err);
-				});
+				);
 				//var tov = require("../db/tov");
-
 			} catch (err) {
 				console.log("err", err);
 				reject(err);
 			}
-
 		});
 	},
-	setAdressGeoDaData: function (client, obj) {
+	setAdressGeoDaData: function(client, obj) {
 		//TODO FUN setAdressGeoDaData
-		return new Promise(function (resolve, reject) {
-			co(function* () {
+		return new Promise(function(resolve, reject) {
+			co(function*() {
 				console.log("start adrrrr", new Date(), obj);
 				console.log(obj);
-				var adrarr = yield db.query(`SELECT adr_id,adr_str FROM trade.address a 
-				WHERE (a.adr_json ISNULL)AND(adr_str<>'') LIMIT $1; `, [obj.length]);
+				var adrarr = yield db.query(
+					`SELECT adr_id,adr_str FROM trade.address a 
+				WHERE (a.adr_json ISNULL)AND(adr_str<>'') LIMIT $1; `,
+					[obj.length]
+				);
 				var dd = require("./dadata");
 				for (let i = 0; i < adrarr.length; i++) {
-					if (i % 10 === 0)
-						console.log(i);
+					if (i % 10 === 0) console.log(i);
 					var el = adrarr[i];
 					var jsonb = yield dd.adress(el.adr_str);
 					if (jsonb === undefined) {
 						jsonb = {};
 					}
-					yield db.none(`UPDATE trade.address SET adr_json = $2::JSONB, adr_mtime=now() 
-					WHERE adr_id=$1; `, [el.adr_id, JSON.stringify(jsonb)]);
+					yield db.none(
+						`UPDATE trade.address SET adr_json = $2::JSONB, adr_mtime=now() 
+					WHERE adr_id=$1; `,
+						[el.adr_id, JSON.stringify(jsonb)]
+					);
 				}
 				console.log("end adrrrr", new Date());
 				return Promise.resolve(true);
-			}).then(function (r) {
-				console.log("r", r);
-				resolve({ "result": true });
-			}).catch(function (err) {
-				console.log("Gen err", err);
-				resolve({ "result": false });
-				reject(err);
-			});/**/
+			})
+				.then(function(r) {
+					console.log("r", r);
+					resolve({ result: true });
+				})
+				.catch(function(err) {
+					console.log("Gen err", err);
+					resolve({ result: false });
+					reject(err);
+				}); /**/
 		});
 	},
-	setAdressGeoNominatim: function (client, obj) {
+	setAdressGeoNominatim: function(client, obj) {
 		//TODO FUN setAdressGeoNominatim
 		var nominatim = require("nominatim-client");
-		var nominatimr = function (t) {
-			return new Promise(function (resolve, reject) {
+		var nominatimr = function(t) {
+			return new Promise(function(resolve, reject) {
 				var query = {
 					q: t,
 					addressdetails: "1"
 				};
-				nominatim.search(query, function (err, data) {
+				nominatim.search(query, function(err, data) {
 					if (err) {
 						reject(err);
 					}
 					//data = data.1;
 					if (data.length > 0) {
 						var result = data[0];
-						if (result.licence)
-							delete result.licence;
-						if (result.icon)
-							delete result.icon;
+						if (result.licence) delete result.licence;
+						if (result.icon) delete result.icon;
 						resolve(result);
 					} else {
 						resolve();
@@ -972,106 +1236,114 @@ var wsfunc = {
 				});
 			});
 		};
-		return new Promise(function (resolve, reject) {
-			co(function* () {
+		return new Promise(function(resolve, reject) {
+			co(function*() {
 				console.log("start adrrrr", new Date(), obj);
-				var adrarr = yield db.query(`SELECT adr_id,
+				var adrarr = yield db.query(
+					`SELECT adr_id,
                   (adr_json->'data'->'region')||(adr_json->'data'->'area')||(adr_json->'data'->'city') ||
                   (adr_json->'data'->'city_district') ||(adr_json->'data'->'settlement')||
                   (adr_json->'data'->'settlement') ||(adr_json->'data'->'street') ||
                   (adr_json->'data'->'house')||(adr_json->'data'->'flat') AS ar
                 FROM trade.address
-                WHERE (adr_json->'data'->'house' NOTNULL) AND (adr_json->'nominatim' ISNULL )  LIMIT $1; `, [obj.length]);
+                WHERE (adr_json->'data'->'house' NOTNULL) AND (adr_json->'nominatim' ISNULL )  LIMIT $1; `,
+					[obj.length]
+				);
 
 				//console.log(adrarr);
 
 				for (let i = 0; i < adrarr.length; i++) {
-					if (i % 10 === 0)
-						console.log(i);
+					if (i % 10 === 0) console.log(i);
 					if (adrarr[i].ar[7] !== null) {
 						let o = yield nominatimr(adrarr[i].ar.join(","));
 
 						//console.log("o", adrarr[i].ar.join(","), o);
 						if (o) {
-							yield db.none(`UPDATE trade.address SET adr_json = adr_json || $2::JSONB, adr_mtime=now() WHERE adr_id=$1; `, [
-								adrarr[i].adr_id,
-								JSON.stringify({ "nominatim": o })
-							]);
+							yield db.none(
+								`UPDATE trade.address SET adr_json = adr_json || $2::JSONB, adr_mtime=now() WHERE adr_id=$1; `,
+								[
+									adrarr[i].adr_id,
+									JSON.stringify({ nominatim: o })
+								]
+							);
 						}
 					}
-
 				}
 
 				console.log("end adrrrr", new Date());
 
 				return Promise.resolve(adrarr.length);
-			}).then(function (r) {
-				console.log("r", r);
-				resolve({ "result": true, "aa": r });
-			}).catch(function (err) {
-				console.log("Gen err", err);
-				resolve({ "result": false });
-				reject(err);
-			});/**/
-
+			})
+				.then(function(r) {
+					console.log("r", r);
+					resolve({ result: true, aa: r });
+				})
+				.catch(function(err) {
+					console.log("Gen err", err);
+					resolve({ result: false });
+					reject(err);
+				}); /**/
 		});
-
 	},
-	setAdressGeoYandex: function (client, obj) {
+	setAdressGeoYandex: function(client, obj) {
 		//TODO FUN setAdressGeoYandex
 		var ya = require("./geocodeya");
-		return new Promise(function (resolve, reject) {
-			co(function* () {
+		return new Promise(function(resolve, reject) {
+			co(function*() {
 				console.log("start adrrrr", new Date(), obj);
-				var adrarr = yield db.query(`SELECT adr_id,
+				var adrarr = yield db.query(
+					`SELECT adr_id,
                   (adr_json->'data'->'region')||(adr_json->'data'->'area')||(adr_json->'data'->'city') ||
                   (adr_json->'data'->'city_district') ||(adr_json->'data'->'settlement')||
                   (adr_json->'data'->'settlement') ||(adr_json->'data'->'street') ||
                   (adr_json->'data'->'house')||(adr_json->'data'->'flat') AS ar
                 FROM trade.address
-                WHERE (adr_json->'data'->'house' NOTNULL) AND (adr_json->'yandex' ISNULL) LIMIT $1; `, [obj.length]);
+                WHERE (adr_json->'data'->'house' NOTNULL) AND (adr_json->'yandex' ISNULL) LIMIT $1; `,
+					[obj.length]
+				);
 
 				//console.log(adrarr);
 
 				for (let i = 0; i < adrarr.length; i++) {
-					if (i % 10 === 0)
-						console.log(i);
+					if (i % 10 === 0) console.log(i);
 					if (adrarr[i].ar[7] !== null) {
 						let m = yield ya.geocode(adrarr[i].ar.join(","));
 						//console.log("m", m);
 						if (m) {
-							yield db.none(`UPDATE trade.address SET adr_json = adr_json || $2::JSONB, adr_mtime=now() WHERE adr_id=$1; `, [
-								adrarr[i].adr_id,
-								JSON.stringify({ "yandex": m })
-							]);
+							yield db.none(
+								`UPDATE trade.address SET adr_json = adr_json || $2::JSONB, adr_mtime=now() WHERE adr_id=$1; `,
+								[
+									adrarr[i].adr_id,
+									JSON.stringify({ yandex: m })
+								]
+							);
 						}
 					}
-
 				}
 
 				console.log("end adrrrr", new Date());
 
 				return Promise.resolve(adrarr.length);
-			}).then(function (r) {
-				console.log("r", r);
-				resolve({ "result": true, "aa": r });
-			}).catch(function (err) {
-				console.log("Gen err", err);
-				resolve({ "result": false });
-				reject(err);
-			});/**/
-
+			})
+				.then(function(r) {
+					console.log("r", r);
+					resolve({ result: true, aa: r });
+				})
+				.catch(function(err) {
+					console.log("Gen err", err);
+					resolve({ result: false });
+					reject(err);
+				}); /**/
 		});
-
 	},
-	setPrices: function (client, obj) {
+	setPrices: function(client, obj) {
 		//TODO FUN setPrices
-		return new Promise(function (resolve, reject) {
-			if (!(client.idToken)) {
-				resolve({ "result": false });
+		return new Promise(function(resolve, reject) {
+			if (!client.idToken) {
+				resolve({ result: false });
 				return;
 			}
-			var pricelistF = function (arr) {
+			var pricelistF = function(arr) {
 				let pl = [];
 				let q = ` CREATE TEMP TABLE tpl (
                     pl_id INTEGER, pl_exid TEXT, pl_name VARCHAR(50), pl_type INTEGER,
@@ -1082,15 +1354,26 @@ var wsfunc = {
                         pl_id ISNULL AS ins
                     FROM pricelist pl RIGHT JOIN ( VALUES`;
 				arr.forEach((elem, i) => {
-					if (i !== 0)
-						q = q + ", ";
-					q = q + "($" + (i * 4 + 1) + ",$" + (i * 4 + 2) + ",$" + (i * 4 + 3) + ",$" + (i * 4 + 4) + ")";
+					if (i !== 0) q = q + ", ";
+					q =
+						q +
+						"($" +
+						(i * 4 + 1) +
+						",$" +
+						(i * 4 + 2) +
+						",$" +
+						(i * 4 + 3) +
+						",$" +
+						(i * 4 + 4) +
+						")";
 					pl.push(elem.pl_exid);
 					pl.push(elem.pl_name);
 					pl.push(elem.pl_type);
 					pl.push(elem.pl_active);
 				});
-				q = q + `) AS t(pl_exid, pl_name, pl_type, pl_active) ON t.pl_exid = pl.pl_exid);
+				q =
+					q +
+					`) AS t(pl_exid, pl_name, pl_type, pl_active) ON t.pl_exid = pl.pl_exid);
                 INSERT INTO pricelist (pl_exid, pl_name, pl_type, pl_active)
                     SELECT pl_exid, pl_name, pl_type, pl_active FROM tpl WHERE (ins= TRUE);
                 UPDATE pricelist AS pl SET
@@ -1102,7 +1385,7 @@ var wsfunc = {
                 DROP TABLE tpl;`;
 				return [q, pl];
 			};
-			var priceF = function (arr) {
+			var priceF = function(arr) {
 				let p = [];
 				let q = ` CREATE TABLE tp (
                     p_id INTEGER, pl_id INTEGER, i_id INTEGER,
@@ -1126,10 +1409,24 @@ var wsfunc = {
                                 p_cn, p_active
                             FROM (VALUES `;
 				arr.forEach((elem, i) => {
-					if (i !== 0)
-						q = q + ", ";
-					q = q + "($" + (i * 6 + 1) + ",$" + (i * 6 + 2) + ",$" + (i * 6 + 3);
-					q = q + ",$" + (i * 6 + 4) + ",$" + (i * 6 + 5) + ",$" + (i * 6 + 6) + ")";
+					if (i !== 0) q = q + ", ";
+					q =
+						q +
+						"($" +
+						(i * 6 + 1) +
+						",$" +
+						(i * 6 + 2) +
+						",$" +
+						(i * 6 + 3);
+					q =
+						q +
+						",$" +
+						(i * 6 + 4) +
+						",$" +
+						(i * 6 + 5) +
+						",$" +
+						(i * 6 + 6) +
+						")";
 					p.push(elem.pl_exid);
 					p.push(elem.i_exid);
 					p.push(elem.p_date_b);
@@ -1138,7 +1435,9 @@ var wsfunc = {
 					p.push(elem.p_active);
 					//console.log("p", elem, p.slice(-6));
 				});
-				q = q + ` ) AS t(pl_exid, i_exid, p_date_b, p_date_e, p_cn, p_active)) AS t
+				q =
+					q +
+					` ) AS t(pl_exid, i_exid, p_date_b, p_date_e, p_cn, p_active)) AS t
                     ON pl.pl_exid = t.pl_exid LEFT JOIN items i ON t.i_exid = i.i_exid
                     LEFT JOIN price p ON p.pl_id = pl.pl_id AND p.i_id = i.i_id);
                     INSERT INTO price (pl_id, i_id, p_date_b, p_date_e, p_cn, p_active)
@@ -1152,7 +1451,7 @@ var wsfunc = {
                     DROP TABLE tp;`;
 				return [q, p];
 			};
-			var pricelistLinkF = function (arr) {
+			var pricelistLinkF = function(arr) {
 				let pll = [];
 				let q = `CREATE TEMP TABLE tpll (
                         pl_parent INTEGER, pl_child INTEGER,
@@ -1166,15 +1465,26 @@ var wsfunc = {
                             (pll.pl_parent ISNULL OR pll.pl_child ISNULL) AND (plp.pl_id NOTNULL AND plc.pl_id NOTNULL) AS ins
                         FROM pricelist plp RIGHT JOIN (VALUES`;
 				arr.forEach((elem, i) => {
-					if (i !== 0)
-						q = q + ", ";
-					q = q + "($" + (i * 4 + 1) + ",$" + (i * 4 + 2) + ",$" + (i * 4 + 3) + ",$" + (i * 4 + 4) + ")";
+					if (i !== 0) q = q + ", ";
+					q =
+						q +
+						"($" +
+						(i * 4 + 1) +
+						",$" +
+						(i * 4 + 2) +
+						",$" +
+						(i * 4 + 3) +
+						",$" +
+						(i * 4 + 4) +
+						")";
 					pll.push(elem.pl_exparent);
 					pll.push(elem.pl_exchild);
 					pll.push(elem.pll_prior);
 					pll.push(elem.pll_active);
 				});
-				q = q + `) AS t(pl_exparent, pl_exchild, pll_prior, pll_active) ON plp.pl_exid=t.pl_exparent
+				q =
+					q +
+					`) AS t(pl_exparent, pl_exchild, pll_prior, pll_active) ON plp.pl_exid=t.pl_exparent
                 LEFT JOIN pricelist plc ON plc.pl_exid=t.pl_exchild
                 LEFT JOIN pricelist_link pll ON pll.pl_parent=plp.pl_id AND pll.pl_child=plc.pl_id);
                 INSERT INTO pricelist_link (pl_parent,pl_child,pll_prior,pll_active)
@@ -1190,54 +1500,65 @@ var wsfunc = {
 				return [q, pll];
 			};
 
-			db.task(function* (t) {
-				if (obj.pricelist) {
-					console.log("start pl", new Date(), obj.pricelist.length);
-					for (let i = 0; i < obj.pricelist.length; i = i + 100) {
-						let a = obj.pricelist.slice(i, i + 100);
-						let [q,
-							arr] = pricelistF(a);
-						yield t.none(q, arr);
+			db
+				.task(function*(t) {
+					if (obj.pricelist) {
+						console.log(
+							"start pl",
+							new Date(),
+							obj.pricelist.length
+						);
+						for (let i = 0; i < obj.pricelist.length; i = i + 100) {
+							let a = obj.pricelist.slice(i, i + 100);
+							let [q, arr] = pricelistF(a);
+							yield t.none(q, arr);
+						}
+						console.log("end pl", new Date());
 					}
-					console.log("end pl", new Date());
-				}
-				if (obj.price) {
-					console.log("start p", new Date(), obj.price.length);
-					for (let i = 0; i < obj.price.length; i = i + 100) {
-						let a = obj.price.slice(i, i + 100);
-						let [q,
-							arr] = priceF(a);
-						yield t.none(q, arr);
+					if (obj.price) {
+						console.log("start p", new Date(), obj.price.length);
+						for (let i = 0; i < obj.price.length; i = i + 100) {
+							let a = obj.price.slice(i, i + 100);
+							let [q, arr] = priceF(a);
+							yield t.none(q, arr);
+						}
+						console.log("end p", new Date());
 					}
-					console.log("end p", new Date());
-				}
-				if (obj.pricelistLink) {
-					console.log("start pll", new Date(), obj.pricelistLink.length);
-					for (let i = 0; i < obj.pricelistLink.length; i = i + 100) {
-						let a = obj.pricelistLink.slice(i, i + 100);
-						let [q,
-							arr] = pricelistLinkF(a);
-						yield t.none(q, arr);
+					if (obj.pricelistLink) {
+						console.log(
+							"start pll",
+							new Date(),
+							obj.pricelistLink.length
+						);
+						for (
+							let i = 0;
+							i < obj.pricelistLink.length;
+							i = i + 100
+						) {
+							let a = obj.pricelistLink.slice(i, i + 100);
+							let [q, arr] = pricelistLinkF(a);
+							yield t.none(q, arr);
+						}
+						console.log("end pll", new Date());
 					}
-					console.log("end pll", new Date());
-				}
-				return Promise.resolve(true);
-			}).then(function (r) {
-				console.log("r", r);
-				resolve({ "result": true });
-			}).catch(function (err) {
-				console.log("Gen err", err);
-				resolve({ "result": false });
-				reject(err);
-			});/**/
-
+					return Promise.resolve(true);
+				})
+				.then(function(r) {
+					console.log("r", r);
+					resolve({ result: true });
+				})
+				.catch(function(err) {
+					console.log("Gen err", err);
+					resolve({ result: false });
+					reject(err);
+				}); /**/
 		});
 	},
-	getPrices: function (client, obj) {
+	getPrices: function(client, obj) {
 		//TODO FUN getPrices
-		return new Promise(function (resolve, reject) {
-			if (!(client.idToken)) {
-				resolve({ "result": false });
+		return new Promise(function(resolve, reject) {
+			if (!client.idToken) {
+				resolve({ result: false });
 				return;
 			}
 			try {
@@ -1246,14 +1567,24 @@ var wsfunc = {
 				var nm = [];
 				if (obj.pricelist === "all") {
 					//console.log(1);
-					pr.push(db.query("SELECT pl_id,pl_name,pl_type,pl_active, extract(epoch from pl_mtime)::integer as pl_mtime FROM pricelist", {}));
+					pr.push(
+						db.query(
+							"SELECT pl_id,pl_name,pl_type,pl_active, extract(epoch from pl_mtime)::integer as pl_mtime FROM pricelist",
+							{}
+						)
+					);
 					nm.push("pricelist");
 				}
 				if (obj.price === "all") {
 					//console.log(2);
-					pr.push(db.query(`SELECT p_id,pl_id,i_id,extract(epoch from p_date_b)::bigint::REAL as p_date_b, 
+					pr.push(
+						db.query(
+							`SELECT p_id,pl_id,i_id,extract(epoch from p_date_b)::bigint::REAL as p_date_b, 
 						extract(epoch from p_date_e)::bigint::REAL as p_date_e, 
-						p_cn,p_active, extract(epoch from p_mtime)::integer as p_mtime FROM price`, {}));
+						p_cn,p_active, extract(epoch from p_mtime)::integer as p_mtime FROM price`,
+							{}
+						)
+					);
 					nm.push("price");
 				}
 				if (obj.pricelistLink === "all") {
@@ -1263,41 +1594,47 @@ var wsfunc = {
 				}
 				if (obj.pricelistSearch === "all") {
 					//console.log(3);
-					pr.push(db.query("SELECT pl_id,pl_name as value FROM pricelist;", {}));
+					pr.push(
+						db.query(
+							"SELECT pl_id,pl_name as value FROM pricelist;",
+							{}
+						)
+					);
 					nm.push("pricelistSearch");
 				}
-				Promise.all(pr).then((value) => {
-					for (let i = 0; i < nm.length; i++) {
-						let arr = value[i];
-						arr.forEach(elem => {
-							for (let prop in elem) {
-								if (elem[prop] === null)
-									delete elem[prop];
-							}
-						});
-						price[nm[i]] = arr;
+				Promise.all(pr).then(
+					value => {
+						for (let i = 0; i < nm.length; i++) {
+							let arr = value[i];
+							arr.forEach(elem => {
+								for (let prop in elem) {
+									if (elem[prop] === null) delete elem[prop];
+								}
+							});
+							price[nm[i]] = arr;
+						}
+						console.log("price");
+						resolve(price);
+					},
+					err => {
+						console.log("err all", err);
 					}
-					console.log("price");
-					resolve(price);
-				}, (err) => {
-					console.log("err all", err);
-				});
+				);
 				//var tov = require("../db/tov");
-
 			} catch (err) {
 				console.log("err", err);
 				reject(err);
 			}
 		});
 	},
-	setStocks: function (client, obj) {
+	setStocks: function(client, obj) {
 		//TODO FUN setStocks
-		return new Promise(function (resolve, reject) {
-			if (!(client.idToken)) {
-				resolve({ "result": false });
+		return new Promise(function(resolve, reject) {
+			if (!client.idToken) {
+				resolve({ result: false });
 				return;
 			}
-			var storesF = function (arr) {
+			var storesF = function(arr) {
 				let sr = [];
 				let q = `CREATE TEMP TABLE tsr (
                 sr_id INTEGER, sr_exid TEXT, sr_name VARCHAR(50),
@@ -1309,15 +1646,26 @@ var wsfunc = {
                         ((sr.sr_name <> t.sr_name) OR (sr.sr_type <> t.sr_type) OR (sr.sr_active <> t.sr_active)) as updt,
                         sr_id ISNULL  as ins FROM stores sr RIGHT JOIN (VALUES `;
 				arr.forEach((elem, i) => {
-					if (i !== 0)
-						q = q + ", ";
-					q = q + "($" + (i * 4 + 1) + ",$" + (i * 4 + 2) + ",$" + (i * 4 + 3) + ",$" + (i * 4 + 4) + ")";
+					if (i !== 0) q = q + ", ";
+					q =
+						q +
+						"($" +
+						(i * 4 + 1) +
+						",$" +
+						(i * 4 + 2) +
+						",$" +
+						(i * 4 + 3) +
+						",$" +
+						(i * 4 + 4) +
+						")";
 					sr.push(elem.sr_exid);
 					sr.push(elem.sr_name);
 					sr.push(elem.sr_type);
 					sr.push(elem.sr_active);
 				});
-				q = q + `) AS t(sr_exid, sr_name, sr_type, sr_active) ON t.sr_exid = sr.sr_exid);
+				q =
+					q +
+					`) AS t(sr_exid, sr_name, sr_type, sr_active) ON t.sr_exid = sr.sr_exid);
                 INSERT INTO stores (sr_exid, sr_name, sr_type, sr_active)
                     SELECT sr_exid,sr_name,sr_type,sr_active FROM tsr WHERE (ins= TRUE);
                 UPDATE stores AS sr SET
@@ -1329,7 +1677,7 @@ var wsfunc = {
                 DROP TABLE tsr;`;
 				return [q, sr];
 			};
-			var storeLinkF = function (arr) {
+			var storeLinkF = function(arr) {
 				let srl = [];
 				let q = `CREATE TEMP TABLE tsrl (
                     srl_id INTEGER, srl_parent INTEGER,
@@ -1344,15 +1692,26 @@ var wsfunc = {
                     FROM stores s1 RIGHT JOIN ( VALUES`;
 				//console.log("obj.storeLink", obj.storeLink);
 				arr.forEach((elem, i) => {
-					if (i !== 0)
-						q = q + ", ";
-					q = q + " ($" + (i * 4 + 1) + ",$" + (i * 4 + 2) + ",$" + (i * 4 + 3) + ",$" + (i * 4 + 4) + ") ";
+					if (i !== 0) q = q + ", ";
+					q =
+						q +
+						" ($" +
+						(i * 4 + 1) +
+						",$" +
+						(i * 4 + 2) +
+						",$" +
+						(i * 4 + 3) +
+						",$" +
+						(i * 4 + 4) +
+						") ";
 					srl.push(elem.srl_exparent);
 					srl.push(elem.srl_exchild);
 					srl.push(elem.srl_sort);
 					srl.push(elem.srl_active);
 				});
-				q = q + ` ) AS t(srl_exparent, srl_exchild, srl_sort, srl_active) ON t.srl_exchild=s1.sr_exid
+				q =
+					q +
+					` ) AS t(srl_exparent, srl_exchild, srl_sort, srl_active) ON t.srl_exchild=s1.sr_exid
                 LEFT JOIN stores AS s2 ON t.srl_exparent=s2.sr_exid
                 LEFT JOIN store_link AS srl ON srl.srl_parent=s2.sr_id AND srl.srl_child=s1.sr_id);
                 INSERT INTO store_link (srl_parent, srl_child, srl_sort, srl_active)
@@ -1367,7 +1726,7 @@ var wsfunc = {
                 DROP TABLE tsrl;`;
 				return [q, srl];
 			};
-			var stocksF = function (arr) {
+			var stocksF = function(arr) {
 				let sc = [];
 				let q = `CREATE TEMP TABLE tsc (
                     sc_id INTEGER, sr_id INTEGER, i_id INTEGER,
@@ -1380,15 +1739,26 @@ var wsfunc = {
                 FROM stores sr RIGHT JOIN (VALUES `;
 				//console.log("obj.storeLink", obj.storeLink);
 				arr.forEach((elem, i) => {
-					if (i !== 0)
-						q = q + ", ";
-					q = q + " ($" + (i * 4 + 1) + ",$" + (i * 4 + 2) + ",$" + (i * 4 + 3) + ",$" + (i * 4 + 4) + ") ";
+					if (i !== 0) q = q + ", ";
+					q =
+						q +
+						" ($" +
+						(i * 4 + 1) +
+						",$" +
+						(i * 4 + 2) +
+						",$" +
+						(i * 4 + 3) +
+						",$" +
+						(i * 4 + 4) +
+						") ";
 					sc.push(elem.i_exid);
 					sc.push(elem.sr_exid);
 					sc.push(elem.sc_amount);
 					sc.push(elem.sc_active);
 				});
-				q = q + `) AS t(i_exid, sr_exid, sc_amount, sc_active) ON sr.sr_exid = t.sr_exid
+				q =
+					q +
+					`) AS t(i_exid, sr_exid, sc_amount, sc_active) ON sr.sr_exid = t.sr_exid
                 LEFT JOIN items i ON i.i_exid = t.i_exid
                 LEFT JOIN stocks sc ON sc.sr_id = sr.sr_id AND sc.i_id = i.i_id);
                 INSERT INTO stocks (i_id, sr_id, sc_amount, sc_active)
@@ -1404,118 +1774,140 @@ var wsfunc = {
 				return [q, sc];
 			};
 
-			db.task(function* (t) {
-
-				if (obj.stores) {
-					console.log("start sr", new Date(), obj.stores.length);
-					for (let i = 0; i < obj.stores.length; i = i + 100) {
-						let a = obj.stores.slice(i, i + 100);
-						let [q,
-							arr] = storesF(a);
-						yield t.none(q, arr);
+			db
+				.task(function*(t) {
+					if (obj.stores) {
+						console.log("start sr", new Date(), obj.stores.length);
+						for (let i = 0; i < obj.stores.length; i = i + 100) {
+							let a = obj.stores.slice(i, i + 100);
+							let [q, arr] = storesF(a);
+							yield t.none(q, arr);
+						}
+						console.log("end sr", new Date());
 					}
-					console.log("end sr", new Date());
-				}
-				if (obj.storeLink) {
-					console.log("start srl", new Date(), obj.storeLink.length);
-					for (let i = 0; i < obj.storeLink.length; i = i + 100) {
-						let a = obj.storeLink.slice(i, i + 100);
-						let [q,
-							arr] = storeLinkF(a);
-						yield t.none(q, arr);
+					if (obj.storeLink) {
+						console.log(
+							"start srl",
+							new Date(),
+							obj.storeLink.length
+						);
+						for (let i = 0; i < obj.storeLink.length; i = i + 100) {
+							let a = obj.storeLink.slice(i, i + 100);
+							let [q, arr] = storeLinkF(a);
+							yield t.none(q, arr);
+						}
+						console.log("end srl", new Date());
 					}
-					console.log("end srl", new Date());
-				}
-				if (obj.stocks) {
-					console.log("start sc", new Date(), obj.stocks.length);
+					if (obj.stocks) {
+						console.log("start sc", new Date(), obj.stocks.length);
 
-					for (let i = 0; i < obj.stocks.length; i = i + 100) {
-						let a = obj.stocks.slice(i, i + 100);
-						let [q,
-							arr] = stocksF(a);
-						yield t.none(q, arr);
+						for (let i = 0; i < obj.stocks.length; i = i + 100) {
+							let a = obj.stocks.slice(i, i + 100);
+							let [q, arr] = stocksF(a);
+							yield t.none(q, arr);
+						}
+
+						console.log("end sc", new Date());
 					}
-
-					console.log("end sc", new Date());
-				}
-				return Promise.resolve(true);
-			}).then(function (r) {
-				console.log("r", r);
-				resolve({ "result": true });
-			}).catch(function (err) {
-				console.log("Gen err", err);
-				resolve({ "result": false });
-				reject(err);
-			});/**/
-
+					return Promise.resolve(true);
+				})
+				.then(function(r) {
+					console.log("r", r);
+					resolve({ result: true });
+				})
+				.catch(function(err) {
+					console.log("Gen err", err);
+					resolve({ result: false });
+					reject(err);
+				}); /**/
 		});
 	},
-	getStocks: function (client, obj) {
+	getStocks: function(client, obj) {
 		//TODO FUN getStocks
-		return new Promise(function (resolve, reject) {
+		return new Promise(function(resolve, reject) {
 			console.log("title", obj);
 			var tov = {};
-			if (!(client.idToken)) {
-				resolve({ "result": false });
+			if (!client.idToken) {
+				resolve({ result: false });
 				return;
 			}
 			try {
 				var pr = [];
 				var nm = [];
 				if (obj.stores === "all") {
-					pr.push(db.query(`SELECT sr_id, sr_name, sr_active, sr_type, 
-						 extract(epoch from sr_mtime)::integer as sr_mtime FROM stores`, {}));
+					pr.push(
+						db.query(
+							`SELECT sr_id, sr_name, sr_active, sr_type, 
+						 extract(epoch from sr_mtime)::integer as sr_mtime FROM stores`,
+							{}
+						)
+					);
 					nm.push("stores");
 				}
 				if (obj.storeLink === "all") {
-					pr.push(db.query(`SELECT srl_id, srl_parent, srl_child, srl_sort, srl_active, 
-						 extract(epoch from srl_mtime)::integer as srl_mtime FROM store_link`, {}));
+					pr.push(
+						db.query(
+							`SELECT srl_id, srl_parent, srl_child, srl_sort, srl_active, 
+						 extract(epoch from srl_mtime)::integer as srl_mtime FROM store_link`,
+							{}
+						)
+					);
 					nm.push("storeLink");
 				}
 				if (obj.stocks === "all") {
-					pr.push(db.query(`SELECT sc_id, sr_id, i_id, sc_amount, sc_active, 
-						extract(epoch from sc_mtime)::integer as sc_mtime FROM stocks`, {}));
+					pr.push(
+						db.query(
+							`SELECT sc_id, sr_id, i_id, sc_amount, sc_active, 
+						extract(epoch from sc_mtime)::integer as sc_mtime FROM stocks`,
+							{}
+						)
+					);
 					nm.push("stocks");
 				}
 				if (obj.storesSearch === "all") {
-					pr.push(db.query(`SELECT sr_id, sr_name as value FROM stores`, {}));
+					pr.push(
+						db.query(
+							`SELECT sr_id, sr_name as value FROM stores`,
+							{}
+						)
+					);
 					nm.push("storesSearch");
 				}
-				Promise.all(pr).then((value) => {
-					for (let i = 0; i < nm.length; i++) {
-						let arr = value[i];
-						arr.forEach(elem => {
-							for (let prop in elem) {
-								if (elem[prop] === null)
-									delete elem[prop];
-							}
-						});
-						tov[nm[i]] = arr;
+				Promise.all(pr).then(
+					value => {
+						for (let i = 0; i < nm.length; i++) {
+							let arr = value[i];
+							arr.forEach(elem => {
+								for (let prop in elem) {
+									if (elem[prop] === null) delete elem[prop];
+								}
+							});
+							tov[nm[i]] = arr;
+						}
+						console.log("getStocks");
+						resolve(tov);
+					},
+					err => {
+						console.log("err all", err);
 					}
-					console.log("getStocks");
-					resolve(tov);
-				}, (err) => {
-					console.log("err all", err);
-				});
+				);
 				//var tov = require("../db/tov");
-
 			} catch (err) {
 				console.log("err", err);
 				reject(err);
 			}
-
 		});
 	},
 
-	setPeople: function (client, obj) {
+	setPeople: function(client, obj) {
 		console.log(1);
 		//TODO FUN setPeople
-		return new Promise(function (resolve, reject) {
-			if (!(client.idToken)) {
-				resolve({ "result": false });
+		return new Promise(function(resolve, reject) {
+			if (!client.idToken) {
+				resolve({ result: false });
 				return;
 			}
-			var orgF = function (arr) {
+			var orgF = function(arr) {
 				let org = [];
 				let q = `CREATE TEMP TABLE torg (
                         org_id        INTEGER,
@@ -1539,8 +1931,7 @@ var wsfunc = {
                         (o.org_kpp <>t.org_kpp)OR(o.org_okpo <>t.org_okpo)OR(o.org_active<>t.org_active) as updt
                       FROM (VALUES `;
 				arr.forEach((elem, i) => {
-					if (i !== 0)
-						q = q + ", ";
+					if (i !== 0) q = q + ", ";
 					org.push(elem.org_exid);
 					org.push(elem.org_name);
 					org.push(elem.org_short);
@@ -1562,7 +1953,9 @@ var wsfunc = {
 					}
 					q = q + ")";
 				});
-				q = q + ` ) AS t(org_exid, org_name, org_short, org_full, org_inn, org_kpp, org_okpo, org_active)
+				q =
+					q +
+					` ) AS t(org_exid, org_name, org_short, org_full, org_inn, org_kpp, org_okpo, org_active)
                         LEFT JOIN trade.organization o ON o.org_exid=t.org_exid
                       );
 
@@ -1584,7 +1977,7 @@ var wsfunc = {
 				/**/
 				return [q, org];
 			};
-			var postpeoplesF = function (arr) {
+			var postpeoplesF = function(arr) {
 				let pp = [];
 				let q = `CREATE TEMP TABLE tpp (
                         pp_id      INTEGER,
@@ -1601,8 +1994,7 @@ var wsfunc = {
                         (pp.pp_id ISNULL) AS ins
                     FROM (VALUES`;
 				arr.forEach((elem, i) => {
-					if (i !== 0)
-						q = q + ", ";
+					if (i !== 0) q = q + ", ";
 					pp.push(elem.pp_exid);
 					pp.push(elem.pp_name);
 					pp.push(elem.pp_active);
@@ -1616,7 +2008,9 @@ var wsfunc = {
 					}
 					q = q + ")";
 				});
-				q = q + ` ) AS t(pp_exid,pp_name,pp_active)
+				q =
+					q +
+					` ) AS t(pp_exid,pp_name,pp_active)
                         LEFT JOIN trade.post_peoples pp ON (t.pp_exid=pp.pp_exid)
                     );
 
@@ -1631,7 +2025,7 @@ var wsfunc = {
 
 				return [q, pp];
 			};
-			var peopleF = function (arr) {
+			var peopleF = function(arr) {
 				let pp = [];
 				let q = `CREATE TEMP TABLE tp (
                         p_id         INTEGER,
@@ -1662,8 +2056,7 @@ var wsfunc = {
                         (p.p_id ISNULL) AS ins
                       FROM (VALUES`;
 				arr.forEach((elem, i) => {
-					if (i !== 0)
-						q = q + ", ";
+					if (i !== 0) q = q + ", ";
 					pp.push(elem.p_exid);
 					pp.push(elem.p_name);
 					pp.push(elem.p_f);
@@ -1681,7 +2074,9 @@ var wsfunc = {
 					}
 					q = q + ")";
 				});
-				q = q + ` ) AS t(p_exid, p_name, p_f, p_i, p_o, p_sex, p_active)
+				q =
+					q +
+					` ) AS t(p_exid, p_name, p_f, p_i, p_o, p_sex, p_active)
                             LEFT JOIN trade.people p ON (t.p_exid=p.p_exid)
                         );
 
@@ -1697,7 +2092,7 @@ var wsfunc = {
 
 				return [q, pp];
 			};
-			var people_link_typeF = function (arr) {
+			var people_link_typeF = function(arr) {
 				let plt = [];
 				let q = `CREATE TEMP TABLE tplt (
                         plt_id      INTEGER,
@@ -1719,8 +2114,7 @@ var wsfunc = {
                         (plt.plt_id ISNULL) AS ins
                       FROM (VALUES`;
 				arr.forEach((elem, i) => {
-					if (i !== 0)
-						q = q + ", ";
+					if (i !== 0) q = q + ", ";
 					plt.push(elem.plt_exid);
 					plt.push(elem.plt_name);
 					plt.push(elem.at_id);
@@ -1735,7 +2129,9 @@ var wsfunc = {
 					}
 					q = q + ")";
 				});
-				q = q + `
+				q =
+					q +
+					`
                   ) AS t(plt_exid, plt_name, at_id, plt_active)
                   LEFT JOIN trade.any_type AS ayt ON (t.at_id=ayt.at_id)
                   LEFT JOIN trade.people_link_type AS plt ON (plt.plt_exid=t.plt_exid)
@@ -1752,11 +2148,11 @@ var wsfunc = {
                   FROM (
                     SELECT * FROM tplt WHERE updt=TRUE
                   ) AS t WHERE (t.plt_id=plt.plt_id);
-                DROP TABLE tplt;`;/**/
+                DROP TABLE tplt;`; /**/
 				//console.log(q,kiv);
 				return [q, plt];
 			};
-			var people_linkF = function (arr) {
+			var people_linkF = function(arr) {
 				let pl = [];
 				let q = `CREATE TEMP TABLE tpl (
                         pl_id       INTEGER,
@@ -1786,8 +2182,7 @@ var wsfunc = {
 
                       FROM (VALUES`;
 				arr.forEach((elem, i) => {
-					if (i !== 0)
-						q = q + ", ";
+					if (i !== 0) q = q + ", ";
 					pl.push(elem.plt_exid);
 					pl.push(elem.pp_exid);
 					pl.push(elem.p_exid);
@@ -1806,7 +2201,9 @@ var wsfunc = {
 					}
 					q = q + ")";
 				});
-				q = q + `) AS t(plt_exid, pp_exid, p_exid, any_exid, pl_date_b, pl_date_e, pl_active)
+				q =
+					q +
+					`) AS t(plt_exid, pp_exid, p_exid, any_exid, pl_date_b, pl_date_e, pl_active)
                   LEFT JOIN trade.people_link_type AS plt ON (plt.plt_exid=t.plt_exid)
                   LEFT JOIN trade.post_peoples AS pp ON (pp.pp_exid=t.pp_exid)
                   LEFT JOIN trade.people AS p ON (p.p_exid=t.p_exid)
@@ -1830,11 +2227,11 @@ var wsfunc = {
                   FROM (
                     SELECT * FROM tpl WHERE updt=TRUE
                   ) AS t WHERE (t.plt_id=plt.plt_id);
-                DROP TABLE tpl;`;/**/
+                DROP TABLE tpl;`; /**/
 				//console.log(q,kiv);
 				return [q, pl];
 			};
-			var ki_valueF = function (arr) {
+			var ki_valueF = function(arr) {
 				let kiv = [];
 				let q = `CREATE TEMP TABLE tkiv (
                         kiv_id      INTEGER,
@@ -1857,8 +2254,7 @@ var wsfunc = {
                         (kiv.kiv_id ISNULL) AS ins
                       FROM (VALUES`;
 				arr.forEach((elem, i) => {
-					if (i !== 0)
-						q = q + ", ";
+					if (i !== 0) q = q + ", ";
 					kiv.push(elem.kiv_exid);
 					kiv.push(elem.kik_id);
 					kiv.push(elem.kiv_valiue);
@@ -1873,7 +2269,9 @@ var wsfunc = {
 					}
 					q = q + ")";
 				});
-				q = q + ` ) AS t(kiv_exid, kik_id, kiv_valiue, kiv_active)
+				q =
+					q +
+					` ) AS t(kiv_exid, kik_id, kiv_valiue, kiv_active)
                       LEFT JOIN trade.ki_value AS kiv ON (kiv.kiv_exid=t.kiv_exid)
                     );
 
@@ -1889,11 +2287,11 @@ var wsfunc = {
                       FROM (
                         SELECT * FROM tkiv WHERE updt=TRUE
                       ) AS t WHERE (t.kiv_id=kiv.kiv_id);
-                    DROP TABLE tkiv;`;/**/
+                    DROP TABLE tkiv;`; /**/
 				//console.log(q,kiv);
 				return [q, kiv];
 			};
-			var ki_linkF = function (arr) {
+			var ki_linkF = function(arr) {
 				let kil = [];
 				let q = `CREATE TEMP TABLE tkil (
                         kil_id      INTEGER,
@@ -1916,8 +2314,7 @@ var wsfunc = {
                         (kil.kil_id ISNULL) AS ins
                       FROM (VALUES`;
 				arr.forEach((elem, i) => {
-					if (i !== 0)
-						q = q + ", ";
+					if (i !== 0) q = q + ", ";
 					kil.push(elem.at_id);
 					kil.push(elem.any_exid);
 					kil.push(elem.kiv_exid);
@@ -1932,7 +2329,9 @@ var wsfunc = {
 					}
 					q = q + ")";
 				});
-				q = q + `) AS t(at_id, any_exid,kiv_exid,kil_active)
+				q =
+					q +
+					`) AS t(at_id, any_exid,kiv_exid,kil_active)
                     LEFT JOIN trade.any_type AS ayt ON (t.at_id=ayt.at_id)
                     LEFT JOIN trade.organization AS org ON (t.at_id=1)AND(t.any_exid=org.org_exid)
                     LEFT JOIN trade.countragents AS ca ON (t.at_id=2)AND(t.any_exid=ca.ca_exid)
@@ -1952,125 +2351,166 @@ var wsfunc = {
                     FROM (
                       SELECT * FROM tkil WHERE updt=TRUE
                     ) AS t WHERE (kil.kil_id=t.kil_id);
-                  DROP TABLE tkil;`;/**/
+                  DROP TABLE tkil;`; /**/
 				//console.log(q,kiv);
 				return [q, kil];
 			};
-			db.task(function* (t) {
-				if (obj.organization) {
-					console.log("start org", new Date(), obj.organization.length);
-					for (let i = 0; i < obj.organization.length; i = i + 100) {
-						let a = obj.organization.slice(i, i + 100);
-						let [q, arr] = orgF(a);
-						yield t.none(q, arr);
+			db
+				.task(function*(t) {
+					if (obj.organization) {
+						console.log(
+							"start org",
+							new Date(),
+							obj.organization.length
+						);
+						for (
+							let i = 0;
+							i < obj.organization.length;
+							i = i + 100
+						) {
+							let a = obj.organization.slice(i, i + 100);
+							let [q, arr] = orgF(a);
+							yield t.none(q, arr);
+						}
+						console.log("end org", new Date());
 					}
-					console.log("end org", new Date());
-				}
-				if (obj.post_peoples) {
-					console.log("start pp", new Date(), obj.post_peoples.length);
-					for (let i = 0; i < obj.post_peoples.length; i = i + 100) {
-						let a = obj.post_peoples.slice(i, i + 100);
-						let [q, arr] = postpeoplesF(a);
-						yield t.none(q, arr);
+					if (obj.post_peoples) {
+						console.log(
+							"start pp",
+							new Date(),
+							obj.post_peoples.length
+						);
+						for (
+							let i = 0;
+							i < obj.post_peoples.length;
+							i = i + 100
+						) {
+							let a = obj.post_peoples.slice(i, i + 100);
+							let [q, arr] = postpeoplesF(a);
+							yield t.none(q, arr);
+						}
+						console.log("end pp", new Date());
 					}
-					console.log("end pp", new Date());
-				}
-				if (obj.people) {
-					console.log("start people", new Date(), obj.people.length);
-					for (let i = 0; i < obj.people.length; i = i + 100) {
-						let a = obj.people.slice(i, i + 100);
-						let [q, arr] = peopleF(a);
-						yield t.none(q, arr);
+					if (obj.people) {
+						console.log(
+							"start people",
+							new Date(),
+							obj.people.length
+						);
+						for (let i = 0; i < obj.people.length; i = i + 100) {
+							let a = obj.people.slice(i, i + 100);
+							let [q, arr] = peopleF(a);
+							yield t.none(q, arr);
+						}
+						console.log("end people", new Date());
 					}
-					console.log("end people", new Date());
-				}
-				if (obj.people_link_type) {
-					console.log("start people_link_type", new Date(), obj.people_link_type.length);
-					for (let i = 0; i < obj.people_link_type.length; i = i + 100) {
-						let a = obj.people_link_type.slice(i, i + 100);
-						let [q, arr] = people_link_typeF(a);
-						yield t.none(q, arr);
+					if (obj.people_link_type) {
+						console.log(
+							"start people_link_type",
+							new Date(),
+							obj.people_link_type.length
+						);
+						for (
+							let i = 0;
+							i < obj.people_link_type.length;
+							i = i + 100
+						) {
+							let a = obj.people_link_type.slice(i, i + 100);
+							let [q, arr] = people_link_typeF(a);
+							yield t.none(q, arr);
+						}
+						console.log("end people_link_type", new Date());
 					}
-					console.log("end people_link_type", new Date());
-				}
-				if (obj.people_link) {
-					console.log("start people_link", new Date(), obj.people_link.length);
-					for (let i = 0; i < obj.people_link.length; i = i + 100) {
-						let a = obj.people_link.slice(i, i + 100);
-						let [q, arr] = people_linkF(a);
-						yield t.none(q, arr);
+					if (obj.people_link) {
+						console.log(
+							"start people_link",
+							new Date(),
+							obj.people_link.length
+						);
+						for (
+							let i = 0;
+							i < obj.people_link.length;
+							i = i + 100
+						) {
+							let a = obj.people_link.slice(i, i + 100);
+							let [q, arr] = people_linkF(a);
+							yield t.none(q, arr);
+						}
+						console.log("end people_link", new Date());
 					}
-					console.log("end people_link", new Date());
-				}
-				if (obj.ki_value) {
-					console.log("start ki_value", new Date(), obj.ki_value.length);
-					for (let i = 0; i < obj.ki_value.length; i = i + 100) {
-						let a = obj.ki_value.slice(i, i + 100);
-						let [q, arr] = ki_valueF(a);
-						yield t.none(q, arr);
+					if (obj.ki_value) {
+						console.log(
+							"start ki_value",
+							new Date(),
+							obj.ki_value.length
+						);
+						for (let i = 0; i < obj.ki_value.length; i = i + 100) {
+							let a = obj.ki_value.slice(i, i + 100);
+							let [q, arr] = ki_valueF(a);
+							yield t.none(q, arr);
+						}
+						console.log("end ki_value", new Date());
 					}
-					console.log("end ki_value", new Date());
-				}
-				if (obj.ki_link) {
-					console.log("start ki_link", new Date(), obj.ki_link.length);
-					for (let i = 0; i < obj.ki_link.length; i = i + 100) {
-						let a = obj.ki_link.slice(i, i + 100);
-						let [q, arr] = ki_linkF(a);
-						yield t.none(q, arr);
+					if (obj.ki_link) {
+						console.log(
+							"start ki_link",
+							new Date(),
+							obj.ki_link.length
+						);
+						for (let i = 0; i < obj.ki_link.length; i = i + 100) {
+							let a = obj.ki_link.slice(i, i + 100);
+							let [q, arr] = ki_linkF(a);
+							yield t.none(q, arr);
+						}
+						console.log("end ki_link", new Date());
 					}
-					console.log("end ki_link", new Date());
-				}
-				return Promise.resolve(true);
-
-			}).then(function (r) {
-				console.log("r", r);
-				resolve({ "result": true });
-			}).catch(function (err) {
-				console.log("Gen err", err);
-				resolve({ "result": false });
-				reject(err);
-			});/**/
-			resolve({ "result": false });
+					return Promise.resolve(true);
+				})
+				.then(function(r) {
+					console.log("r", r);
+					resolve({ result: true });
+				})
+				.catch(function(err) {
+					console.log("Gen err", err);
+					resolve({ result: false });
+					reject(err);
+				}); /**/
+			resolve({ result: false });
 
 			return;
-
-
 		});
 	},
-	getPeople: function (client, obj) {
+	getPeople: function(client, obj) {
 		//TODO FUN getPeople
-		return new Promise(function (resolve, reject) {
-			if (!(client.idToken)) {
-				resolve({ "result": false });
+		return new Promise(function(resolve, reject) {
+			if (!client.idToken) {
+				resolve({ result: false });
 				return;
 			}
-
 		});
 	},
-	setKI: function (client, obj) {
+	setKI: function(client, obj) {
 		//TODO FUN setKI
-		return new Promise(function (resolve, reject) {
-			if (!(client.idToken)) {
-				resolve({ "result": false });
+		return new Promise(function(resolve, reject) {
+			if (!client.idToken) {
+				resolve({ result: false });
 				return;
 			}
-
 		});
 	},
-	getKI: function (client, obj) {
+	getKI: function(client, obj) {
 		//TODO FUN getKI
-		return new Promise(function (resolve, reject) {
-			if (!(client.idToken)) {
-				resolve({ "result": false });
+		return new Promise(function(resolve, reject) {
+			if (!client.idToken) {
+				resolve({ result: false });
 				return;
 			}
-
 		});
 	},
-	setOrg: function (client, obj) {
+	setOrg: function(client, obj) {
 		//TODO FUN setOrg
-		return new Promise(function (resolve, reject) {
-			var orgF = function (arr) {
+		return new Promise(function(resolve, reject) {
+			var orgF = function(arr) {
 				let org = [];
 				let q = `CREATE TEMP TABLE torg (
                     org_id        INTEGER,
@@ -2095,8 +2535,7 @@ var wsfunc = {
                     (o.org_kpp <>t.org_kpp)OR(o.org_okpo <>t.org_okpo)OR(o.org_active <>t.org_active) as updt
                   FROM (VALUES `;
 				arr.forEach((elem, i) => {
-					if (i !== 0)
-						q = q + ", ";
+					if (i !== 0) q = q + ", ";
 					org.push(elem.org_exid);
 					org.push(elem.org_name);
 					org.push(elem.org_short);
@@ -2116,7 +2555,9 @@ var wsfunc = {
 					}
 					q = q + ")";
 				});
-				q = q + ` ) AS t(org_exid, org_name, org_short, org_full, org_inn, org_kpp, org_okpo, org_active)
+				q =
+					q +
+					` ) AS t(org_exid, org_name, org_short, org_full, org_inn, org_kpp, org_okpo, org_active)
                 LEFT JOIN organization o ON o.org_exid=t.org_exid
               );
 
@@ -2138,43 +2579,50 @@ var wsfunc = {
 				return [q, org];
 			};
 
-
-
-			db.task(function* (t) {
-				if (obj.organization) {
-					console.log("start org", new Date(), obj.organization.length);
-					for (let i = 0; i < obj.organization.length; i = i + 100) {
-						let a = obj.organization.slice(i, i + 100);
-						let [q, arr] = orgF(a);
-						yield t.none(q, arr);
+			db
+				.task(function*(t) {
+					if (obj.organization) {
+						console.log(
+							"start org",
+							new Date(),
+							obj.organization.length
+						);
+						for (
+							let i = 0;
+							i < obj.organization.length;
+							i = i + 100
+						) {
+							let a = obj.organization.slice(i, i + 100);
+							let [q, arr] = orgF(a);
+							yield t.none(q, arr);
+						}
+						console.log("end org", new Date());
 					}
-					console.log("end org", new Date());
-				}
 
-				return Promise.resolve(true);
-			}).then(function (r) {
-				console.log("r", r);
-				resolve({ "result": true });
-			}).catch(function (err) {
-				console.log("Gen err", err);
-				resolve({ "result": false });
-			});/**/
-			if (!(client.idToken)) {
-				resolve({ "result": false });
+					return Promise.resolve(true);
+				})
+				.then(function(r) {
+					console.log("r", r);
+					resolve({ result: true });
+				})
+				.catch(function(err) {
+					console.log("Gen err", err);
+					resolve({ result: false });
+				}); /**/
+			if (!client.idToken) {
+				resolve({ result: false });
 				return;
 			}
-
 		});
 	},
-	getOrg: function (client, obj) {
+	getOrg: function(client, obj) {
 		//TODO FUN getOrg
 
-		return new Promise(function (resolve, reject) {
-			if (!(client.idToken)) {
-				resolve({ "result": false });
+		return new Promise(function(resolve, reject) {
+			if (!client.idToken) {
+				resolve({ result: false });
 				return;
 			}
-
 		});
 	}
 };
