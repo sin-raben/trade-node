@@ -2,22 +2,23 @@
 /*eslint no-console: 0, "quotes": [0, "single"] */
 /*jshint node:true, esversion: 6 */
 "use strict";
-var WebSocketServer = new require('ws');
-var pgp = require('pg-promise')({
+var WebSocketServer = new require("ws");
+var pgp = require("pg-promise")({
 	// Initialization Options
 });
-var cn = 'postgres://postgres:postgres@localhost:5432/office';
+var cn = "postgres://postgres:postgres@localhost:5432/office";
 var db = pgp(cn);
 //var fs = require('fs');
 var wsf = [];
 
 {
-	let f = require('./wsfunc').fun;
+	let f = require("./wsfunc").fun;
 	for (let prop in f) {
 		wsf[prop] = f[prop];
 	}
-} {
-	let f = require('./wsfuncmobile').fun;
+}
+{
+	let f = require("./wsfuncmobile").fun;
 	for (let prop in f) {
 		wsf[prop] = f[prop];
 	}
@@ -42,60 +43,61 @@ function gr(ArrM, PolM) {
 }
 */
 
+wsf.reload = function(client, obj) {
+	var path = "./mobile/server/node_modules/";
 
-wsf.reload = function (client, obj) {
-	var path = './mobile/server/node_modules/';
-
-	var fs = require('fs');
-	var rearstat = function (name) {
+	var fs = require("fs");
+	var rearstat = function(name) {
 		return new Promise((resolve, reject) => {
-			fs.stat(path + name, function (error, stat) {
+			fs.stat(path + name, function(error, stat) {
 				if (error) reject(error, "1");
 				resolve(stat);
 			});
 		});
 	};
-	var readdir = function (path, mtime) {
+	var readdir = function(path, mtime) {
 		return new Promise((resolve, reject) => {
 			var arf = [];
-			fs.readdir(path, function (error, list) {
+			fs.readdir(path, function(error, list) {
 				if (error) reject(error, "2");
-				Promise.all(list.map(rearstat))
-					.then(res => {
-
-						for (var i = 0; i < res.length; i++) {
-							if (res[i].mtime > (new Date(mtime))) {
-								let name = list[i].slice(0, list[i].indexOf("."));
-								console.log(name);
-								arf.push({ name: name, mtime: res[i].mtime });
-							}
+				Promise.all(list.map(rearstat)).then(res => {
+					for (var i = 0; i < res.length; i++) {
+						if (res[i].mtime > new Date(mtime)) {
+							let name = list[i].slice(0, list[i].indexOf("."));
+							console.log(name);
+							arf.push({ name: name, mtime: res[i].mtime });
 						}
-						resolve(arf);
-					});
+					}
+					resolve(arf);
+				});
 			});
-
 		});
 	};
-	return new Promise((resolve) => {
+	return new Promise(resolve => {
 		try {
 			if (obj.mtime) {
-				readdir(path, obj.mtime).then((r) => {
-					let result = r.map(function (el) {
-						console.log("restart function", el.name);
-						if (wsf[el.name]) {
-							//wsf[el.name] = reload(path + el.name).fun;
-							wsf[el.name] = false;
-							delete require.cache[require.resolve(el.name)];
+				readdir(path, obj.mtime).then(
+					r => {
+						let result = r.map(function(el) {
+							console.log("restart function", el.name);
+							if (wsf[el.name]) {
+								//wsf[el.name] = reload(path + el.name).fun;
+								wsf[el.name] = false;
+								delete require.cache[require.resolve(el.name)];
 
-							return el.name;
-						}
-						return el.name + "*";
-					});
+								return el.name;
+							}
+							return el.name + "*";
+						});
 
-					resolve({ result });
-				}, (eer) => { console.log("eer", eer); });
+						resolve({ result });
+					},
+					eer => {
+						console.log("eer", eer);
+					}
+				);
 			} else if (obj.names) {
-				let result = obj.names.map(function (el) {
+				let result = obj.names.map(function(el) {
 					console.log("restart function", el);
 					if (wsf[el]) {
 						try {
@@ -121,34 +123,33 @@ wsf.reload = function (client, obj) {
 	});
 };
 
-function wsm(client, head, body, id) {
+function wsm(client, head, body, id, arg) {
 	var ob = {
-		"head": head,
-		"body": body,
-		"id": id || 0
+		head: head,
+		body: body
 	};
+	if (id) ob.id = id;
+	if (arg) ob.arg = arg;
 	var st = JSON.stringify(ob);
-	//console.log("st", st);
+	console.log("st", st);
 	client.send(st, { compress: true });
-	console.log("принято", client.bytesReceived/*, /*client*/);
-	console.log("отправлено", client._sender._socket._bytesDispatched);
+	//console.log("принято", client.bytesReceived /*, /*client*/);
+	//console.log("отправлено", client._sender._socket._bytesDispatched);
 }
 
 // подключенные клиенты
 var clients = {};
 
-
 // WebSocket-сервер на порту 8081
 var webSocketServer = new WebSocketServer.Server({
 	port: 8890
 });
-webSocketServer.on('connection', function (ws) {
-
+webSocketServer.on("connection", function(ws) {
 	var id = Math.random();
 	clients[id] = ws;
 	console.log("новое соединение " + id);
 
-	ws.on('message', function (message) {
+	ws.on("message", function(message) {
 		//console.log('+получено сообщение ' + message);
 		var obj;
 		try {
@@ -156,7 +157,7 @@ webSocketServer.on('connection', function (ws) {
 		} catch (err) {
 			console.error("ошибка парсинга", message);
 			wsm(clients[id], "error", {
-				"err": "" + err
+				err: "" + err
 			});
 		}
 
@@ -173,12 +174,17 @@ webSocketServer.on('connection', function (ws) {
 				}
 				if (wsf[obj.head]) {
 					console.log(obj.head, "запрос");
-					wsf[obj.head](clients[id], obj.body, db).then((ret) => {
-						console.log(obj.head, "ответ");
-						wsm(clients[id], obj.head, ret, obj.id);
-					}, (e) => { console.log(e, obj.head); });
+					wsf[obj.head](clients[id], obj.body, db).then(
+						ret => {
+							console.log(obj.head, "ответ");
+							wsm(clients[id], obj.head, ret, obj.id, obj.arg);
+						},
+						e => {
+							console.log(e, obj.head);
+						}
+					);
 				} else {
-					console.error('err', "метод не найден");
+					console.error("err", "метод не найден");
 					wsf.zero(clients[id], obj.head, obj.body);
 				}
 			}
@@ -187,9 +193,8 @@ webSocketServer.on('connection', function (ws) {
 		}
 	});
 
-	ws.on('close', function () {
-		console.log('соединение закрыто ' + id);
+	ws.on("close", function() {
+		console.log("соединение закрыто " + id);
 		delete clients[id];
 	});
-
 });
